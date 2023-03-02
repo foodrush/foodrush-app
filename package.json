@@ -14,6 +14,8 @@
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-owl-carousel": "^2.3.3",
+    "react-router": "^6.8.1",
+    "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
     "slicknav": "^1.0.8",
     "web-vitals": "^2.1.4"
@@ -41,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }
