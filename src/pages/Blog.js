@@ -1,4 +1,10 @@
 import React from "react";
+import '../style/css/bootstrap.min.css';
+import '../style/css/slicknav.min.css';
+import '../style/css/nice-select.css';
+import '../style/css/font-awesome.min.css';
+//import '../style/css/jquery-ui.min.css';
+import '../style/css/elegant-icons.css';
 
 export default function Blog(){
     return (

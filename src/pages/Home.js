@@ -2,8 +2,12 @@ import React from "react";
 import { Routes, Route, Link} from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
-
-
+import '../style/css/bootstrap.min.css';
+import '../style/css/slicknav.min.css';
+import '../style/css/nice-select.css';
+import '../style/css/font-awesome.min.css';
+//import '../style/css/jquery-ui.min.css';
+import '../style/css/elegant-icons.css';
 
 export default function Home(){
     const Description = () => (
@@ -45,7 +49,7 @@ export default function Home(){
                                         </ul>
                                     </div>
                                     <div className="header__top__right__auth">
-                                        <a href="#"><i className="fa fa-user"/> Login</a>
+                                        <Link to="login"><i className="fa fa-user"/> Login</Link>
                                     </div>
                                 </div>
                             </div>
@@ -63,7 +67,7 @@ export default function Home(){
                             <nav className="header__menu">
                                 <ul>
                                     <li className="active"><Link to="/">Home</Link></li>
-                                    <li><a href="./shop-grid.html">Shop</a></li>
+                                    <li><Link to="/market">Shop</Link></li>
                                     <li><a href="#">Pages</a>
                                         <ul className="header__menu__dropdown">
                                             <li><a href="./shop-details.html">Shop Details</a></li>
@@ -72,7 +76,7 @@ export default function Home(){
                                             <li><a href="./blog-details.html">Blog Details</a></li>
                                         </ul>
                                     </li>
-                                    <li><Link href="/blog">Blog</Link></li>
+                                    <li><Link to="/blog">Blog</Link></li>
                                     <li><Link to="/contact">Contact</Link></li>
                                 </ul>
                             </nav>
