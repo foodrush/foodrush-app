@@ -9,6 +9,13 @@ import '../style/css/font-awesome.min.css';
 //import '../style/css/jquery-ui.min.css';
 import '../style/css/elegant-icons.css';
 
+import "jquery-nice-select/css/nice-select.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'jquery-ui/dist/jquery-ui.min';
+import 'font-awesome/css/font-awesome.min.css';
+import 'slicknav/dist/slicknav.min.css';
+import 'owl.carousel/dist/assets/owl.carousel.css';
+
 export default function Home(){
     const Description = () => (
         <p>
