@@ -15,6 +15,7 @@ import Blog from "./pages/Blog";
 import Login from "./pages/Login-Register/Login";
 import Register from "./pages/Login-Register/Register";
 import Market from "./pages/Market";
+import Restaurant from "./pages/Restaurant/Restaurant";
 
 
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/market" element={<Market />} />
+            <Route path="/restaurant" element={<Restaurant />} />
         </Routes>
     );
 
