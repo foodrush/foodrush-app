@@ -131,6 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+
 # region custom-media
 
 MEDIA_URL = "/images/"
@@ -140,6 +142,7 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = "static/images"
 
 # endregion
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
