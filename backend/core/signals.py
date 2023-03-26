@@ -7,7 +7,7 @@ def update_user(sender, instance, **kwargs):
     user = instance
     if user.email != "":
         user.username = user.email
-        logger.info(f"Signal activated, username is set as the email")
+        logger.info(f"Signal activated, trying to put username as the email")
 
 
 pre_save.connect(update_user, sender=User)
