@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../Navigation/Navbar"
 import {Routes, Route, Link, useNavigate} from "react-router-dom";
 import '../style/css/style.css';
@@ -19,6 +20,12 @@ import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
 export default function Home(){
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
+    const [pageNumber, setPageNumber] = useState(1);
+
     const Description = () => (
         <p>
             I like coding counters!
@@ -100,6 +107,36 @@ export default function Home(){
     ];
 
 
+    useEffect(() => {
+        fetchData();
+    }, [pageNumber]);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            setError(false);
+            const response = await axios.get(`http://127.0.0.1:8000/api/products/`);
+            setData((prevData) => [prevData, ...response.data]);
+            setHasMore(response.data.length > 0);
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            setError(true);
+        }
+    };
+
+    const handleScroll = (event) => {
+        const target = event.target.documentElement;
+        if (target.scrollTop + target.clientHeight === target.scrollHeight && !loading && hasMore) {
+            setPageNumber((prevPageNumber) => prevPageNumber + 1);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     let navigate = useNavigate();
     const routeToRestaurant = (path) =>{
         console.log(path);
@@ -108,9 +145,9 @@ export default function Home(){
 
     const product = () => {
         return(
-            products.map((data,id)=>{
+            data.map((item)=>{
                 return (
-                    <div className="col-lg-3 col-md-4 col-sm-6 products" onClick={() => routeToRestaurant(data.name)}>
+                    <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" onClick={() => routeToRestaurant(item.user)}>
                         <div className="featured__item">
                             <div className="featured__item__pic set-bg" data-setbg="img/featured/feature-1.jpg">
                                 <ul className="featured__item__pic__hover">
@@ -120,9 +157,9 @@ export default function Home(){
                                 </ul>
                             </div>
                             <div className="featured__item__text">
-                                <h6><a href="#">{data.name}</a></h6>
-                                <h5>{data.price}</h5>
-                                <h5>{data.rating}</h5>
+                                <h6><a href="#">{item.name}</a></h6>
+                                <h5>{item.price}</h5>
+                                <h5>{item.rating}</h5>
                             </div>
                         </div>
                     </div>
@@ -250,6 +287,8 @@ export default function Home(){
                     </div>
                     <div className="row featured__filter">
                         {product()}
+                        {loading && <div>Loading...</div>}
+                        {error && <div>Error fetching data.</div>}
                     </div>
                 </div>
             </section>
