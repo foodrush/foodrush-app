@@ -1,6 +1,5 @@
 import 'font-awesome/css/font-awesome.min.css';
-//import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 import './css/responsive.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
