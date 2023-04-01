@@ -42,16 +42,43 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 # region users
+
+
 @api_view(["GET"])
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 def get_users(request):
+    """Gets all the users combined: both business and customer
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
 
 @api_view(["GET"])
-def get_user_profile(request):
+# @permission_classes([IsAdminUser])
+def get_user(request, pk):
+    """Gets all the users combined: both business and customer
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # users = User.objects.all()
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def get_logged_in_user_profile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
@@ -84,6 +111,7 @@ def register_user(request):
 
 
 @api_view(["GET"])
+# @permission_classes([IsAdminUser])
 def get_customer_profile(request, pk):
     customer_profile = CustomerProfile.objects.get(id=pk)
     serializer = CustomerProfileSerializer(customer_profile, many=False)
@@ -91,6 +119,7 @@ def get_customer_profile(request, pk):
 
 
 @api_view(["GET"])
+# @permission_classes([IsAdminUser])
 def get_customer_profiles(request):
     customer_profiles = CustomerProfile.objects.all()
     serializer = CustomerProfileSerializer(customer_profiles, many=True)
@@ -101,6 +130,8 @@ def get_customer_profiles(request):
 
 
 # region business
+
+
 @api_view(["GET"])
 def get_business_profiles(request):
     business_profiles = BusinessProfile.objects.all()
