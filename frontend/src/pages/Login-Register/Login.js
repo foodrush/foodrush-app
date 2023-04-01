@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import './css/style.css';
 import "jquery-nice-select/css/nice-select.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,26 +6,73 @@ import 'jquery-ui/dist/jquery-ui.min';
 import 'font-awesome/css/font-awesome.min.css';
 import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
-import {Link} from "react-router-dom";
-
+import {Link, useNavigate} from "react-router-dom";
+import Navbar from "../../Navigation/Navbar";
+import axios from 'axios';
 
 export default function Login(){
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
+
+    let navigate = useNavigate();
+    const routeToHome = (path) =>{
+        console.log(path);
+        navigate(path);
+    }
+
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        console.log(email,password);
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
+                username:email,
+                password:password
+            });
+
+            // Save the JWT token to the state
+            setToken(response.data.token);
+            // const decoded = jwt.decode(token);
+
+            // Store the token and user info in local storage
+            localStorage.setItem('token', token);
+            // localStorage.setItem('user', JSON.stringify(decoded.user));
+            alert(token)
+            console.log(response.data)
+            // Clear the email and password fields
+            setEmail('');
+            setPassword('');
+            routeToHome('/');
+        } catch (error) {
+
+            console.error(error);
+        }
+    };
+
+    const handleProtected = async (e) => {
+        e.preventDefault();
+
+        try {
+            // Make an authorized request using the JWT token
+            const response = await axios.get('/api/protected', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
 
         <div>
             {/* nav bar with name */}
-            <nav className="navbar bg-body-tertiary">
-                <div className="container-fluid">
-                    <Link className="navbar-brand" to="/">
-                        <svg xmlns="http://www.w3.org/2000/svg" width={40} height={40} fill="currentColor" className="bi bi-egg-fried" viewBox="0 0 16 16">
-                            <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                            <path d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z">
-                            </path>
-                        </svg>
-                        <strong>FoodRush</strong>
-                    </Link>
-                </div>
-            </nav>
+            <Navbar/>
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
@@ -35,16 +82,16 @@ export default function Login(){
                                 <h3 className="mb-4 mt-4">Login to <strong>FoodRush</strong></h3>
                                 <hr />
                                 {/* login form */}
-                                <form action="#" method="post">
+                                <form action="#" method="post" onSubmit={handleLogin}>
                                     <div className="form-group first">
                                         {/* Email input */}
                                         <label htmlFor="username">Email</label>
-                                        <input type="text" className="form-control" placeholder="your-email@gmail.com" id="username" />
+                                        <input type="text" value={email} className="form-control" placeholder="your-email@gmail.com" id="username"  onChange={(e) => setEmail(e.target.value)}/>
                                     </div>
                                     {/* Password input */}
                                     <div className="form-group last mb-3">
                                         <label htmlFor="password">Password</label>
-                                        <input type="password" className="form-control" placeholder="Your Password" id="password" />
+                                        <input type="password" value={password} className="form-control" placeholder="Your Password" id="password" onChange={(e) => setPassword(e.target.value)} />
                                     </div>
                                     <div className="d-flex mb-5 align-items-center">
                                         {/* Checkbox */}
