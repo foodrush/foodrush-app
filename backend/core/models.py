@@ -12,6 +12,8 @@ class BusinessProfile(models.Model):
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # add phone number field to profile
+    phone_number = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.user.email

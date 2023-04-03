@@ -88,15 +88,41 @@ def get_logged_in_user_profile(request):
 def register_user(request):
     data = request.data
     try:
-        logger.info(f" this data: {data}")
-        user = User.objects.create(
-            first_name=data["name"],
+        # NOTE: do not create immediately!
+
+        # user = User.objects.create(
+        #     first_name=(
+        #         data["name"] if "name" in data.keys() else data["first_name"]
+        #     ),  # workaround for now
+        #     username=data["email"],
+        #     last_name=data["last_name"],
+        #     email=data["email"],
+        #     password=make_password(data["password"]),
+        # )
+        # customer = CustomerProfile.objects.create(
+        #     user=user,
+        #     phone_number=data["phone_number"],
+        # )
+        # NOTE: do this intead, so that the user is created first, then the customer profile
+
+        user = User(
+            first_name=(
+                data["name"] if "name" in data.keys() else data["first_name"]
+            ),  # workaround for now
             username=data["email"],
+            last_name=data["last_name"],
             email=data["email"],
             password=make_password(data["password"]),
         )
-        CustomerProfile.objects.create(user=user)
-        logger.info(CustomerProfile.objects.all())
+        customer = CustomerProfile(
+            user=user,
+            phone_number=data["phone_number"],
+        )
+        logger.info(f"this is the saved user: {user}")
+        logger.info(f"users info: {user} and customer's info: {customer}")
+        # NOTE: and then save the user profile and customer profile
+        user.save()
+        customer.save()
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
     except Exception as e:
@@ -150,7 +176,7 @@ def get_business_profile(request, pk):
 def register_business(request):
     data = request.data
     try:
-        logger.info(f" this data: {data}")
+        logger.info(f" this data from business: {data}")
         user = User.objects.create(
             first_name=data["name"],
             username=data["email"],
@@ -163,7 +189,8 @@ def register_business(request):
 
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
-    except:
+    except Exception as e:
+        logger.error(e)
         message = {"detail": "User with this email already exists"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
