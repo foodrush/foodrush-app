@@ -1,10 +1,28 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
+
+
+class BusinessProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    restaurant_name = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return self.restaurant_name
+
+
+class CustomerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # add phone number field to profile
+    phone_number = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.user.email
 
 
 class Product(models.Model):
     # might set to CASCASE
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    business = models.ForeignKey(BusinessProfile, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
 
     image = models.ImageField(null=True, blank=True)
@@ -24,7 +42,7 @@ class Product(models.Model):
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(CustomerProfile, on_delete=models.SET_NULL, null=True)
 
     name = models.CharField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(null=True, blank=True, default=0)
@@ -36,7 +54,7 @@ class Review(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(CustomerProfile, on_delete=models.SET_NULL, null=True)
 
     payment_method = models.CharField(max_length=200, null=True, blank=True)
     tax_price = models.DecimalField(
