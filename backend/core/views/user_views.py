@@ -41,7 +41,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-# region users
+# region all users
 
 
 @api_view(["GET"])
@@ -84,27 +84,16 @@ def get_logged_in_user_profile(request):
     return Response(serializer.data)
 
 
+# endregion
+
+
+# region customer
+
+
 @api_view(["POST"])
-def register_user(request):
+def register_customer(request):
     data = request.data
     try:
-        # NOTE: do not create immediately!
-
-        # user = User.objects.create(
-        #     first_name=(
-        #         data["name"] if "name" in data.keys() else data["first_name"]
-        #     ),  # workaround for now
-        #     username=data["email"],
-        #     last_name=data["last_name"],
-        #     email=data["email"],
-        #     password=make_password(data["password"]),
-        # )
-        # customer = CustomerProfile.objects.create(
-        #     user=user,
-        #     phone_number=data["phone_number"],
-        # )
-        # NOTE: do this intead, so that the user is created first, then the customer profile
-
         user = User(
             first_name=(
                 data["name"] if "name" in data.keys() else data["first_name"]
@@ -114,26 +103,19 @@ def register_user(request):
             email=data["email"],
             password=make_password(data["password"]),
         )
-        customer = CustomerProfile(
+        customer_profile = CustomerProfile(
             user=user,
             phone_number=data["phone_number"],
         )
-        logger.info(f"this is the saved user: {user}")
-        logger.info(f"users info: {user} and customer's info: {customer}")
-        # NOTE: and then save the user profile and customer profile
+        logger.info(f"users info: {user} and customer's info: {customer_profile}")
         user.save()
-        customer.save()
+        customer_profile.save()
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
     except Exception as e:
         logger.info(e)
         message = {"detail": "User with this email already exists"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# endregion
-
-# region customer
 
 
 @api_view(["GET"])
@@ -177,17 +159,25 @@ def register_business(request):
     data = request.data
     try:
         logger.info(f" this data from business: {data}")
-        user = User.objects.create(
-            first_name=data["name"],
+        user = User(
+            first_name=(
+                data["name"] if "name" in data.keys() else data["first_name"]
+            ),  # workaround for now
+            last_name=data["last_name"],
             username=data["email"],
             email=data["email"],
             password=make_password(data["password"]),
         )
-        BusinessProfile.objects.create(
-            user=user, restaurant_name=data["restaurant_name"]
+        # create business profile from created user
+        business_profile = BusinessProfile(
+            user=user,
+            restaurant_name=data["restaurant_name"],
         )
-
+        user.save()
+        business_profile.save()
         serializer = UserSerializerWithToken(user, many=False)
+        logger.info(f"this is the saved user: {user}")
+        logger.info(f"users info: {user} and business info: {business_profile}")
         return Response(serializer.data)
     except Exception as e:
         logger.error(e)
