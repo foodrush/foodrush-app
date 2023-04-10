@@ -14,9 +14,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    # Add one more additional / descriptive field to the ProductSerializer: business_name
+    business_name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Product
         fields = "__all__"
+
+    def get_business_name(self, obj):
+        return obj.business.restaurant_name
 
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
