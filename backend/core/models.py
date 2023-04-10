@@ -22,7 +22,8 @@ class CustomerProfile(models.Model):
 class Product(models.Model):
     # might set to CASCASE
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    business = models.ForeignKey(BusinessProfile, on_delete=models.SET_NULL, null=True)
+    # business = models.ForeignKey(BusinessProfile, on_delete=models.SET_NULL, null=True)
+    business = models.ForeignKey(BusinessProfile, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
 
     image = models.ImageField(null=True, blank=True)
