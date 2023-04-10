@@ -24,6 +24,7 @@ class Product(models.Model):
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     # business = models.ForeignKey(BusinessProfile, on_delete=models.SET_NULL, null=True)
     business = models.ForeignKey(BusinessProfile, on_delete=models.CASCADE, null=True)
+    # TODO: null should be false because we need to have a business associated with a product
     name = models.CharField(max_length=200, null=True, blank=True)
 
     image = models.ImageField(null=True, blank=True)
