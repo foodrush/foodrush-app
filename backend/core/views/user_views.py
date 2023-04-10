@@ -78,6 +78,7 @@ def get_user(request, pk):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_logged_in_user_profile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
@@ -129,6 +130,7 @@ def get_customer_profile(request, pk):
 
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
+# @permission_classes(IsAuthenticated)
 def get_customer_profiles(request):
     customer_profiles = CustomerProfile.objects.all()
     serializer = CustomerProfileSerializer(customer_profiles, many=True)
