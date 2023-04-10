@@ -78,6 +78,7 @@ def get_user(request, pk):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_logged_in_user_profile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
@@ -94,6 +95,7 @@ def get_logged_in_user_profile(request):
 def register_customer(request):
     data = request.data
     try:
+        logger.info(f" this data from customer: {data.dict()}")
         user = User(
             first_name=(
                 data["name"] if "name" in data.keys() else data["first_name"]
@@ -128,6 +130,7 @@ def get_customer_profile(request, pk):
 
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
+# @permission_classes(IsAuthenticated)
 def get_customer_profiles(request):
     customer_profiles = CustomerProfile.objects.all()
     serializer = CustomerProfileSerializer(customer_profiles, many=True)
@@ -158,7 +161,7 @@ def get_business_profile(request, pk):
 def register_business(request):
     data = request.data
     try:
-        logger.info(f" this data from business: {data}")
+        logger.info(f" this data from business: {data.dict()}")
         user = User(
             first_name=(
                 data["name"] if "name" in data.keys() else data["first_name"]
