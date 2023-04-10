@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     "django_extensions",
 ]
 
+
 # region auth
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
+
 # Django project settings.py
 
 from datetime import timedelta
