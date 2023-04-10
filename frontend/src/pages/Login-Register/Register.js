@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from 'react';
 import './css/style.css';
 import {Link, useNavigate} from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
@@ -24,10 +24,11 @@ export default function Register(){
         console.log(email,password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-customer/', {
-                name:name,
-                surname:surname,
-                phone:phone,
+                first_name:name,
+                last_name:surname,
+                phone_number:phone,
                 email:email,
+                name: name,
                 password:password
             }).then(response => {
                 if (response.status === 200) {

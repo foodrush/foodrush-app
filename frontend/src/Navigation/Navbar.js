@@ -1,13 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import '../style/css/bootstrap.min.css';
 import '../style/css/slicknav.min.css';
 import '../style/css/nice-select.css';
 import '../style/css/font-awesome.min.css';
+import '../style/css/style.css';
+
 //import '../style/css/jquery-ui.min.css';
 import '../style/css/elegant-icons.css';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function Navbar(){
+    const [user, setUser] = useState(null);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+
+        console.log(JSON.parse(localStorage.getItem('name')));
+        if (!token) {
+            console.log("no token")
+
+        } else {
+            console.log(JSON.parse(localStorage.getItem('token')));
+
+            setUser(localStorage.getItem("name"))
+
+        }
+    }, []);
+
+
+    let navigate = useNavigate();
+    const routeToProfile = () =>{
+        navigate("/profile");
+    }
+
     return (
         <div>
             <header className="header">
@@ -37,7 +63,18 @@ export default function Navbar(){
                                         </ul>
                                     </div>
                                     <div className="header__top__right__auth">
-                                        <Link to="login"><i className="fa fa-user"/> Login</Link>
+                                        { user ? (
+                                                // <Link to="/profile">Welcome {localStorage.getItem("name")}<i className="fa fa-user"/> </Link>
+                                            //TODO: ON HOVER or LINK property
+                                            <div className="header__top__right__auth"
+                                                  onClick={() => routeToProfile()}> <i className="fa fa-user"/> Welcome {localStorage.getItem("name")}
+
+                                            </div>
+                                            ) : (
+                                            <Link to="/login"><i className="fa fa-user"/> Login</Link>
+                                            )
+                                        }
+
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +85,7 @@ export default function Navbar(){
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="header__logo">
-                                <a href="./index.html">FoodRush<img src="style/img/logo.png" alt=""/></a>
+                                <Link to="/">FoodRush<img src="style/img/logo.png" alt=""/> </Link>
                             </div>
                         </div>
                         <div className="col-lg-6">

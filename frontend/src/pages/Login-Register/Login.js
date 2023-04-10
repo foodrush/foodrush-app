@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import './css/style.css';
+
+// ON HoVER
+import '../../style/css/style.css';
+
 import "jquery-nice-select/css/nice-select.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery-ui/dist/jquery-ui.min';
@@ -29,21 +33,28 @@ export default function Login(){
             const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
                 username:email,
                 password:password
+            }).then(response => {
+                if (response.status === 200) {
+                    // Save the JWT token to the state
+
+                    setToken(response.data.token);
+                    console.log(response.data);
+                    localStorage.setItem('token', JSON.stringify(token));
+                    console.log(JSON.parse(localStorage.getItem('token')));
+
+                    localStorage.setItem("name", JSON.stringify(response.data.name));
+                    localStorage.setItem("user_id", JSON.stringify(response.data.id));
+                    routeToHome('/');
+
+                }
+            }).catch(error => {
+                console.error(error);
             });
 
-            // Save the JWT token to the state
-            setToken(response.data.token);
-            // const decoded = jwt.decode(token);
 
-            // Store the token and user info in local storage
-            localStorage.setItem('token', token);
-            // localStorage.setItem('user', JSON.stringify(decoded.user));
-            alert(token)
-            console.log(response.data)
             // Clear the email and password fields
             setEmail('');
             setPassword('');
-            routeToHome('/');
         } catch (error) {
 
             console.error(error);
