@@ -15,11 +15,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from ..models import BusinessProfile, CustomerProfile, Product
 from ..serializers import (
+    BusinessProfileSerializer,
+    CustomerProfileSerializer,
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
-    BusinessProfileSerializer,
-    CustomerProfileSerializer,
 )
 
 
