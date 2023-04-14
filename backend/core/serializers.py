@@ -1,20 +1,83 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from loguru import logger
+from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import (
+    BusinessProfile,
+    CustomerProfile,
     Order,
     OrderItem,
     Product,
     Review,
     ShippingAddress,
-    BusinessProfile,
-    CustomerProfile,
 )
-from loguru import logger
-from rest_framework_simplejwt.tokens import RefreshToken
+
+# region customers-orders serializers
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # Add one more additional / descriptive field to the ProductSerializer: business_name
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = "__all__"
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = serializers.SerializerMethodField(read_only=True)
+    shipping_address = ShippingAddressSerializer(read_only=True)
+    customer = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+
+    def get_order_items(self, obj):
+        """Returns a serialized representation of all related OrderItem objects for the given object instance.
+
+        Args:
+            obj: An instance of a model class that has a ForeignKey relationship with the OrderItem model.
+
+        Returns:
+            A list of dictionaries representing the serialized OrderItem objects.
+        """
+        # these are the OrderItem objects gotten from the reverse relationship of the OrderItem model with the Order model
+        items = (
+            obj.orderitem_set.all()
+        )  # normal:  OrderItem.objects.filter(order=obj) or reverse: obj.orderitem_set.all()
+        serializer = OrderItemSerializer(items, many=True)
+        return serializer.data
+
+    def get_shipping_address(self, obj):
+        try:
+            address = ShippingAddressSerializer(obj.shipping_address, many=False)
+        except Exception as e:
+            logger.error(f"Error with shipping address: {e}")
+            address = False
+        return address
+
+    def get_customer(self, obj):
+        customer_user = obj.customer
+        serializer = CustomerProfileSerializer(customer_user, many=False)
+        return serializer.data
+
+
+# endregion
+
+
+# region product serializers
+class ProductSerializer(serializers.ModelSerializer):
     business_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -23,6 +86,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_business_name(self, obj):
         return obj.business.restaurant_name
+
+
+# endregion
+
+# region profiles serializers
 
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
@@ -109,3 +177,6 @@ class UserSerializerWithToken(UserSerializer):
         token = RefreshToken.for_user(obj)
         return str(token)
         # return str(token.acces_token)
+
+
+# endregion
