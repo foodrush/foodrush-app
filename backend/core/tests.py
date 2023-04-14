@@ -85,7 +85,7 @@ class AddOrderItemsTestCase(APITestCase):
 
     def test_add_order_items(self):
         # add reverse for my view
-        url = reverse("orders-add")
+        url = reverse("orders-add")  # add order item url
         data = {
             "payment_method": "paypal",
             "tax_price": 3.0,
