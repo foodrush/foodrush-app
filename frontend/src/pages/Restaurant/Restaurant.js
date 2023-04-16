@@ -4,7 +4,7 @@ import './css/style.css';
 import './css/responsive.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import "jquery-nice-select/css/nice-select.css";
-import 'popper.js/src/index'
+//mport 'popper.js/src/index'
 import Navbar from "../../Navigation/Navbar"
 
 

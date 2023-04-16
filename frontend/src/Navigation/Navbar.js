@@ -17,11 +17,11 @@ export default function Navbar(){
         const token = localStorage.getItem('token')
 
         console.log(JSON.parse(localStorage.getItem('name')));
-        if (!token) {
+        if (token == null || token=='undefined') {
             console.log("no token")
 
         } else {
-            console.log(JSON.parse(localStorage.getItem('token')));
+           // console.log(JSON.parse(localStorage.getItem('token')));
 
             setUser(localStorage.getItem("name"))
 
