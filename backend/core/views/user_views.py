@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 # from .products import products
 from rest_framework.views import APIView
@@ -44,6 +45,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 # region all users
 
 
+@extend_schema(request=UserSerializer, responses=UserSerializer)
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
 def get_users(request):
@@ -60,6 +62,7 @@ def get_users(request):
     return Response(serializer.data)
 
 
+@extend_schema(request=UserSerializer, responses=UserSerializer)
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
 def get_user(request, pk):
@@ -77,6 +80,7 @@ def get_user(request, pk):
     return Response(serializer.data)
 
 
+@extend_schema(request=UserSerializer, responses=UserSerializer)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_logged_in_user_profile(request):
@@ -91,6 +95,7 @@ def get_logged_in_user_profile(request):
 # region customer
 
 
+@extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
 @api_view(["POST"])
 def register_customer(request):
     data = request.data
@@ -115,13 +120,14 @@ def register_customer(request):
         user.save()
         customer_profile.save()
         serializer = UserSerializerWithToken(user, many=False)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.info(e)
         message = {"detail": "User with this email already exists"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(request=CustomerProfileSerializer, responses=CustomerProfileSerializer)
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
 def get_customer_profile(request, pk):
@@ -130,6 +136,7 @@ def get_customer_profile(request, pk):
     return Response(serializer.data)
 
 
+@extend_schema(request=CustomerProfileSerializer, responses=CustomerProfileSerializer)
 @api_view(["GET"])
 # @permission_classes([IsAdminUser])
 # @permission_classes(IsAuthenticated)
@@ -145,6 +152,7 @@ def get_customer_profiles(request):
 # region business
 
 
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
 def get_business_profiles(request):
     business_profiles = BusinessProfile.objects.all()
@@ -152,6 +160,7 @@ def get_business_profiles(request):
     return Response(serializer.data)
 
 
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
 def get_business_profile(request, pk):
     business_profile = BusinessProfile.objects.get(id=pk)
@@ -159,6 +168,7 @@ def get_business_profile(request, pk):
     return Response(serializer.data)
 
 
+@extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
 @api_view(["POST"])
 def register_business(request):
     logger.info(request)
@@ -185,7 +195,7 @@ def register_business(request):
         serializer = UserSerializerWithToken(user, many=False)
         logger.info(f"this is the saved user: {user}")
         logger.info(f"users info: {user} and business info: {business_profile}")
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.error(e)
         message = {"detail": "User with this email already exists"}

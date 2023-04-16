@@ -10,11 +10,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from drf_spectacular.utils import extend_schema
 from ..models import Product
 from ..serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
 
 
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
 @api_view(["GET"])
 def get_products(request):
     products = Product.objects.all()
@@ -22,8 +23,16 @@ def get_products(request):
     return Response(serializer.data)
 
 
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
 @api_view(["GET"])
 def get_product(request, pk):
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
+
+
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_product(request):
+    pass
