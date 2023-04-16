@@ -95,7 +95,9 @@ def get_logged_in_user_profile(request):
 def register_customer(request):
     data = request.data
     try:
-        logger.info(f" this data from customer: {data.dict()}")
+        logger.info(request)
+        logger.info(request.data)
+        # logger.info(f" this data from customer: {data.dict()}")
         user = User(
             first_name=(
                 data["name"] if "name" in data.keys() else data["first_name"]
@@ -159,9 +161,11 @@ def get_business_profile(request, pk):
 
 @api_view(["POST"])
 def register_business(request):
+    logger.info(request)
+    logger.info(request.data)
+    # logger.info(f" this data from business: {data.dict()}")
     data = request.data
     try:
-        logger.info(f" this data from business: {data.dict()}")
         user = User(
             first_name=(
                 data["name"] if "name" in data.keys() else data["first_name"]
