@@ -16,12 +16,6 @@ from .models import (
 # region customers-orders serializers
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-
 class ShippingAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingAddress
