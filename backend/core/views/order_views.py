@@ -1,27 +1,37 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from loguru import logger
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, extend_schema_field
 
 # from .products import products
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from ..models import Order, OrderItem, Product, ShippingAddress, CustomerProfile
+from ..models import (
+    Order,
+    OrderItem,
+    Product,
+    ShippingAddress,
+    CustomerProfile,
+    CartItem,
+)
 from ..serializers import (
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
     OrderSerializer,
+    CartItemSerializer,
 )
 
 
+@extend_schema(request=OrderSerializer, responses=OrderSerializer)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def add_order_items(request):
@@ -70,4 +80,66 @@ def add_order_items(request):
             product.save()
 
         serializer = OrderSerializer(order, many=False)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_to_cart(request):
+    """Add to cart view"""
+    data = request.data
+    user = request.user
+    customer = CustomerProfile.objects.get(user=user)
+    product = Product.objects.get(_id=data["product_id"])
+    qty = data["qty"]
+
+    # Check if product is already in cart
+    cart_item = CartItem.objects.filter(product=product, customer=customer).first()
+    if cart_item:
+        cart_item.qty += int(qty)
+        cart_item.save()
+    else:  # Create new cart item
+        cart_item = CartItem.objects.create(product=product, customer=customer, qty=qty)
+
+    serializer = CartItemSerializer(cart_item, many=False)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def remove_from_cart(request, pk):
+    # Get the product to remove from the cart
+    product = get_object_or_404(Product, pk=pk)
+
+    # Get the user's cart
+    cart_item = CartItem.objects.get(
+        customer=CustomerProfile.objects.get(user=request.user), product=product
+    )
+
+    # Check if the product is already in the cart
+    # cart_item = user_cart.items.filter(product=product).first()
+
+    if cart_item is not None:
+        if cart_item.qty > 1:
+            # If the cart item has a quantity greater than 1, decrease the quantity by 1
+            cart_item.qty -= 1
+            cart_item.save()
+        else:
+            # If the cart item has a quantity of 1, delete the cart item
+            cart_item.delete()
+
+    # Return a success response
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def display_cart(request):
+    user = request.user
+    customer = CustomerProfile.objects.get(user=user)
+    cart_items = CartItem.objects.filter(customer=customer)
+    serializer = CartItemSerializer(cart_items, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
