@@ -20,7 +20,7 @@ from ..serializers import ProductSerializer, UserSerializer, UserSerializerWithT
 def get_products(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=ProductSerializer, responses=ProductSerializer)
@@ -28,7 +28,7 @@ def get_products(request):
 def get_product(request, pk):
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=ProductSerializer, responses=ProductSerializer)
