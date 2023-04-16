@@ -114,4 +114,4 @@ class AddOrderItemsTestCase(APITestCase):
             format="json",
         )
         logger.critical(response.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
