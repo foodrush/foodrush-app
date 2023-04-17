@@ -102,12 +102,6 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CustomerProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerProfile
-        fields = "__all__"
-
-
 class UserSerializer(serializers.ModelSerializer):
     """User serializer. Note: gives error if GET request not sent with Auth Bearer in Header
 
@@ -157,6 +151,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_first_name(self, obj):
         return obj.first_name
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = CustomerProfile
+        fields = "__all__"
 
 
 class UserSerializerWithToken(UserSerializer):

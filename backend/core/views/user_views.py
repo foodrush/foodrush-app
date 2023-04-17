@@ -59,7 +59,7 @@ def get_users(request):
     """
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=UserSerializer, responses=UserSerializer)
@@ -77,7 +77,7 @@ def get_user(request, pk):
     # users = User.objects.all()
     user = User.objects.get(id=pk)
     serializer = UserSerializer(user, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=UserSerializer, responses=UserSerializer)
@@ -86,7 +86,7 @@ def get_user(request, pk):
 def get_logged_in_user_profile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # endregion
@@ -129,11 +129,56 @@ def register_customer(request):
 
 @extend_schema(request=CustomerProfileSerializer, responses=CustomerProfileSerializer)
 @api_view(["GET"])
-# @permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def get_customer_profile(request, pk):
-    customer_profile = CustomerProfile.objects.get(id=pk)
+    """THis is returning back the customer profile from customer ID
+
+    Args:
+        request (_type_): _description_
+        pk (_type_): customer ID
+
+    Returns:
+        _type_: _description_
+    """
+    try:
+        customer_profile = CustomerProfile.objects.get(id=pk)
+        if not hasattr(request.user, "customerprofile"):
+            return Response(
+                {"detail": "Wrong authorization for customer profile"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = CustomerProfileSerializer(customer_profile, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.info(e)
+        return Response(
+            {"detail": "Wrong authorization for customer profile"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_logged_in_customer_profile(request):
+    """This should return back the customer profile from the logged in user (by its tokenk)
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    customer_profile = CustomerProfile.objects.get(user=request.user)
+    logger.info(f"customer profile: {customer_profile}")
+    logger.info(f"from user: {request.user}")
+    if not hasattr(request.user, "customerprofile"):
+        return Response(
+            {"detail": "Wrong authorization for customer profile"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     serializer = CustomerProfileSerializer(customer_profile, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=CustomerProfileSerializer, responses=CustomerProfileSerializer)
@@ -143,7 +188,7 @@ def get_customer_profile(request, pk):
 def get_customer_profiles(request):
     customer_profiles = CustomerProfile.objects.all()
     serializer = CustomerProfileSerializer(customer_profiles, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # endregion
@@ -157,15 +202,64 @@ def get_customer_profiles(request):
 def get_business_profiles(request):
     business_profiles = BusinessProfile.objects.all()
     serializer = BusinessProfileSerializer(business_profiles, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_business_profile(request, pk):
-    business_profile = BusinessProfile.objects.get(id=pk)
-    serializer = BusinessProfileSerializer(business_profile, many=False)
-    return Response(serializer.data)
+    """This is returning back the business profile from business ID
+
+    Args:
+        request (_type_): _description_
+        pk (_type_): business ID
+
+    Returns:
+        _type_: _description_
+    """
+    try:
+        business_profile = BusinessProfile.objects.get(id=pk)
+        if not hasattr(request.user, "businessprofile"):
+            return Response(
+                {"detail": "Wrong authorization for business profile"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = BusinessProfileSerializer(business_profile, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.info(e)
+        return Response(
+            {"detail": "Wrong authorization for business profile"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["GET"])
+def get_logged_in_business_profile(request):
+    """This should return back the business profile from the logged in user (by its token)
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    try:
+        business_profile = BusinessProfile.objects.get(user=request.user)
+        if not hasattr(request.user, "businessprofile"):
+            return Response(
+                {"detail": "Wrong authorization for business profile"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = BusinessProfileSerializer(business_profile, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.info(e)
+        return Response(
+            {"detail": "Wrong authorization for business profile"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 @extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
