@@ -96,6 +96,27 @@ def get_logged_in_user_profile(request):
 
 
 @extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def edit_customer(request):
+    try:
+        logger.info(f"request.data: {request.data}")
+        customer = CustomerProfile.objects.get(user=request.user)
+    except BusinessProfile.DoesNotExist:
+        return Response(
+            {"detail": "Customer profile does not exist"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    serializer = CustomerProfileSerializer(customer, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"serializer.data: {serializer.data}")
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
 @api_view(["POST"])
 def register_customer(request):
     data = request.data
@@ -203,6 +224,25 @@ def get_customer_profiles(request):
 
 
 @extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def edit_business(request):
+    try:
+        business = BusinessProfile.objects.get(user=request.user)
+    except BusinessProfile.DoesNotExist:
+        return Response(
+            {"detail": "Business profile does not exist"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    serializer = BusinessProfileSerializer(business, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
 def get_business_profiles(request):
     business_profiles = BusinessProfile.objects.all()
@@ -266,12 +306,6 @@ def get_logged_in_business_profile(request):
             {"detail": "Business profile does not exist"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-
-# endregion
-
-
-# region business
 
 
 @extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)

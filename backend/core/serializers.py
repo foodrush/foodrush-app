@@ -96,12 +96,6 @@ class CartItemSerializer(serializers.ModelSerializer):
 # region profiles serializers
 
 
-class BusinessProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BusinessProfile
-        fields = "__all__"
-
-
 class UserSerializer(serializers.ModelSerializer):
     """User serializer. Note: gives error if GET request not sent with Auth Bearer in Header
 
@@ -153,12 +147,53 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.first_name
 
 
+class UserEditSerializer(serializers.ModelSerializer):
+    _id = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["id", "_id", "first_name", "last_name", "email"]
+
+    def get__id(self, obj):
+        return obj.id
+
+
+class BusinessProfileSerializer(serializers.ModelSerializer):
+    user = UserEditSerializer(read_only=False)
+
+    class Meta:
+        model = BusinessProfile
+        fields = "__all__"
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", None)
+        if user_data:
+            user_serializer = UserEditSerializer(
+                instance.user, data=user_data, partial=True
+            )
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
+
+        return super().update(instance, validated_data)
+
+
 class CustomerProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserEditSerializer(read_only=False)
 
     class Meta:
         model = CustomerProfile
         fields = "__all__"
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", None)
+        if user_data:
+            user_serializer = UserEditSerializer(
+                instance.user, data=user_data, partial=True
+            )
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
+
+        return super().update(instance, validated_data)
 
 
 class UserSerializerWithToken(UserSerializer):

@@ -22,6 +22,8 @@ urlpatterns = [
     path("businesses/<int:pk>/", views.get_business_profile, name="business-profile"),
     path("customers/", views.get_customer_profiles, name="customers"),
     path("customers/<int:pk>/", views.get_customer_profile, name="customer-profile"),
+    path("edit-customer", views.edit_customer, name="edit-customer"),
+    path("edit-business", views.edit_business, name="edit-business-profile"),
     # path("profile-customer/", views.get_customer_profile, name="customer-profile"),
     # path("profile-business/", views.get_business_profile, name="business-profile"),
 ]
