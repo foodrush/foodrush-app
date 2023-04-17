@@ -7,6 +7,7 @@ from .models import (
     Review,
     CustomerProfile,
     BusinessProfile,
+    CartItem,
 )
 
 admin.site.register(Product)
@@ -16,3 +17,4 @@ admin.site.register(OrderItem)
 admin.site.register(ShippingAddress)
 admin.site.register(BusinessProfile)
 admin.site.register(CustomerProfile)
+admin.site.register(CartItem)

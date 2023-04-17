@@ -55,6 +55,9 @@ class Review(models.Model):
         return str(self.rating)
 
 
+# region cart and order models
+
+
 class Order(models.Model):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.SET_NULL, null=True)
 
@@ -93,6 +96,13 @@ class OrderItem(models.Model):
         return str(self.name)
 
 
+class CartItem(models.Model):
+    customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    qty = models.PositiveBigIntegerField(default=1)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+
 class ShippingAddress(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -104,3 +114,6 @@ class ShippingAddress(models.Model):
         max_digits=7, decimal_places=2, null=True, blank=True
     )
     _id = models.AutoField(primary_key=True, editable=False)
+
+
+# endregion
