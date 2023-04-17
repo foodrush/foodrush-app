@@ -110,18 +110,35 @@ def add_to_cart(request):
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def remove_from_cart(request, pk):
+    """Remove product from cart
+
+    Args:
+        request (_type_): _description_
+        pk (_type_): product's id
+
+    Returns:
+        _type_: _description_
+    """
     # Get the product to remove from the cart
     product = get_object_or_404(Product, pk=pk)
 
     # Get the user's cart
-    cart_item = CartItem.objects.get(
-        customer=CustomerProfile.objects.get(user=request.user), product=product
-    )
+    try:
+        cart_item = CartItem.objects.get(
+            customer=CustomerProfile.objects.get(user=request.user), product=product
+        )
+    except CartItem.DoesNotExist as e:
+        logger.error(e)
+        return Response(
+            {"detail": "The product is not in the cart"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
     # Check if the product is already in the cart
     # cart_item = user_cart.items.filter(product=product).first()
 
     if cart_item is not None:
+        removed_item = cart_item.product
         if cart_item.qty > 1:
             # If the cart item has a quantity greater than 1, decrease the quantity by 1
             cart_item.qty -= 1
@@ -131,13 +148,51 @@ def remove_from_cart(request, pk):
             cart_item.delete()
 
     # Return a success response
+    logger.info(f"Removed {removed_item} from cart")
+    return Response(
+        {
+            "detail": "The product was removed from the cart",
+            # "cart_item": ProductSerializer(removed_item).data,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+@extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
+@api_view(["DELETE"])
+def remove_all_items_from_cart(request):
+    # TODO: url not added, need to add to urls.py and test (later)
+    """Removes all items from the cart
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the user's cart
+    user = request.user
+    customer = CustomerProfile.objects.get(user=user)
+    cart_items = CartItem.objects.filter(customer=customer)
+
+    # Delete all items in the cart
+    cart_items.delete()
+
+    # Return a success response
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def display_cart(request):
+def get_cart(request):
+    """Gets the cart for the current user
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     user = request.user
     customer = CustomerProfile.objects.get(user=user)
     cart_items = CartItem.objects.filter(customer=customer)
