@@ -8,6 +8,16 @@ urlpatterns = [
     path("register-customer/", views.register_customer, name="register-user"),
     path("register-business/", views.register_business, name="register-business"),
     path("profile/", views.get_logged_in_user_profile, name="user-logged-in-profile"),
+    path(
+        "business-profile/",
+        views.get_logged_in_business_profile,
+        name="business-logged-in-profile",
+    ),
+    path(
+        "customer-profile/",
+        views.get_logged_in_customer_profile,
+        name="customer-logged-in-profile",
+    ),
     path("businesses/", views.get_business_profiles, name="businesses"),
     path("businesses/<int:pk>/", views.get_business_profile, name="business-profile"),
     path("customers/", views.get_customer_profiles, name="customers"),

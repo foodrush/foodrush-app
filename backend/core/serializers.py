@@ -11,6 +11,7 @@ from .models import (
     Product,
     Review,
     ShippingAddress,
+    CartItem,
 )
 
 # region customers-orders serializers
@@ -70,7 +71,7 @@ class OrderSerializer(serializers.ModelSerializer):
 # endregion
 
 
-# region product serializers
+# region product and cart serializers
 class ProductSerializer(serializers.ModelSerializer):
     business_name = serializers.SerializerMethodField(read_only=True)
 
@@ -82,6 +83,14 @@ class ProductSerializer(serializers.ModelSerializer):
         return obj.business.restaurant_name
 
 
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = CartItem
+        fields = ["id", "product", "qty", "date_added"]
+
+
 # endregion
 
 # region profiles serializers
@@ -90,12 +99,6 @@ class ProductSerializer(serializers.ModelSerializer):
 class BusinessProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessProfile
-        fields = "__all__"
-
-
-class CustomerProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerProfile
         fields = "__all__"
 
 
@@ -148,6 +151,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_first_name(self, obj):
         return obj.first_name
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = CustomerProfile
+        fields = "__all__"
 
 
 class UserSerializerWithToken(UserSerializer):
