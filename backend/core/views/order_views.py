@@ -1,13 +1,13 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from loguru import logger
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, extend_schema_field
 
 # from .products import products
 from rest_framework.views import APIView
@@ -15,19 +15,19 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from ..models import (
+    CartItem,
+    CustomerProfile,
     Order,
     OrderItem,
     Product,
     ShippingAddress,
-    CustomerProfile,
-    CartItem,
 )
 from ..serializers import (
+    CartItemSerializer,
+    OrderSerializer,
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
-    OrderSerializer,
-    CartItemSerializer,
 )
 
 
