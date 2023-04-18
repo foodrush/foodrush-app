@@ -32,6 +32,116 @@ from ..serializers import (
 )
 
 
+# region GET requests - business products
+
+
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
+@api_view(["GET"])
+def get_product_from_business(request, bpk, ppk):
+    """Returns a list of products from a given business.
+
+    Args:
+        request (_type_): _description_
+        bpk (_type_): ID for the business
+        ppk (_type_):   ID for the product
+
+
+    Returns:
+        _type_: _description_
+
+    Example: (1 product)
+    ```JSON
+        {
+            "_id": 22,
+            "business_name": "McDonald's",
+            "name": "Test Product 5",
+            "image": "/images/generic-img1_lcQsTJI.png",
+            "cuisine": "Test Cuisine",
+            "category": "Test Category",
+            "description": "Test Desc",
+            "rating": null,
+            "review_num": 0,
+            "price": "10.99",
+            "count_in_stock": 20,
+            "created_at": "2023-04-18T18:10:09.521115Z",
+            "business": 2
+        }
+    ```
+    """
+    try:
+        business = BusinessProfile.objects.get(id=bpk)
+    except BusinessProfile.DoesNotExist as e:
+        logger.debug(f"business.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Business does not exist"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        product = Product.objects.get(business=business, _id=ppk)
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Product.DoesNotExist as e:
+        logger.debug(f"product.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Product does not exist for this business"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
+@api_view(["GET"])
+def get_products_from_business(request, pk):
+    """Returns a list of products from a given business.
+
+    Args:
+        request (_type_): _description_
+        pk (_type_): ID for the business
+
+    Returns:
+        _type_: _description_
+
+    Example: (many products)
+    ```JSON
+        [
+            {
+                "_id": 22,
+                "business_name": "McDonald's",
+                "name": "Test Product 5",
+                "image": "/images/generic-img1_lcQsTJI.png",
+                "cuisine": "Test Cuisine",
+                "category": "Test Category",
+                "description": "Test Desc",
+                "rating": null,
+                "review_num": 0,
+                "price": "10.99",
+                "count_in_stock": 20,
+                "created_at": "2023-04-18T18:10:09.521115Z",
+                "business": 2
+            },
+            {
+                "next_product":"..."
+            }
+        ]
+    ```
+    """
+    try:
+        business = BusinessProfile.objects.get(id=pk)
+    except BusinessProfile.DoesNotExist as e:
+        logger.debug(f"business.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Business does not exist"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    products = Product.objects.filter(business=business)
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# endregion
+
+# region GET requests - plain products
+
+
 @extend_schema(request=ProductSerializer, responses=ProductSerializer)
 @api_view(["GET"])
 def get_products(request):
@@ -46,6 +156,11 @@ def get_product(request, pk):
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# endregion
+
+# region POST requests - add product
 
 
 @extend_schema(request=ProductSerializer, responses=ProductSerializer)
@@ -75,7 +190,7 @@ def add_product(request):
     """
     try:
         business = BusinessProfile.objects.get(user=request.user)
-    except business.DoesNotExist as e:
+    except BusinessProfile.DoesNotExist as e:
         logger.debug(f"business.DoesNotExist: {e}")
         return Response(
             {"detail": "Business does not exist"},
@@ -93,3 +208,6 @@ def add_product(request):
             {"detail": "Product could not be created"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+# endregion
