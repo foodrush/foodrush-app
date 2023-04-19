@@ -17,7 +17,6 @@ export default function Navbar() {
 
     useEffect(() => {
         const token = localStorage.getItem('token')
-        console.log(JSON.parse(localStorage.getItem('name')));
 
         console.log(localStorage.getItem('name'));
         if (token == null || token == 'undefined') {
@@ -114,6 +113,7 @@ export default function Navbar() {
                         <div className="col-lg-6">
                             <nav className="header__menu">
                                 <ul>
+                                    <li className="active"><Link to="/">My Business</Link></li>
                                     <li className="active"><Link to="/">Home</Link></li>
                                     <li><Link to="/market">Market</Link></li>
                                     <li><a href="#">Pages</a>
