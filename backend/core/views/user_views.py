@@ -252,7 +252,6 @@ def get_business_profiles(request):
 
 @extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def get_business_profile(request, pk):
     """This is returning back the business profile from business ID
 
