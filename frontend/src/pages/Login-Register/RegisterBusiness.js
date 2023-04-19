@@ -29,14 +29,17 @@ export default function RegisterBusiness() {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-business/', {
                 name: name,
-                surname: surname,
+                last_name: surname,
                 password: password,
                 email: email,
-                businessName: businessName
+                restaurant_name: businessName
             }).then(response => {
                 if (response.status === 200) {
                     console.log(response.data);
                     routeToLogin('/login');
+                }else{
+                    console.log("failed");
+
                 }
             }).catch(error => {
                 console.error(error);
@@ -48,7 +51,7 @@ export default function RegisterBusiness() {
             setLastName('');
             setEmail('');
             setPassword('');
-            businessName(' ');
+            setBusinessName('');
             // routeToHome('/login');
         } catch (error) {
 
