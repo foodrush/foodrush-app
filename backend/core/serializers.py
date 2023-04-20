@@ -82,6 +82,19 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_business_name(self, obj):
         return obj.business.restaurant_name
 
+    # example of how to use a try/except block to get a field from a related model if needed later
+    # def get_business_name(self, obj):
+    #     logger.critical(f"obj: {obj}")
+    #     # logger.info(f"obj.business.restaurant_name: {obj.business.restaurant_name}")
+    #     try:
+    #         business_name = obj.business.restaurant_name
+    #         logger.critical(f"business_name: {business_name}")
+    #     except Exception as e:
+    #         logger.error(f"Error with business name: {e}")
+    #         business = BusinessProfileSerializer(obj.business, many=False)
+    #         business_name = business.data["restaurant_name"]
+    #     return business_name
+
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()

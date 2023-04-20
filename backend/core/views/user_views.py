@@ -2,12 +2,12 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from drf_spectacular.utils import extend_schema
 from loguru import logger
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
 
 # from .products import products
 from rest_framework.views import APIView
@@ -252,7 +252,6 @@ def get_business_profiles(request):
 
 @extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def get_business_profile(request, pk):
     """This is returning back the business profile from business ID
 

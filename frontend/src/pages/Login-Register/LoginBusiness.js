@@ -13,17 +13,20 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import {Link, useNavigate} from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
+import {wait} from "@testing-library/user-event/dist/utils";
 
-export default function Login(){
+export default function LoginBusiness(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
+    const [accsesstoken, setAccsessToken] = useState('');
 
     let navigate = useNavigate();
-    const routeToHome = (path) =>{
+    const routeToDashboard = (path) =>{
         console.log(path);
         navigate(path);
     }
+
 
 
     const handleLogin = async (e) => {
@@ -35,7 +38,7 @@ export default function Login(){
                 password: password
             });
             if (response.status === 200) {
-                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/customer-profile/', {
+                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
                     headers: {
                         Authorization: `Bearer ${response.data.access}`
                     }
@@ -44,10 +47,11 @@ export default function Login(){
                     console.log("TOKEN:")
                     console.log(responseSecond.data)
 
+                    setAccsessToken(response.data.access)
                     localStorage.setItem('token', JSON.stringify(response.data.access));
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
-                    routeToHome('/');
+                    routeToDashboard('/business');
 
                 }
                 // Clear the email and password fields
@@ -59,22 +63,21 @@ export default function Login(){
         }
     };
 
-
     return (
 
         <div>
             {/* nav bar with name */}
-            {/* <Navbar/> */}
+            <Navbar/>
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
                     <div className="container">
                         <div className="row align-items-center justify-content-center">
                             <div className="col-md-8 offset-xl-1">
-                                <h3 className="mb-4 mt-4">Login to <strong>FoodRush</strong></h3>
+                                <h3 className="mb-4 mt-4">Business Login to <strong>FoodRush</strong></h3>
                                 <hr />
                                 {/* login form */}
-                                <form action="#" method="post" onSubmit={handleLogin}>
+                                <form onSubmit={handleLogin}>
                                     <div className="form-group first">
                                         {/* Email input */}
                                         <label htmlFor="username">Email</label>
@@ -128,7 +131,7 @@ export default function Login(){
                                 {/* login form */}
                             </div>
                             <div className="col-md-5">
-                                 {/*register page link */}
+                                {/*register page link */}
                                 <div className="text-center">
                                     <p>Login as a Business? <Link to="/login-business">Login</Link></p>
                                 </div>

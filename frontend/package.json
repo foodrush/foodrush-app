@@ -23,6 +23,7 @@
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "react-tooltip": "^5.11.1",
     "slicknav": "^1.0.8",
     "styled-components": "^5.3.9",
     "web-vitals": "^2.1.4"

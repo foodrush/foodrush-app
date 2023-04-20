@@ -144,14 +144,14 @@ export default function Home() {
     let navigate = useNavigate();
     const routeToRestaurant = (path) =>{
         console.log(path);
-        navigate(path);
+        navigate(`/business/${path}`);
     }
 
     const product = () => {
         return(
             data.map((item)=>{
                 return (
-                    <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" onClick={() => routeToRestaurant(item.user)}>
+                    <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" onClick={() => routeToRestaurant(item.business)}>
                         <div className="featured__item">
                             <div className="featured__item__pic set-bg" data-setbg="img/featured/feature-1.jpg">
                                 <ul className="featured__item__pic__hover">
@@ -212,7 +212,6 @@ export default function Home() {
     return (
         <div className="App">
             <Navbar />
-
             <section className="hero">
                 <div className="container">
                     <div className="row">

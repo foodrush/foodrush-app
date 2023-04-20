@@ -19,6 +19,11 @@ urlpatterns = [
         name="customer-logged-in-profile",
     ),
     path("businesses/", views.get_business_profiles, name="businesses"),
+    path(
+        "business-profile/products/",
+        views.get_business_profiles,
+        name="products-from-logged-in-business",
+    ),
     path("businesses/<int:pk>/", views.get_business_profile, name="business-profile"),
     path("customers/", views.get_customer_profiles, name="customers"),
     path("customers/<int:pk>/", views.get_customer_profile, name="customer-profile"),

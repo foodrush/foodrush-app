@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+import json
 from loguru import logger
 from .models import *
 
@@ -107,6 +108,7 @@ class AddOrderItemsTestCase(APITestCase):
             # + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzNzYxNzg0LCJpYXQiOjE2ODExNjk3ODQsImp0aSI6IjBmN2M0MzI1ZGNkMDRjYzBhOWYyZWNmMDE5MDk4ZTJkIiwidXNlcl9pZCI6MzV9.znG03Nz9l94KEYygNt4mZ1pcCkLm1jZwvuV7flcovDw"
             + self.get_token()
         )
+        logger.debug(f"data as JSON: {json.dumps(data)}")
         self.client.credentials(HTTP_AUTHORIZATION=token)
         response = self.client.post(
             url,
