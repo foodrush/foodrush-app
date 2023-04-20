@@ -28,11 +28,11 @@ export default function RegisterBusiness() {
         console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-business/', {
-                name: name,
-                surname: surname,
+                first_name: name,
+                last_name: surname,
                 password: password,
                 email: email,
-                businessName: businessName
+                restaurant_name: businessName
             }).then(response => {
                 if (response.status === 200) {
                     console.log(response.data);

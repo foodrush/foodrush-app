@@ -32,7 +32,6 @@ export default function Register(){
                 password:password
             }).then(response => {
                 if (response.status === 200) {
-                    console.log(response.data);
                     routeToLogin('/login');
 
                 }

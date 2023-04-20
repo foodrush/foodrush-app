@@ -36,12 +36,12 @@ export default function Login(){
             }).then(response => {
                 if (response.status === 200) {
                     // Save the JWT token to the state
+                    
+                    setToken(response.data.access);
 
-                    setToken(response.data.token);
-                    console.log(response.data);
-                    localStorage.setItem('token', JSON.stringify(token));
-                    console.log(JSON.parse(localStorage.getItem('token')));
-
+                    // states are async as well -- token:""
+                    localStorage.setItem('token', JSON.stringify(response.data.access));
+                    // console.log(JSON.parse(localStorage.getItem('token')));
                     localStorage.setItem("name", JSON.stringify(response.data.name));
                     localStorage.setItem("user_id", JSON.stringify(response.data.id));
                     routeToHome('/');

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../style/css/bootstrap.min.css';
 import '../style/css/slicknav.min.css';
 import '../style/css/nice-select.css';
@@ -9,9 +9,12 @@ import '../style/css/style.css';
 import '../style/css/elegant-icons.css';
 import {Link, useNavigate} from "react-router-dom";
 
-export default function Navbar(){
+import { CartContext } from '../contexts/CartContext';
+
+export default function Navbar( ){
     const [user, setUser] = useState(null);
 
+    const { totalPrice, totalQuantity } = useContext(CartContext);
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -23,6 +26,7 @@ export default function Navbar(){
         } else {
            // console.log(JSON.parse(localStorage.getItem('token')));
 
+           
             setUser(localStorage.getItem("name"))
 
         }
@@ -110,9 +114,9 @@ export default function Navbar(){
                             <div className="header__cart">
                                 <ul>
                                     <li><a href="#"><i className="fa fa-heart"/> <span>1</span></a></li>
-                                    <li><a href="#"><i className="fa fa-shopping-bag"/> <span>3</span></a></li>
+                                    <li><Link to="/shopping-cart"><i className="fa fa-shopping-bag"/> <span>{totalQuantity}</span></Link></li>
                                 </ul>
-                                <div className="header__cart__price">item: <span>$150.00</span></div>
+                                <div className="header__cart__price">item: <span>${totalPrice}</span></div>
                             </div>
                         </div>
                     </div>
