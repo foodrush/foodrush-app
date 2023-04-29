@@ -27,6 +27,7 @@ export default function EditMenu() {
                 setIsLoading(false);
 
             } catch (error) {
+                setIsLoading(false);
                 console.error(error);
             }
         }
@@ -34,100 +35,98 @@ export default function EditMenu() {
     }, []);
 
     if(isLoading){
-        return null;
+        return <div>Loading...</div>;
     }else{
-           if (status !== 200) {
-            return <div>Accsess Denied, Login First</div>;
-        }else{
-            return (
-                <>
-                    <Business_Navbar />
-                    {/* add new */}
-                    <div className="card-header border-0 pt-5 d-flex justify-content-between">
-                        <h3 className="card-title align-items-start flex-column">
-                            <span className="card-label fw-bolder fs-3 mb-1">Manage Products</span>
-                        </h3>
-                        <div className="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title data-bs-original-title="Click to add a user">
-                            <Link className="btn btn-secondary d-block" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends" to="/editmenu/add-product">
-                                {/*begin::Svg Icon | path: icons/duotune/arrows/arr075.svg*/}
-                                <span className="svg-icon svg-icon-3"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none">
+           if (status === 200) {
+               return (
+                   <>
+                       <Business_Navbar />
+                       {/* add new */}
+                       <div className="card-header border-0 pt-5 d-flex justify-content-between">
+                           <h3 className="card-title align-items-start flex-column">
+                               <span className="card-label fw-bolder fs-3 mb-1">Manage Products</span>
+                           </h3>
+                           <div className="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title data-bs-original-title="Click to add a user">
+                               <Link className="btn btn-secondary d-block" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends" to="/editmenu/add-product">
+                                   {/*begin::Svg Icon | path: icons/duotune/arrows/arr075.svg*/}
+                                   <span className="svg-icon svg-icon-3"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none">
                             <rect opacity="0.5" x="11.364" y="20.364" width={16} height={2} rx={1} transform="rotate(-90 11.364 20.364)" fill="black" />
                             <rect x="4.36396" y="11.364" width={16} height={2} rx={1} fill="black" />
                         </svg>
                         </span>
-                                Add
-                                {/*end::Svg Icon*/}
-                            </Link>
-                        </div>
-                    </div>
-                    {/* add new */}
+                                   Add
+                                   {/*end::Svg Icon*/}
+                               </Link>
+                           </div>
+                       </div>
+                       {/* add new */}
 
-                    {/* table card */}
-                    <div className="container">
-                        <div className="card-body py-3">
-                            {/*begin::Table container*/}
-                            <div className="table-responsive">
-                                {/*begin::Table*/}
-                                <table className="table table-row-dashed table-row-gray-300 align-middle align-items-center gs-0 gy-4">
-                                    {/*begin::Table head*/}
-                                    <thead>
-                                    <tr className="fw-bolder text-muted">
-                                        <th className="min-w-150px text-start">Photos</th>
-                                        <th className="min-w-150px">Product</th>
-                                        <th className="min-w-150px">Description</th>
-                                        <th className="min-w-150px text-end">Actions</th>
-                                    </tr>
-                                    </thead>
-                                    {/*end::Table head*/}
+                       {/* table card */}
+                       <div className="container">
+                           <div className="card-body py-3">
+                               {/*begin::Table container*/}
+                               <div className="table-responsive">
+                                   {/*begin::Table*/}
+                                   <table className="table table-row-dashed table-row-gray-300 align-middle align-items-center gs-0 gy-4">
+                                       {/*begin::Table head*/}
+                                       <thead>
+                                       <tr className="fw-bolder text-muted">
+                                           <th className="min-w-150px text-start">Photos</th>
+                                           <th className="min-w-150px">Product</th>
+                                           <th className="min-w-150px">Description</th>
+                                           <th className="min-w-150px text-end">Actions</th>
+                                       </tr>
+                                       </thead>
+                                       {/*end::Table head*/}
 
-                                    {/*begin::Table body*/}
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <div className="d-flex align-items-center">
-                                                <div className="symbol symbol-45px me-5">
-                                                    <img
-                                                        src="https://picsum.photos/id/237/150
+                                       {/*begin::Table body*/}
+                                       <tbody>
+                                       <tr>
+                                           <td>
+                                               <div className="d-flex align-items-center">
+                                                   <div className="symbol symbol-45px me-5">
+                                                       <img
+                                                           src="https://picsum.photos/id/237/150
                                                 "
-                                                        alt=""
-                                                    />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="d-flex align-items-center align-self-center">
-                                                <div className="d-flex justify-content-start flex-column ">
-                                                    <a
-                                                        href="#"
-                                                        className="text-dark fw-bolder text-hover-primary fs-6"
-                                                    >
-                                                        Doggo
-                                                    </a>
-                                                    <span className="text-muted fw-bold text-muted d-block fs-7">
+                                                           alt=""
+                                                       />
+                                                   </div>
+                                               </div>
+                                           </td>
+                                           <td>
+                                               <div className="d-flex align-items-center align-self-center">
+                                                   <div className="d-flex justify-content-start flex-column ">
+                                                       <a
+                                                           href="#"
+                                                           className="text-dark fw-bolder text-hover-primary fs-6"
+                                                       >
+                                                           Doggo
+                                                       </a>
+                                                       <span className="text-muted fw-bold text-muted d-block fs-7">
                                                     For adoption
                                                 </span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
+                                                   </div>
+                                               </div>
+                                           </td>
+                                           <td>
                                         <span className="text-muted fw-bold text-muted d-block fs-7">
                                             A beautiful stray puppy.
                                         </span>
-                                        </td>
-                                        <td>
-                                            <div className="d-flex justify-content-end flex-shrink-0">
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                >
+                                           </td>
+                                           <td>
+                                               <div className="d-flex justify-content-end flex-shrink-0">
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                                   >
 
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                >
-                                                    {/*begin::Svg Icon | path: icons/duotune/art/art005.svg*/}
-                                                    <span className="svg-icon svg-icon-3">
+                                                   </a>
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                                   >
+                                                       {/*begin::Svg Icon | path: icons/duotune/art/art005.svg*/}
+                                                       <span className="svg-icon svg-icon-3">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         width={24}
@@ -146,14 +145,14 @@ export default function EditMenu() {
                                                         />
                                                     </svg>
                                                 </span>
-                                                    {/*end::Svg Icon*/}{" "}
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                                                >
-                                                    {/*begin::Svg Icon | path: icons/duotune/general/gen027.svg*/}
-                                                    <span className="svg-icon svg-icon-3">
+                                                       {/*end::Svg Icon*/}{" "}
+                                                   </a>
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                                                   >
+                                                       {/*begin::Svg Icon | path: icons/duotune/general/gen027.svg*/}
+                                                       <span className="svg-icon svg-icon-3">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         width={24}
@@ -177,59 +176,59 @@ export default function EditMenu() {
                                                         />
                                                     </svg>
                                                 </span>
-                                                    {/*end::Svg Icon*/}{" "}
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                       {/*end::Svg Icon*/}{" "}
+                                                   </a>
+                                               </div>
+                                           </td>
+                                       </tr>
 
-                                    {/* item 2 */}
-                                    <tr>
-                                        <td>
-                                            <div className="d-flex align-items-center">
-                                                <div className="symbol symbol-45px me-5">
-                                                    <img
-                                                        src="https://picsum.photos/id/98/150
+                                       {/* item 2 */}
+                                       <tr>
+                                           <td>
+                                               <div className="d-flex align-items-center">
+                                                   <div className="symbol symbol-45px me-5">
+                                                       <img
+                                                           src="https://picsum.photos/id/98/150
                                                 "
-                                                        alt=""
-                                                    />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="d-flex align-items-center align-self-center">
-                                                <div className="d-flex justify-content-start flex-column ">
-                                                    <a
-                                                        href="#"
-                                                        className="text-dark fw-bolder text-hover-primary fs-6"
-                                                    >
-                                                        Vegan Things
-                                                    </a>
-                                                    <span className="text-muted fw-bold text-muted d-block fs-7">
+                                                           alt=""
+                                                       />
+                                                   </div>
+                                               </div>
+                                           </td>
+                                           <td>
+                                               <div className="d-flex align-items-center align-self-center">
+                                                   <div className="d-flex justify-content-start flex-column ">
+                                                       <a
+                                                           href="#"
+                                                           className="text-dark fw-bolder text-hover-primary fs-6"
+                                                       >
+                                                           Vegan Things
+                                                       </a>
+                                                       <span className="text-muted fw-bold text-muted d-block fs-7">
                                                     Probably not that healty.
                                                 </span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
+                                                   </div>
+                                               </div>
+                                           </td>
+                                           <td>
                                         <span className="text-muted fw-bold text-muted d-block fs-7">
                                             Nature's blessing, right from the dirt.
                                         </span>
-                                        </td>
-                                        <td>
-                                            <div className="d-flex justify-content-end flex-shrink-0">
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                >
+                                           </td>
+                                           <td>
+                                               <div className="d-flex justify-content-end flex-shrink-0">
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                                   >
 
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                >
-                                                    {/*begin::Svg Icon | path: icons/duotune/art/art005.svg*/}
-                                                    <span className="svg-icon svg-icon-3">
+                                                   </a>
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                                   >
+                                                       {/*begin::Svg Icon | path: icons/duotune/art/art005.svg*/}
+                                                       <span className="svg-icon svg-icon-3">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         width={24}
@@ -248,14 +247,14 @@ export default function EditMenu() {
                                                         />
                                                     </svg>
                                                 </span>
-                                                    {/*end::Svg Icon*/}{" "}
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                                                >
-                                                    {/*begin::Svg Icon | path: icons/duotune/general/gen027.svg*/}
-                                                    <span className="svg-icon svg-icon-3">
+                                                       {/*end::Svg Icon*/}{" "}
+                                                   </a>
+                                                   <a
+                                                       href="#"
+                                                       className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                                                   >
+                                                       {/*begin::Svg Icon | path: icons/duotune/general/gen027.svg*/}
+                                                       <span className="svg-icon svg-icon-3">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         width={24}
@@ -279,22 +278,25 @@ export default function EditMenu() {
                                                         />
                                                     </svg>
                                                 </span>
-                                                    {/*end::Svg Icon*/}{" "}
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    {/*end::Table body*/}
-                                </table>
-                                {/*end::Table*/}
-                            </div>
-                            {/*end::Table container*/}
-                        </div>
-                    </div>
-                    {/* table card end */}
-                </>
-            );
+                                                       {/*end::Svg Icon*/}{" "}
+                                                   </a>
+                                               </div>
+                                           </td>
+                                       </tr>
+                                       </tbody>
+                                       {/*end::Table body*/}
+                                   </table>
+                                   {/*end::Table*/}
+                               </div>
+                               {/*end::Table container*/}
+                           </div>
+                       </div>
+                       {/* table card end */}
+                   </>
+               );
+
+        }else{
+               return <div>Accsess Denied, Login First</div>;
         }
     }
 
