@@ -64,7 +64,7 @@ export default function Login(){
 
         <div>
             {/* nav bar with name */}
-            <Navbar/>
+            {/* <Navbar/> */}
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">

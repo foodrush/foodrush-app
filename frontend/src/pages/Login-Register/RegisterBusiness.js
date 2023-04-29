@@ -45,7 +45,7 @@ export default function RegisterBusiness() {
                 console.error(error);
             });
 
-            console.log(response.data)
+            // console.log(response.data)
             // Clear the email and password fields
             setFirstName('');
             setLastName('');

@@ -31,27 +31,34 @@ import EditMenu from "./pages/BusinessMenu/EditMenu"
 import AddProduct from "./pages/BusinessMenu/AddProduct";
 import BusinessPage from "./pages/BusinessPage";
 
+import ShoppingCart from "./pages/Cart/ShoppingCart";
+
+import { CartProvider } from "./contexts/CartContext";
 
 function App() {
-        return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/login-business" element={<LoginBusiness />} />
+    return (
+        <CartProvider>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/login-business" element={<LoginBusiness />} />
 
-            <Route path="/register" element={<Register/>} />
-            <Route path="/register-business" element={<RegisterBusiness />} />
-            <Route path="/market" element={<Market />} />
-            <Route path="/restaurant" element={<Restaurant />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/profile/edit" element={<EditProfile />} />
-            <Route path="/editmenu" element={<EditMenu />} />
-            <Route path="/editmenu/add-product" element={<AddProduct />} />
-            <Route path="/business" element={<BusinessDashboard />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/register-business" element={<RegisterBusiness />} />
+                <Route path="/market" element={<Market />} />
+                <Route path="/restaurant" element={<Restaurant />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/profile/edit" element={<EditProfile />} />
+                <Route path="/editmenu" element={<EditMenu />} />
+                <Route path="/editmenu/add-product" element={<AddProduct />} />
+
+                <Route path="/shopping-cart" element={<ShoppingCart />} />
+                <Route path="/business" element={<BusinessDashboard />} />
             <Route path="/business/:id" element={<BusinessPage/>} exact />
         </Routes>
+        </CartProvider>
     );
 
 

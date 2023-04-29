@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar"
-import {Routes, Route, Link, useNavigate} from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
 import '../style/css/bootstrap.min.css';
@@ -18,13 +18,17 @@ import 'jquery-ui/dist/jquery-ui.min';
 import 'font-awesome/css/font-awesome.min.css';
 import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
+import { CartContext } from "../contexts/CartContext";
 
-export default function Home(){
+export default function Home() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
+
+    // taken from context -- every time a product is added to the cart cartData state is updated via -->
+    const { fetchCartData } = useContext(CartContext)
 
     const Description = () => (
         <p>
@@ -151,9 +155,12 @@ export default function Home(){
                         <div className="featured__item">
                             <div className="featured__item__pic set-bg" data-setbg="img/featured/feature-1.jpg">
                                 <ul className="featured__item__pic__hover">
-                                    <li><a href="#"><i className="fa fa-heart"/></a></li>
-                                    <li><a href="#"><i className="fa fa-retweet"/></a></li>
-                                    <li><a href="#"><i className="fa fa-shopping-cart"/></a></li>
+                                    <li><a href="#" ><i className="fa fa-heart" /></a></li>
+                                    <li><a href="#"><i className="fa fa-retweet" /></a></li>
+                                    <li><a href="#"
+                                        onClick={(e) => { handleAddToCart(e, item._id); }}>
+                                        <i className="fa fa-shopping-cart" />
+                                    </a></li>
                                 </ul>
                             </div>
                             <div className="featured__item__text">
@@ -167,6 +174,40 @@ export default function Home(){
             } )
         );
     }
+
+    const handleAddToCart = async (e, product_id) => {
+        e.preventDefault();
+        const userToken = JSON.parse(localStorage.getItem('token'));
+        if (userToken && product_id) {
+            await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/',
+                {
+                    product_id: product_id,
+                    qty: 1
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }).then(async (response) => {
+                    console.log(response);
+                    if (response.status === 201) {
+                        await fetchCartData();
+                        routeCart();
+                    }
+
+                }).catch((error) => {
+                    console.error(error);
+                })
+        }
+    };
+
+    const routeCart = () => {
+        navigate("/shopping-cart"); // navigate satkes to the bottom of the page without setTimeout
+        setTimeout(() => {
+            window.scrollTo(0, 0); // Scroll to top of the page
+        }, 1);
+        // window.location.href = "/shopping-cart"; // re-renders the whole page
+    };
 
     return (
         <div className="App">
@@ -220,7 +261,7 @@ export default function Home(){
                             <div className="hero__item set-bg" style={{backgroundImage: `url(${banner})`}}>
                                 <div className="hero__text">
                                     <span>FRUIT FRESH</span>
-                                    <h2>Vegetable <br/>100% Organic</h2>
+                                    <h2>Vegetable <br />100% Organic</h2>
                                     <p>Free Pickup and Delivery Available</p>
                                     <a href="#" className="primary-btn">SHOP NOW</a>
                                 </div>
@@ -298,12 +339,12 @@ export default function Home(){
                     <div className="row">
                         <div className="col-lg-6 col-md-6 col-sm-6">
                             <div className="banner__pic">
-                                <img src="img/banner/banner-1.jpg" alt=""/>
+                                <img src="img/banner/banner-1.jpg" alt="" />
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-6">
                             <div className="banner__pic">
-                                <img src="img/banner/banner-2.jpg" alt=""/>
+                                <img src="img/banner/banner-2.jpg" alt="" />
                             </div>
                         </div>
                     </div>
@@ -321,7 +362,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -330,7 +371,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -339,7 +380,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -350,7 +391,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -359,7 +400,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -368,7 +409,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -386,7 +427,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -395,7 +436,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -404,7 +445,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -415,7 +456,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -424,7 +465,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -433,7 +474,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -451,7 +492,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -460,7 +501,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -469,7 +510,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -480,7 +521,7 @@ export default function Home(){
                                     <div className="latest-prdouct__slider__item">
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-1.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-1.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -489,7 +530,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-2.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-2.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -498,7 +539,7 @@ export default function Home(){
                                         </a>
                                         <a href="#" className="latest-product__item">
                                             <div className="latest-product__item__pic">
-                                                <img src="img/latest-product/lp-3.jpg" alt=""/>
+                                                <img src="img/latest-product/lp-3.jpg" alt="" />
                                             </div>
                                             <div className="latest-product__item__text">
                                                 <h6>Crab Pool Security</h6>
@@ -527,12 +568,12 @@ export default function Home(){
                         <div className="col-lg-4 col-md-4 col-sm-6">
                             <div className="blog__item">
                                 <div className="blog__item__pic">
-                                    <img src="img/blog/blog-1.jpg" alt=""/>
+                                    <img src="img/blog/blog-1.jpg" alt="" />
                                 </div>
                                 <div className="blog__item__text">
                                     <ul>
-                                        <li><i className="fa fa-calendar-o"/> May 4,2019</li>
-                                        <li><i className="fa fa-comment-o"/> 5</li>
+                                        <li><i className="fa fa-calendar-o" /> May 4,2019</li>
+                                        <li><i className="fa fa-comment-o" /> 5</li>
                                     </ul>
                                     <h5><a href="#">Cooking tips make cooking simple</a></h5>
                                     <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam
@@ -543,12 +584,12 @@ export default function Home(){
                         <div className="col-lg-4 col-md-4 col-sm-6">
                             <div className="blog__item">
                                 <div className="blog__item__pic">
-                                    <img src="img/blog/blog-2.jpg" alt=""/>
+                                    <img src="img/blog/blog-2.jpg" alt="" />
                                 </div>
                                 <div className="blog__item__text">
                                     <ul>
-                                        <li><i className="fa fa-calendar-o"/> May 4,2019</li>
-                                        <li><i className="fa fa-comment-o"/> 5</li>
+                                        <li><i className="fa fa-calendar-o" /> May 4,2019</li>
+                                        <li><i className="fa fa-comment-o" /> 5</li>
                                     </ul>
                                     <h5><a href="#">6 ways to prepare breakfast for 30</a></h5>
                                     <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam
@@ -559,12 +600,12 @@ export default function Home(){
                         <div className="col-lg-4 col-md-4 col-sm-6">
                             <div className="blog__item">
                                 <div className="blog__item__pic">
-                                    <img src="img/blog/blog-3.jpg" alt=""/>
+                                    <img src="img/blog/blog-3.jpg" alt="" />
                                 </div>
                                 <div className="blog__item__text">
                                     <ul>
-                                        <li><i className="fa fa-calendar-o"/> May 4,2019</li>
-                                        <li><i className="fa fa-comment-o"/> 5</li>
+                                        <li><i className="fa fa-calendar-o" /> May 4,2019</li>
+                                        <li><i className="fa fa-comment-o" /> 5</li>
                                     </ul>
                                     <h5><a href="#">Visit the clean farm in the US</a></h5>
                                     <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam
@@ -583,7 +624,7 @@ export default function Home(){
                         <div className="col-lg-3 col-md-6 col-sm-6">
                             <div className="footer__about">
                                 <div className="footer__about__logo">
-                                    <a href="./index.html"><img src="img/logo.png" alt=""/></a>
+                                    <a href="./index.html"><img src="img/logo.png" alt="" /></a>
                                 </div>
                                 <ul>
                                     <li>Address: 60-49 Road 11378 New York</li>
@@ -618,14 +659,14 @@ export default function Home(){
                                 <h6>Join Our Newsletter Now</h6>
                                 <p>Get E-mail updates about our latest shop and special offers.</p>
                                 <form action="#">
-                                    <input type="text" placeholder="Enter your mail"/>
+                                    <input type="text" placeholder="Enter your mail" />
                                     <button type="submit" className="site-btn">Subscribe</button>
                                 </form>
                                 <div className="footer__widget__social">
-                                    <a href="#"><i className="fa fa-facebook"/></a>
-                                    <a href="#"><i className="fa fa-instagram"/></a>
-                                    <a href="#"><i className="fa fa-twitter"/></a>
-                                    <a href="#"><i className="fa fa-pinterest"/></a>
+                                    <a href="#"><i className="fa fa-facebook" /></a>
+                                    <a href="#"><i className="fa fa-instagram" /></a>
+                                    <a href="#"><i className="fa fa-twitter" /></a>
+                                    <a href="#"><i className="fa fa-pinterest" /></a>
                                 </div>
                             </div>
                         </div>
@@ -636,11 +677,11 @@ export default function Home(){
                                 <div className="footer__copyright__text">
                                     <p>{/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
                                         Copyright © All rights reserved | This template is made with <i
-                                            className="fa fa-heart" aria-hidden="true"/> by <a
-                                            href="https://colorlib.com" target="_blank">Colorlib</a>
+                                            className="fa fa-heart" aria-hidden="true" /> by <a
+                                                href="https://colorlib.com" target="_blank">Colorlib</a>
                                         {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
                                     </p></div>
-                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt=""/>
+                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt="" />
                                 </div>
                             </div>
                         </div>

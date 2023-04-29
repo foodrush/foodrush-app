@@ -94,7 +94,8 @@ a:focus {
 .bg-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .sub_page .hero_area {
@@ -110,8 +111,10 @@ a:focus {
 .sub_page .hero_area .bg-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: right top;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: right top;
+     object-position: right top;
 }
 
 .header_section {
@@ -524,6 +527,9 @@ a:focus {
   outline: none;
   box-shadow: none;
 }
+.book_section .form_container .form-control::-moz-placeholder {
+  color: #222222;
+}
 .book_section .form_container .form-control::placeholder {
   color: #222222;
 }
@@ -643,6 +649,9 @@ a:focus {
   color: #000000;
   border-radius: 5px;
 }
+.contact_section .form_container input::-moz-placeholder {
+  color: #222222;
+}
 .contact_section .form_container input::placeholder {
   color: #222222;
 }
@@ -746,6 +755,4 @@ a:focus {
 }
 .footer_section .footer-info p a {
   color: inherit;
-}
-
-/*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=style.css.map */
