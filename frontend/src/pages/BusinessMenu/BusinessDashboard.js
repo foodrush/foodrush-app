@@ -24,14 +24,18 @@ export default function Home(){
 
     useEffect(() => {
         async function fetchData() {
-            const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            });
-            setStatus(responseSecond.status);
-            setIsLoading(false);
-
+            try {
+                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                setStatus(responseSecond.status);
+                setIsLoading(false);
+            }catch (error) {
+                setIsLoading(false);
+                console.error(error);
+            }
         }
 
         fetchData();
@@ -48,7 +52,7 @@ export default function Home(){
 
 
     if(isLoading){
-        return null;
+        return <div>Loading...</div>;
     }else{
         if (status === 200) {
             return (
