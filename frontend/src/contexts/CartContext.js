@@ -9,7 +9,7 @@ export const CartProvider = ({ children }) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [cartData, setCartData] = useState([]);
-    const userToken = JSON.parse(localStorage.getItem("token"));
+    const userToken = localStorage.getItem("token");
 
     // get cart data & set cartData 
     const fetchCartData = async () => {

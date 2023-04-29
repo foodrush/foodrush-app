@@ -1,11 +1,11 @@
 import React from 'react'
-import Navbar from '../../Navigation/Navbar'
+import Business_Navbar from '../../Navigation/Business_Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AddProduct() {
     return (
         <>
-            <Navbar />
+            <Business_Navbar />
             {/* Add Product */}
             <section className='container mt-2'>
                 <div className="container-fluid">

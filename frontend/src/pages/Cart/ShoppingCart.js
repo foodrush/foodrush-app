@@ -15,7 +15,7 @@ function ShoppingCart() {
     const { cartData, totalPrice, fetchCartData } = useContext(CartContext);
 
 
-    const userToken = JSON.parse(localStorage.getItem("token"));
+    const userToken = localStorage.getItem("token");
 
     const decreaseQuantity = async (productID) => {
         // an empty object is used to indicate that no data is being sent in the request 

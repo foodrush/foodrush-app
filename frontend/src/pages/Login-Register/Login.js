@@ -44,7 +44,7 @@ export default function Login(){
                     console.log("TOKEN:")
                     console.log(responseSecond.data)
 
-                    localStorage.setItem('token', JSON.stringify(response.data.access));
+                    localStorage.setItem('token', response.data.access);
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
                     routeToHome('/');

@@ -37,79 +37,6 @@ export default function Home() {
         </p>
     );
 
-    const products = [
-        {
-            "_id": 0,
-            "name": "restaurant",
-            "qty": 20,
-            "category": 0,
-            "price": 25,
-            "rating": 4.9,
-            "image": "/images/cola.jpg",
-            "description": "Refreshing drink",
-        },
-        {
-            "_id": 1,
-            "name": "pepsi",
-            "qty": 20,
-            "category": 0,
-            "price": 25,
-            "rating": 4.9,
-            "image": "/images/cola.jpg",
-            "description": "Refreshing drink",
-        },
-        {
-            "_id": 2,
-            "name": "water",
-            "qty": 20,
-            "category": 0,
-            "price": 25,
-            "rating": 4.9,
-            "image": "/images/water.jpg",
-            "description": "Refreshing drink",
-        },
-        {
-            "_id": 3,
-            "name": "hamburger",
-            "qty": 40,
-            "category": 1,
-            "price": 95,
-            "rating": 4.9,
-            "image": "/images/burger.jpg",
-            "description": "American Burger",
-        },
-        {
-            "_id": 4,
-            "name": "fries",
-            "qty": 20,
-            "category": 1,
-            "price": 45,
-            "rating": 4.9,
-            "image": "/images/fries.jpg",
-            "description": "American fast-food",
-        },
-        {
-            "_id": 5,
-            "name": "pizza",
-            "qty": 20,
-            "category": 1,
-            "price": 120,
-            "rating": 4.9,
-            "image": "/images/pizza.jpg",
-            "description": "Italian meal",
-        },
-        {
-            "_id": 6,
-            "name": "pide",
-            "qty": 20,
-            "category": 1,
-            "price": 89,
-            "rating": 4.2,
-            "image": "/images/pide.jpg",
-            "description": "Turkih Cuisine",
-        },
-    ];
-
 
     useEffect(() => {
         fetchData();
@@ -151,9 +78,9 @@ export default function Home() {
         return(
             data.map((item)=>{
                 return (
-                    <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" onClick={() => routeToRestaurant(item.business)}>
+                    <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" >
                         <div className="featured__item">
-                            <div className="featured__item__pic set-bg" data-setbg="img/featured/feature-1.jpg">
+                            <div className="featured__item__pic set-bg" data-setbg="{http://127.0.0.1:8000/images/hamburger.jpg}" >
                                 <ul className="featured__item__pic__hover">
                                     <li><a href="#" ><i className="fa fa-heart" /></a></li>
                                     <li><a href="#"><i className="fa fa-retweet" /></a></li>
@@ -163,7 +90,7 @@ export default function Home() {
                                     </a></li>
                                 </ul>
                             </div>
-                            <div className="featured__item__text">
+                            <div className="featured__item__text" onClick={() => routeToRestaurant(item.business)}>
                                 <h6><a href="#">{item.name}</a></h6>
                                 <h5>{item.price}</h5>
                                 <h5>{item.rating}</h5>
