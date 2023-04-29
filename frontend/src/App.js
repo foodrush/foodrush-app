@@ -29,7 +29,7 @@ import BusinessDashboard from "./pages/BusinessMenu/BusinessDashboard";
 import EditMenu from "./pages/BusinessMenu/EditMenu"
 
 import AddProduct from "./pages/BusinessMenu/AddProduct";
-import BusinessPage from "./pages/BusinessPage";
+import BusinessPage from "./pages/Restaurant/BusinessPage";
 
 import ShoppingCart from "./pages/Cart/ShoppingCart";
 
@@ -56,7 +56,7 @@ function App() {
 
                 <Route path="/shopping-cart" element={<ShoppingCart />} />
                 <Route path="/business" element={<BusinessDashboard />} />
-            <Route path="/business/:id" element={<BusinessPage/>} exact />
+                <Route path="/business/:id" element={<BusinessPage/>} exact />
         </Routes>
         </CartProvider>
     );

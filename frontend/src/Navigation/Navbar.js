@@ -80,16 +80,16 @@ export default function Navbar() {
                                             <div>
 
                                                 <div className="header__top__right__auth"
-                                                    data-tooltip-id="my-tooltip"
-                                                    data-tooltip-content={user}
+                                                    // data-tooltip-id="my-tooltip"
+                                                    // data-tooltip-content={user}
                                                     onClick={() => routeToProfile()}><i
                                                         className="fa fa-user" /> Profile
                                                     <Tooltip id="my-tooltip" />
                                                 </div>
 
                                                 <div className="header__top__right__auth"
-                                                    data-tooltip-id="my-tooltip"
-                                                    data-tooltip-content="Logout"
+                                                    // data-tooltip-id="my-tooltip"
+                                                    // data-tooltip-content="Logout"
                                                     onClick={() => logOut()}>
 
 
@@ -138,18 +138,25 @@ export default function Navbar() {
                                 <ul>
                                     <li><a href="#">
                                         <i className="fa fa-heart" data-tooltip-id="my-tooltip"
-                                            data-tooltip-content="Favorites" />
-                                        <span></span>
+                                            // data-tooltip-content="Favorites
+                                             />
+                                        {/*<span></span>*/}
                                     </a>
                                     </li>
                                     <li>
                                         <Link to="/shopping-cart">
-                                            <i className="fa fa-shopping-bag" data-tooltip-id="my-tooltip"
-                                                data-tooltip-content="Cart Items" />
+                                            <i className="fa fa-shopping-bag"
+                                               // data-tooltip-id="my-tooltip"
+                                                // data-tooltip-content="Cart"
+                                            />
+                                            {/*TODO: Total quantity is remains after login with another account*/}
+
                                                 <span>{totalQuantity}</span>
                                         </Link>
                                     </li>
                                 </ul>
+                                {/*TODO: Total quantity is remains after login with another account*/}
+
                                 <div className="header__cart__price">item: <span>${totalPrice}</span></div>
                             </div>
                         </div>

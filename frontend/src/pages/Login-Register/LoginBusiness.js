@@ -45,12 +45,14 @@ export default function LoginBusiness(){
                 });
                 if (responseSecond.status === 200) {
                     console.log("TOKEN:")
+
                     console.log(responseSecond.data)
 
                     setAccsessToken(response.data.access)
-                    localStorage.setItem('token', JSON.stringify(response.data.access));
+                    localStorage.setItem('token', (response.data.access));
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
+                    localStorage.setItem("business_id", responseSecond.data.id);
                     routeToDashboard('/business');
 
                 }
