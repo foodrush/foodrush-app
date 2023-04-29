@@ -5,15 +5,15 @@ import { Link, useParams } from 'react-router-dom';
 function BusinessPage() {
     const [businessData, setBusinessData] = useState(null);
     const [productResponse, setproductResponse] = useState(null);
-    const businessId  = useParams();
+    let businessId  = useParams();
 
     useEffect(() => {
         console.log(businessId);
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`http://127.0.0.1:8000/api/businesses/${businessId}`),
-                    axios.get(`http://127.0.0.1:8000/products/businesses/${businessId}`)
+                    axios.get(`http://127.0.0.1:8000/api/users/businesses/${businessId.id}/`),
+                    axios.get(`http://127.0.0.1:8000/api/products/businesses/${businessId.id}/`)
                 ]);
                 setBusinessData(businessResponse.data);
                 setproductResponse(productResponse.data);
@@ -30,8 +30,8 @@ function BusinessPage() {
 
     return (
         <div>
-            <h1>{businessData.name}</h1>
-            <p>{businessData.description}</p>
+            {businessData.restaurant_name}
+
             {/* Render other business details here */}
             <h2>Reviews</h2>
             {productResponse.map(product => (
