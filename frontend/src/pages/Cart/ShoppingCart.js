@@ -10,19 +10,20 @@ import BreadcrumbImage from '../../style/img/breadcrumb.jpg';
 
 import { CartContext } from "../../contexts/CartContext";
 
-function ShoppingCart() {
+function ShoppingCart({token}) {
     // the totalPrice & totalQuantity are provided by CartContext -- consumed here & navbar -- and set on the Shopping cart
-    const { cartData, totalPrice, fetchCartData } = useContext(CartContext);
+    const { cartData, fetchCartData, cartState } = useContext(CartContext);
 
 
-    const userToken = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
 
     const decreaseQuantity = async (productID) => {
+        if(token){
         // an empty object is used to indicate that no data is being sent in the request 
         await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
             {}, {
             headers: {
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${token}`
             }
         }).then(async (response) => {
             if (response.status == 200) {
@@ -34,15 +35,17 @@ function ShoppingCart() {
         }).catch((error) => {
             console.log(error);
         })
+    }
     };
 
     const increaseQuantity = async (productID) => {
+        if(token){
         await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/', {
             product_id: productID,
             qty: 1
         }, {
             headers: {
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${token}`
             }
         }).then(async (response) => {
             if (response.status == 201) {
@@ -51,17 +54,19 @@ function ShoppingCart() {
         }).catch((error) => {
             console.log(error);
         })
+    }
     };
 
     // not using Promises -- the order of requests does not matter but deleting the same productId messes up with the server (?) unless proceeded sequentially -- wait for one request to be over to run the next
     const deleteProduct = async (productID, qty) => {
+        if(token){
         try {
             let deletedFlag = 0;
             for (let i = 0; i < qty; i++) {
                 await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
                     {}, {
                     headers: {
-                        'Authorization': `Bearer ${userToken}`
+                        'Authorization': `Bearer ${token}`
                     }
                 }).then((response) => {
                     if (response.status == 200) {
@@ -76,6 +81,7 @@ function ShoppingCart() {
         catch (error) {
             console.log(error);
         }
+    }
     };
 
     const deleteAll = async () => {
@@ -96,6 +102,9 @@ function ShoppingCart() {
     };
 
     const displayCartData = () => {
+        if(!token){
+            return null;
+        }
         return (
             cartData.map(({ id, product, qty }) => {
                 return (
@@ -276,8 +285,8 @@ function ShoppingCart() {
                                 <div className="shoping__checkout">
                                     <h5>Cart Total</h5>
                                     <ul>
-                                        <li>Subtotal <span>${totalPrice}</span></li>
-                                        <li>Total <span>${totalPrice}</span></li>
+                                        <li>Subtotal <span>${cartState.totalPrice}</span></li>
+                                        <li>Total <span>${cartState.totalPrice}</span></li>
                                     </ul>
                                     <a href="#" className="primary-btn">PROCEED TO CHECKOUT</a>
                                 </div>

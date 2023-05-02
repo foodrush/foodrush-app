@@ -14,9 +14,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from '../contexts/CartContext';
 
 export default function Navbar() {
+    // debugger;
     const [user, setUser] = useState(null);
-
-    const { totalPrice, totalQuantity } = useContext(CartContext);
+    const {cartState, setToken, cartData} = useContext(CartContext);
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -28,7 +28,6 @@ export default function Navbar() {
 
         } else {
             // console.log(JSON.parse(localStorage.getItem('token')));
-
             setUser(localStorage.getItem('name'))
 
         }
@@ -40,11 +39,13 @@ export default function Navbar() {
         navigate("/profile");
     }
 
-    const logOut = () => {
+    const logOut = async() => {
         setUser(null);
         localStorage.clear()
         navigate("/");
+        setToken(null);
     }
+    
     return (
         <div>
             <header className="header">
@@ -151,13 +152,13 @@ export default function Navbar() {
                                             />
                                             {/*TODO: Total quantity is remains after login with another account*/}
 
-                                                <span>{totalQuantity}</span>
+                                                <span>{cartState.totalQuantity}</span>
                                         </Link>
                                     </li>
                                 </ul>
                                 {/*TODO: Total quantity is remains after login with another account*/}
 
-                                <div className="header__cart__price">item: <span>${totalPrice}</span></div>
+                                <div className="header__cart__price">item: <span>${cartState.totalPrice}</span></div>
                             </div>
                         </div>
                     </div>
