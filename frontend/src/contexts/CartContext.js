@@ -1,23 +1,39 @@
-import { createContext, useEffect } from 'react';
+import { createContext, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
 // create the context
 export const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
+// token is a state taken from the app -- may be set on login
+export const CartProvider = ({ children, token, setToken }) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [cartData, setCartData] = useState([]);
-    const userToken = localStorage.getItem("token");
+    const [cartState, setCartState] = useState({});
+
+    // anywhere CartProvider is consumed fetch the cart data 
+    useEffect(() => {
+        fetchCartData();
+    }, []);
+
+    useEffect(() => {
+        fetchCartData();
+    }, [token]);
+
+    useEffect(() => {
+        cartInfo();
+    }, [token, cartData]);
+
+
 
     // get cart data & set cartData 
     const fetchCartData = async () => {
         await axios.get("http://127.0.0.1:8000/api/orders/cart/", {
             headers: {
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${token}`
             }
-        }).then(response => {
+        }).then((response) => {
             // This state update triggers a re-render of the component
             setCartData(response.data)
         }).catch((error) => {
@@ -25,10 +41,24 @@ export const CartProvider = ({ children }) => {
         });
     }
 
-    // anywhere CartProvider is consumed fetch the cart data 
-    useEffect(() => {
-        fetchCartData();
-    }, [])
+    const cartInfo = async () => {
+        await fetchCartData();
+        if (!token) {
+            setCartState({
+                totalHearts: 0,
+                totalQuantity: 0,
+                totalPrice: 0
+            });
+        }
+        else {
+            setCartState({
+                // will be updated when favorites are decided*
+                totalHearts: 0,
+                totalQuantity: totalQuantity,
+                totalPrice: totalPrice
+            });
+        }
+    }
 
     // anywhere cartProvider is consumed -- update the total price and quantity states
     useEffect(() => {
@@ -46,12 +76,16 @@ export const CartProvider = ({ children }) => {
     }, [cartData])
 
     // only the ones currently used are sent
-    const cartObject = {
-        totalPrice,
-        totalQuantity,
-        cartData,
-        fetchCartData
-    }
+    const cartObject = useMemo(() => {
+        return ({
+            cartData,
+            fetchCartData,
+            cartState,
+            setToken, 
+            setCartState
+        })
+    }, [cartData, cartState]);
+    
     return (
         <CartContext.Provider value={cartObject}>
             {children}

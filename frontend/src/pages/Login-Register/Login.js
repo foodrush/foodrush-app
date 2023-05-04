@@ -14,10 +14,11 @@ import {Link, useNavigate} from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
 
-export default function Login(){
+export default function Login({setToken}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState('');
+    // const [token, setToken] = useState('');
+
 
     let navigate = useNavigate();
     const routeToHome = (path) =>{
@@ -45,6 +46,7 @@ export default function Login(){
                     console.log(responseSecond.data)
 
                     localStorage.setItem('token', response.data.access);
+                    setToken(response.data.access);
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
                     routeToHome('/');

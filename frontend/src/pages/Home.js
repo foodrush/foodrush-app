@@ -104,7 +104,10 @@ export default function Home() {
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
-        const userToken = JSON.parse(localStorage.getItem('token'));
+        console.log(localStorage.getItem("token"))
+
+        const userToken = localStorage.getItem('token');
+
         if (userToken && product_id) {
             await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/',
                 {

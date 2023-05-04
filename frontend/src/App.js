@@ -35,14 +35,18 @@ import ShoppingCart from "./pages/Cart/ShoppingCart";
 
 import { CartProvider } from "./contexts/CartContext";
 
+import { useState } from "react";
+
 function App() {
+    const [token, setToken] = useState(localStorage.getItem("token"));
     return (
-        <CartProvider>
+        <CartProvider token={token}
+            setToken={setToken}>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login setToken={setToken} />} />
                 <Route path="/login-business" element={<LoginBusiness />} />
 
                 <Route path="/register" element={<Register />} />
@@ -54,10 +58,10 @@ function App() {
                 <Route path="/editmenu" element={<EditMenu />} />
                 <Route path="/editmenu/add-product" element={<AddProduct />} />
 
-                <Route path="/shopping-cart" element={<ShoppingCart />} />
+                <Route path="/shopping-cart" element={<ShoppingCart token={token} />} />
                 <Route path="/business" element={<BusinessDashboard />} />
-                <Route path="/business/:id" element={<BusinessPage/>} exact />
-        </Routes>
+                <Route path="/business/:id" element={<BusinessPage />} exact />
+            </Routes>
         </CartProvider>
     );
 
