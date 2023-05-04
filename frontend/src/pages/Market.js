@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Navbar from "../Navigation/Navbar";
 import {Routes, Route, Link, useNavigate} from "react-router-dom";
 import '../style/css/style.css';
@@ -10,6 +10,8 @@ import '../style/css/font-awesome.min.css';
 //import '../style/css/jquery-ui.min.css';
 import '../style/css/elegant-icons.css';
 import axios from "axios";
+import Business_Navbar from "../Navigation/Business_Navbar";
+import { UserContext } from "../contexts/UserContextProvider";
 
 
 export default function Market(){
@@ -18,6 +20,7 @@ export default function Market(){
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
+    const { userType } = useContext(UserContext)
 
 //    useEffect(() => {
 //        fetchData();
@@ -78,8 +81,9 @@ export default function Market(){
 
     return (
         <div>
-                        {/* Header Section Begin */}
-            <Navbar />
+            {userType === 2 ?
+                (<Business_Navbar />) :
+                (<Navbar />)}
             {/* Header Section End */}
             {/* Hero Section Begin */}
             <section className="hero hero-normal">

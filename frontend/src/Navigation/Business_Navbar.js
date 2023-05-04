@@ -5,18 +5,16 @@ import '../style/css/nice-select.css';
 import '../style/css/font-awesome.min.css';
 import '../style/css/style.css';
 import { Tooltip } from 'react-tooltip'
-
-
 //import '../style/css/jquery-ui.min.css';
 import '../style/css/elegant-icons.css';
 import { Link, useNavigate } from "react-router-dom";
+import {UserContext} from "../contexts/UserContextProvider";
 
-import { CartContext } from '../contexts/CartContext';
 
-export default function Navbar() {
+export default function Business_Navbar() {
     const [user, setUser] = useState(null);
+    const { userType,resetUserContext  } = useContext(UserContext)
 
-    const { totalPrice, totalQuantity } = useContext(CartContext);
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -48,7 +46,8 @@ export default function Navbar() {
 
     const logOut = () => {
         setUser(null);
-        localStorage.clear()
+        localStorage.clear();
+        resetUserContext();
         navigate("/");
     }
     return (
