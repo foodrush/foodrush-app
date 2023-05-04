@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import './css/style.css';
 
 // ON HoVER
@@ -14,12 +14,18 @@ import {Link, useNavigate} from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
 import {wait} from "@testing-library/user-event/dist/utils";
+import { UserContext } from "../../contexts/UserContextProvider";
+
+
 
 export default function LoginBusiness(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
     const [accsesstoken, setAccsessToken] = useState('');
+    const { setUserId, setIsBusiness, setUserName, setUserType } = useContext(UserContext);
+
+
 
     let navigate = useNavigate();
     const routeToDashboard = (path) =>{
@@ -52,7 +58,13 @@ export default function LoginBusiness(){
                     localStorage.setItem('token', (response.data.access));
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
+                    localStorage.setItem("userType", 2);
+
                     localStorage.setItem("business_id", responseSecond.data.id);
+                    setUserId(responseSecond.data.id);
+                    setIsBusiness(false);
+                    setUserName(response.data.name);
+                    setUserType(2);
                     routeToDashboard('/business');
 
                 }

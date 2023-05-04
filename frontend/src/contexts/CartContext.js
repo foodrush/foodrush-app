@@ -12,7 +12,7 @@ export const CartProvider = ({ children, token, setToken }) => {
     const [cartData, setCartData] = useState([]);
     const [cartState, setCartState] = useState({});
 
-    // anywhere CartProvider is consumed fetch the cart data 
+    // anywhere CartProvider is consumed fetch the cart data
     useEffect(() => {
         fetchCartData();
     }, []);
@@ -81,11 +81,11 @@ export const CartProvider = ({ children, token, setToken }) => {
             cartData,
             fetchCartData,
             cartState,
-            setToken, 
+            setToken,
             setCartState
         })
     }, [cartData, cartState]);
-    
+
     return (
         <CartContext.Provider value={cartObject}>
             {children}

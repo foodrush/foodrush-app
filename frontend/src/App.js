@@ -33,13 +33,15 @@ import BusinessPage from "./pages/Restaurant/BusinessPage";
 
 import ShoppingCart from "./pages/Cart/ShoppingCart";
 
-import { CartProvider } from "./contexts/CartContext";
+import {CartProvider} from "./contexts/CartContext";
+import {UserContextProvider} from "./contexts/UserContextProvider";
 
 import { useState } from "react";
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
     return (
+        <UserContextProvider>
         <CartProvider token={token}
             setToken={setToken}>
             <Routes>
@@ -49,20 +51,21 @@ function App() {
                 <Route path="/login" element={<Login setToken={setToken} />} />
                 <Route path="/login-business" element={<LoginBusiness />} />
 
-                <Route path="/register" element={<Register />} />
-                <Route path="/register-business" element={<RegisterBusiness />} />
-                <Route path="/market" element={<Market />} />
-                <Route path="/restaurant" element={<Restaurant />} />
-                <Route path="/profile" element={<UserProfile />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
-                <Route path="/editmenu" element={<EditMenu />} />
-                <Route path="/editmenu/add-product" element={<AddProduct />} />
+                <Route path="/register" element={<Register/>}/>
+                <Route path="/register-business" element={<RegisterBusiness/>}/>
+                <Route path="/market" element={<Market/>}/>
+                <Route path="/restaurant" element={<Restaurant/>}/>
+                <Route path="/profile" element={<UserProfile/>}/>
+                <Route path="/profile/edit" element={<EditProfile/>}/>
+                <Route path="/editmenu" element={<EditMenu/>}/>
+                <Route path="/editmenu/add-product" element={<AddProduct/>}/>
 
                 <Route path="/shopping-cart" element={<ShoppingCart token={token} />} />
                 <Route path="/business" element={<BusinessDashboard />} />
                 <Route path="/business/:id" element={<BusinessPage />} exact />
             </Routes>
         </CartProvider>
+</UserContextProvider>
     );
 
 

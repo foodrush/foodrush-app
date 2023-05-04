@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import './css/style.css';
 
 // ON HoVER
@@ -13,10 +13,14 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import {Link, useNavigate} from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
+import {UserContext} from "../../contexts/UserContextProvider";
 
 export default function Login({setToken}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken2] = useState('');
+    const { setUserId, setIsBusiness, setUserName,setUserType,setUserInfos} = useContext(UserContext);
+
     // const [token, setToken] = useState('');
 
 
@@ -49,6 +53,13 @@ export default function Login({setToken}){
                     setToken(response.data.access);
                     localStorage.setItem('name', response.data.name);
                     localStorage.setItem("user_id", response.data.id);
+                    localStorage.setItem("userType", 1);
+                    setUserId(response.data.id);
+                    setIsBusiness(false);
+                    setUserName(response.data.name);
+                    setUserType(1);
+                    setUserInfos(responseSecond.data);
+
                     routeToHome('/');
 
                 }

@@ -1,14 +1,20 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
 import { Link } from 'react-router-dom';
 
 import Navbar from '../../Navigation/Navbar';
+import { UserContext } from '../../contexts/UserContextProvider';
 
-// https://www.bootdey.com/snippets/view/profile-with-data-and-skills
 
 function UserProfile() {
+    const {userName,userType,userInfos} = useContext(UserContext);
+
+    useEffect(() => {
+        console.log(userInfos.user);
+    }, []);
+
     return (
         <>
             {/* Navbar */}
@@ -25,7 +31,7 @@ function UserProfile() {
                                     <div className="d-flex flex-column align-items-center text-center">
                                         <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" className="rounded-circle" width={150} />
                                         <div className="mt-3">
-                                            <h4>John Doe</h4>
+                                            <h4>{userName}</h4>
                                             <p className="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
                                         </div>
                                     </div>
@@ -43,7 +49,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Full Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                Kenneth Valdez
+                                                {userInfos.user.first_name}
                                             </div>
                                         </div>
                                         <hr />
@@ -52,7 +58,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Email</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                fip@jukmuh.al
+                                                {userInfos.user.email}
                                             </div>
                                         </div>
                                         <hr />
@@ -61,7 +67,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Phone</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                (239) 816-9029
+                                                {userInfos.phone_number}
                                             </div>
                                         </div>
                                         <hr />

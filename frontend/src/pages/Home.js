@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar"
+import Business_Navbar from "../Navigation/Business_Navbar"
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
@@ -19,6 +20,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import { CartContext } from "../contexts/CartContext";
+import { UserContext } from "../contexts/UserContextProvider";
 
 export default function Home() {
     const [data, setData] = useState([]);
@@ -29,6 +31,8 @@ export default function Home() {
 
     // taken from context -- every time a product is added to the cart cartData state is updated via -->
     const { fetchCartData } = useContext(CartContext)
+    const { userType } = useContext(UserContext)
+
 
     const Description = () => (
         <p>

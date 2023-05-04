@@ -12,10 +12,16 @@ import '../style/css/elegant-icons.css';
 import { Link, useNavigate } from "react-router-dom";
 
 import { CartContext } from '../contexts/CartContext';
+import { UserContext } from '../contexts/UserContextProvider';
+
+
 
 export default function Navbar() {
-    // debugger;
     const [user, setUser] = useState(null);
+
+    const { totalPrice, totalQuantity } = useContext(CartContext);
+    const { userType,resetUserContext  } = useContext(UserContext)
+
     const {cartState, setToken, cartData} = useContext(CartContext);
 
     useEffect(() => {
@@ -28,6 +34,7 @@ export default function Navbar() {
 
         } else {
             // console.log(JSON.parse(localStorage.getItem('token')));
+
             setUser(localStorage.getItem('name'))
 
         }
@@ -45,7 +52,7 @@ export default function Navbar() {
         navigate("/");
         setToken(null);
     }
-    
+
     return (
         <div>
             <header className="header">
