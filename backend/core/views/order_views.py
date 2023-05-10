@@ -83,6 +83,22 @@ def add_order_items(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(request=OrderSerializer, responses=OrderSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_order_by_id(request, pk):
+    user = request.user
+    order = Order.objects.get(_id=pk)
+    if CustomerProfile.objects.get(user=user) == order.customer:
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+    else:
+        return Response(
+            {"detail": "Not authorized to view this order"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
