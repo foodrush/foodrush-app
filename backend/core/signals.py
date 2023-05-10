@@ -11,3 +11,5 @@ def update_user(sender, instance, **kwargs):
 
 
 pre_save.connect(update_user, sender=User)
+
+# TODO: maybe add post_save for deleting the whole cart of a user if they make an order successfully

@@ -24,9 +24,15 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    # get business associated with product
+    business_name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = OrderItem
         fields = "__all__"
+
+    def get_business_name(self, obj):
+        return obj.product.business.restaurant_name
 
 
 class OrderSerializer(serializers.ModelSerializer):
