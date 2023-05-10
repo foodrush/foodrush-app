@@ -42,7 +42,7 @@ export const CartProvider = ({ children, token, setToken }) => {
     }
 
     const cartInfo = async () => {
-        await fetchCartData();
+        // await fetchCartData();
         if (!token) {
             setCartState({
                 totalHearts: 0,
