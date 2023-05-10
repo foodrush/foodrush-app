@@ -842,6 +842,12 @@ ol {
 	background-position: center center;
 }
 
+.featured__item__pic__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
 .featured__item__pic__hover {
 	position: absolute;
 	left: 0;

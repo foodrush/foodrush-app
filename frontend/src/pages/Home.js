@@ -81,6 +81,7 @@ export default function Home() {
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
+                                        className="featured__item__pic__image"
                                     />
                                 )}
                                 <ul className="featured__item__pic__hover">
