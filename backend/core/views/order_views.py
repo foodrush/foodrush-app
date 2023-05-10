@@ -94,13 +94,10 @@ def add_order_items(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_order_by_id(request, pk):
-    # TODO: add a check to see if the user is the owner of the order, shouldnt be with ID
-    # TODO: fix endpoint - make orders via users logged in - check insomnia endpoint
-    # FIXME: fix this: {{ base_url }}/api/orders/3/ its bad practice to use pk in this the url
     user = request.user
     order = Order.objects.get(_id=pk)
     # if user.is_staff or order.customer == user.customerprofile:
-    # FIXME: change this
+    # FIXME: change this maybe if needed according to the requests
     if CustomerProfile.objects.get(user=user) == order.customer:
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
