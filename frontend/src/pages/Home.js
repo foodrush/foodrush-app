@@ -28,6 +28,7 @@ export default function Home() {
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
+    const [isMenuVisible, setMenuVisible] = useState(true);
 
 
     // taken from context -- every time a product is added to the cart cartData state is updated via -->
@@ -171,6 +172,10 @@ export default function Home() {
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
+    const handleMenuClick = () => {
+        setMenuVisible(!isMenuVisible);
+    };
+
     return (
         <div className="App">
             <Navbar/>
@@ -179,11 +184,11 @@ export default function Home() {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="hero__categories">
-                                <div className="hero__categories__all">
+                                <div className="hero__categories__all" onClick={handleMenuClick}>
                                     <i className="fa fa-bars"/>
                                     <span>All departments</span>
                                 </div>
-                                <ul>
+                                <ul className={isMenuVisible ? '' : 'hidden'}>
                                     <li><a href="#">Fresh Meat</a></li>
                                     <li><a href="#">Vegetables</a></li>
                                     <li><a href="#">Fruit &amp; Nut Gifts</a></li>
