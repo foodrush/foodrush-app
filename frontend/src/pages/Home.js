@@ -75,13 +75,13 @@ export default function Home() {
                 return (
                     <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products">
                         <div className="featured__item">
-                            <div className="featured__item__pic set-bg">
+                            <div className="featured__item__pic ">
                                 {imageUrlWithPrefix && (
                                     <img
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
-                                        className="featured__item__pic__image"
+                                        className="featured__item__pic__image rounded-4"
                                     />
                                 )}
                                 <ul className="featured__item__pic__hover">
@@ -136,6 +136,7 @@ export default function Home() {
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
         console.log(localStorage.getItem("token"))
+        console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
 
