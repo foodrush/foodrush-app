@@ -79,15 +79,12 @@ export default function Home() {
     }
 
     const product = () => {
-        const backendURL = "http://127.0.0.1:8000";
         return(
             data.map((item)=>{
-                const imageURL = `${backendURL}/static${item.image}`;
-                console.log(imageURL);
                 return (
                     <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products" >
                         <div className="featured__item">
-                            <div className="featured__item__pic set-bg" style={{ backgroundImage: `url(${imageURL})` }}>
+                            <div className="featured__item__pic set-bg">
                                 <ul className="featured__item__pic__hover">
                                     <li><a href="#" ><i className="fa fa-heart" /></a></li>
                                     <li><a href="#"><i className="fa fa-retweet" /></a>   
