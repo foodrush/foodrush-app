@@ -1,13 +1,14 @@
 from django.contrib import admin
+
 from .models import (
-    Product,
-    ShippingAddress,
-    Order,
-    OrderItem,
-    Review,
-    CustomerProfile,
     BusinessProfile,
     CartItem,
+    CustomerProfile,
+    Order,
+    OrderItem,
+    Product,
+    Review,
+    ShippingAddress,
 )
 
 admin.site.register(Product)
