@@ -12,6 +12,7 @@ import '../style/css/elegant-icons.css';
 import axios from "axios";
 import Business_Navbar from "../Navigation/Business_Navbar";
 import { UserContext } from "../contexts/UserContextProvider";
+import {CartContext} from "../contexts/CartContext";
 
 
 export default function Market(){
@@ -21,6 +22,7 @@ export default function Market(){
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const { userType } = useContext(UserContext)
+    const {fetchCartData} = useContext(CartContext)
 
 //    useEffect(() => {
 //        fetchData();
@@ -52,20 +54,77 @@ export default function Market(){
         navigate(path);
     }
 
+    const handleAddToCart = async (e, product_id) => {
+        e.preventDefault();
+        console.log(localStorage.getItem("token"))
+        console.log("CART OPERATİONN")
+
+        const userToken = localStorage.getItem('token');
+
+        if (userToken && product_id) {
+            await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/',
+                {
+                    product_id: product_id,
+                    qty: 1
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }).then(async (response) => {
+                console.log(response);
+                if (response.status === 201) {
+                    await fetchCartData();
+                    routeCart();
+                }
+
+            }).catch((error) => {
+                console.error(error);
+            })
+        }
+    };
+
+    const routeCart = () => {
+        navigate("/shopping-cart"); // navigate satkes to the bottom of the page without setTimeout
+        setTimeout(() => {
+            window.scrollTo(0, 0); // Scroll to top of the page
+        }, 1);
+        // window.location.href = "/shopping-cart"; // re-renders the whole page
+    };
+
+
     const product = () => {
         return(
             data.map((item)=>{
+                var imageUrlWithPrefix;
+                if (item.image !== null) {
+                    imageUrlWithPrefix = `http://127.0.0.1:8000${item.image}`;
+                    console.log(imageUrlWithPrefix);
+                }
                 return (
-                    <div key={item._id} className="col-lg-4 col-md-6 col-sm-6">
+                    <div key={item._id} className="col-lg-4 col-md-6 col-sm-6 products">
                         <div className="product__item">
-                            <div className="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
+                            <div className="product__item__pic set-bg">
+                                {imageUrlWithPrefix && (
+                                    <img
+                                        src={imageUrlWithPrefix}
+                                        alt={item.name}
+                                        onLoad={() => console.log('Image loaded successfully')}
+                                        className="featured__item__pic__image rounded-4"
+                                    />
+                                )}
                                 <ul className="product__item__pic__hover">
                                     <li><a href="#"><i className="fa fa-heart" /></a></li>
                                     <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                    <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
+                                    <li><a href="#"
+                                           onClick={(e) => {
+                                               handleAddToCart(e, item._id);
+                                           }}>
+                                        <i className="fa fa-shopping-cart"/>
+                                    </a></li>
                                 </ul>
                             </div>
-                            <div className="product__item__text">
+                            <div className="product__item__text" onClick={() => routeToRestaurant(item.business)}>
                                 <h6><a href="#">{item.name}</a></h6>
                                 <h5>{item.price}</h5>
                                 <h5>{item.rating}</h5>
@@ -137,23 +196,6 @@ export default function Market(){
                 </div>
             </section>
             {/* Hero Section End */}
-            {/* Breadcrumb Section Begin */}
-            <section className="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12 text-center">
-                            <div className="breadcrumb__text">
-                                <h2>Organi Shop</h2>
-                                <div className="breadcrumb__option">
-                                    <a href="./index.html">Home</a>
-                                    <span>Shop</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* Breadcrumb Section End */}
             {/* Product Section Begin */}
             <section className="product spad">
                 <div className="container">
@@ -325,117 +367,6 @@ export default function Market(){
                             </div>
                         </div>
                         <div className="col-lg-9 col-md-7">
-                            <div className="product__discount">
-                                <div className="section-title product__discount__title">
-                                    <h2>Sale Off</h2>
-                                </div>
-                                <div className="row">
-                                    <div className="product__discount__slider owl-carousel">
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-1.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Dried Fruit</span>
-                                                    <h5><a href="#">Raisin’n’nuts</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-2.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Vegetables</span>
-                                                    <h5><a href="#">Vegetables’package</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-3.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Dried Fruit</span>
-                                                    <h5><a href="#">Mixed Fruitss</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-4.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Dried Fruit</span>
-                                                    <h5><a href="#">Raisin’n’nuts</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-5.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Dried Fruit</span>
-                                                    <h5><a href="#">Raisin’n’nuts</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                            <div className="product__discount__item">
-                                                <div className="product__discount__item__pic set-bg" data-setbg="img/product/discount/pd-6.jpg">
-                                                    <div className="product__discount__percent">-20%</div>
-                                                    <ul className="product__item__pic__hover">
-                                                        <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                                        <li><a href="#"><i className="fa fa-shopping-cart" /></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div className="product__discount__item__text">
-                                                    <span>Dried Fruit</span>
-                                                    <h5><a href="#">Raisin’n’nuts</a></h5>
-                                                    <div className="product__item__price">$30.00 <span>$36.00</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div className="filter__item">
                                 <div className="row">
                                     <div className="col-lg-4 col-md-5">
