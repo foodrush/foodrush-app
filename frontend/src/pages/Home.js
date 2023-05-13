@@ -62,7 +62,6 @@ export default function Home() {
     };
 
     const product = () => {
-        console.log(data)
         return (
 
             data.map((item) => {
