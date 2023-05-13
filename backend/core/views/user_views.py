@@ -14,15 +14,15 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from ..models import BusinessProfile, CustomerProfile, Product, Order, OrderItem
+from ..models import BusinessProfile, CustomerProfile, Order, OrderItem, Product
 from ..serializers import (
     BusinessProfileSerializer,
     CustomerProfileSerializer,
+    OrderItemSerializer,
+    OrderSerializer,
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
-    OrderSerializer,
-    OrderItemSerializer,
 )
 
 
