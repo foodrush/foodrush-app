@@ -205,7 +205,7 @@ export default function Market() {
                                                onChange={handleSearchQueryChange}/>
                                         <button type="submit" className="site-btn" onClick={handleSearch}>SEARCH
                                         </button>
-                                    </form>
+                                    </form>ss
                                 </div>
                                 <div className="hero__search__phone">
                                     <div className="hero__search__phone__icon">
