@@ -30,6 +30,7 @@ export default function Market() {
     const searchText = searchParams.get('search');
 
     useEffect(() => {
+        console.log("asdhajsjd")
         fetchData();
         if(searchText !== null){
             setSearchQuery(searchText);
