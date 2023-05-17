@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useMemo, useState} from "react";
 import Navbar from "../Navigation/Navbar";
-import {Routes, Route, Link, useNavigate} from "react-router-dom";
+import {Routes, Route, Link, useNavigate, useSearchParams} from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
 import '../style/css/bootstrap.min.css';
@@ -19,7 +19,6 @@ import Fuse from 'fuse.js';
 export default function Market() {
     const [completeData, setCompleteData] = useState([]);
     const [desiredData, setDesiredData] = useState([]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -27,9 +26,15 @@ export default function Market() {
     const {userType} = useContext(UserContext)
     const {fetchCartData} = useContext(CartContext)
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('search');
 
     useEffect(() => {
         fetchData();
+        if(searchText !== null){
+            setSearchQuery(searchText);
+            fuseSearchresults();
+        }
     }, []);
 
     const fetchData = async () => {
@@ -89,10 +94,15 @@ export default function Market() {
         threshold: 0.4, // Adjust the similarity threshold as per your preference
     });
 
-    const handleSearch = () => {
+    const handleSearch = (event) => {
+        event.preventDefault();
+        fuseSearchresults();
+    };
+
+    const fuseSearchresults =()=> {
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
-    };
+    }
 
     const handleSearchQueryChange = (event) => {
         setSearchQuery(event.target.value);
