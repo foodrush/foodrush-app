@@ -57,7 +57,7 @@ export default function Market() {
     let navigate = useNavigate();
     const routeToRestaurant = (path) => {
         console.log(path);
-        navigate(path);
+        navigate(`/business/${path}`);
     }
 
     const handleAddToCart = async (e, product_id) => {
@@ -138,6 +138,7 @@ export default function Market() {
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
+                                        onClick={() => routeToRestaurant(item.business)}
                                     />
                                 )}
                                 <ul className="product__item__pic__hover">

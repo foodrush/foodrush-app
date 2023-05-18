@@ -74,14 +74,15 @@ export default function Home() {
 
                 return (
                     <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products">
-                        <div className="featured__item">
-                            <div className="featured__item__pic ">
+                        <div className="featured__item" >
+                            <div className="featured__item__pic">
                                 {imageUrlWithPrefix && (
                                     <img
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
+                                        onClick={() => routeToRestaurant(item.business)}
                                     />
                                 )}
                                 <ul className="featured__item__pic__hover">
@@ -179,7 +180,9 @@ export default function Home() {
 
     return (
         <div className="App">
-            <Navbar/>
+            {userType === 2 ?
+                (<Business_Navbar/>) :
+                (<Navbar/>)}
             <section className="hero">
                 <div className="container">
                     <div className="row">
