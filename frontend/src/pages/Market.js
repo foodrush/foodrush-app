@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import Navbar from "../Navigation/Navbar";
-import {Routes, Route, Link, useNavigate} from "react-router-dom";
+import {Routes, Route, Link, useNavigate, useSearchParams} from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
 import '../style/css/bootstrap.min.css';
@@ -11,25 +11,31 @@ import '../style/css/font-awesome.min.css';
 import '../style/css/elegant-icons.css';
 import axios from "axios";
 import Business_Navbar from "../Navigation/Business_Navbar";
-import { UserContext } from "../contexts/UserContextProvider";
+import {UserContext} from "../contexts/UserContextProvider";
 import {CartContext} from "../contexts/CartContext";
+import Fuse from 'fuse.js';
 
 
-export default function Market(){
-    const [data, setData] = useState([]);
+export default function Market() {
+    const [completeData, setCompleteData] = useState([]);
+    const [desiredData, setDesiredData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
-    const { userType } = useContext(UserContext)
+    const {userType} = useContext(UserContext)
     const {fetchCartData} = useContext(CartContext)
-
-//    useEffect(() => {
-//        fetchData();
-//    }, [pageNumber]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('search');
 
     useEffect(() => {
+        console.log("asdhajsjd")
         fetchData();
+        if(searchText !== null){
+            setSearchQuery(searchText);
+            fuseSearchresults();
+        }
     }, []);
 
     const fetchData = async () => {
@@ -37,7 +43,8 @@ export default function Market(){
             setLoading(true);
             setError(false);
             const response = await axios.get(`http://127.0.0.1:8000/api/products/`);
-            setData((prevData) => [prevData, ...response.data]);
+            setCompleteData((prevData) => [prevData, ...response.data]);
+            setDesiredData((prevData) => [prevData, ...response.data]);
             setHasMore(response.data.length > 0);
             setLoading(false);
         } catch (error) {
@@ -47,11 +54,10 @@ export default function Market(){
     };
 
 
-
     let navigate = useNavigate();
-    const routeToRestaurant = (path) =>{
+    const routeToRestaurant = (path) => {
         console.log(path);
-        navigate(path);
+        navigate(`/business/${path}`);
     }
 
     const handleAddToCart = async (e, product_id) => {
@@ -84,6 +90,25 @@ export default function Market(){
         }
     };
 
+    const fuse = new Fuse(completeData, {
+        keys: ['business_name', 'name', 'cuisine','category'], // Specify the fields you want to search on
+        threshold: 0.4, // Adjust the similarity threshold as per your preference
+    });
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+        fuseSearchresults();
+    };
+
+    const fuseSearchresults =()=> {
+        const results = fuse.search(searchQuery);
+        setDesiredData(results.map((result) => result.item));
+    }
+
+    const handleSearchQueryChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
     const routeCart = () => {
         navigate("/shopping-cart"); // navigate satkes to the bottom of the page without setTimeout
         setTimeout(() => {
@@ -92,10 +117,12 @@ export default function Market(){
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
-
     const product = () => {
-        return(
-            data.map((item)=>{
+        //console.log(desiredData);
+        return (
+            desiredData.map((item) => {
+                console.log("----------------------");
+                console.log(item.name)
                 var imageUrlWithPrefix;
                 if (item.image !== null) {
                     imageUrlWithPrefix = `http://127.0.0.1:8000${item.image}`;
@@ -111,16 +138,14 @@ export default function Market(){
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
+                                        onClick={() => routeToRestaurant(item.business)}
                                     />
                                 )}
                                 <ul className="product__item__pic__hover">
                                     <li><a href="#"><i className="fa fa-heart" /></a></li>
                                     <li><a href="#"><i className="fa fa-retweet" /></a></li>
-                                    <li><a href="#"
-                                           onClick={(e) => {
-                                               handleAddToCart(e, item._id);
-                                           }}>
-                                        <i className="fa fa-shopping-cart"/>
+                                    <li><a href="#" onClick={(e) => { handleAddToCart(e, item._id); }}>
+                                        <i className="fa fa-shopping-cart" />
                                     </a></li>
                                 </ul>
                             </div>
@@ -131,18 +156,19 @@ export default function Market(){
                             </div>
                         </div>
                     </div>
-                )
-            } )
+                );
+            })
         );
     }
 
+    const productRender = useMemo(() => product(), [desiredData]);
 
 
     return (
         <div>
             {userType === 2 ?
-                (<Business_Navbar />) :
-                (<Navbar />)}
+                (<Business_Navbar/>) :
+                (<Navbar/>)}
             {/* Header Section End */}
             {/* Hero Section Begin */}
             <section className="hero hero-normal">
@@ -151,7 +177,7 @@ export default function Market(){
                         <div className="col-lg-3">
                             <div className="hero__categories">
                                 <div className="hero__categories__all">
-                                    <i className="fa fa-bars" />
+                                    <i className="fa fa-bars"/>
                                     <span>All departments</span>
                                 </div>
                                 <ul>
@@ -175,15 +201,17 @@ export default function Market(){
                                     <form action="#">
                                         <div className="hero__search__categories">
                                             All Categories
-                                            <span className="arrow_carrot-down" />
+                                            <span className="arrow_carrot-down"/>
                                         </div>
-                                        <input type="text" placeholder="What do yo u need?" />
-                                        <button type="submit" className="site-btn">SEARCH</button>
+                                        <input type="text" placeholder="What do yo u need?" value={searchQuery}
+                                               onChange={handleSearchQueryChange}/>
+                                        <button type="submit" className="site-btn" onClick={handleSearch}>SEARCH
+                                        </button>
                                     </form>
                                 </div>
                                 <div className="hero__search__phone">
                                     <div className="hero__search__phone__icon">
-                                        <i className="fa fa-phone" />
+                                        <i className="fa fa-phone"/>
                                     </div>
                                     <div className="hero__search__phone__text">
                                         <h5>+65 11.188.888</h5>
@@ -220,15 +248,19 @@ export default function Market(){
                                 <div className="sidebar__item">
                                     <h4>Price</h4>
                                     <div className="price-range-wrap">
-                                        <div className="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min={10} data-max={540}>
-                                            <div className="ui-slider-range ui-corner-all ui-widget-header" />
-                                            <span tabIndex={0} className="ui-slider-handle ui-corner-all ui-state-default" />
-                                            <span tabIndex={0} className="ui-slider-handle ui-corner-all ui-state-default" />
+                                        <div
+                                            className="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                                            data-min={10} data-max={540}>
+                                            <div className="ui-slider-range ui-corner-all ui-widget-header"/>
+                                            <span tabIndex={0}
+                                                  className="ui-slider-handle ui-corner-all ui-state-default"/>
+                                            <span tabIndex={0}
+                                                  className="ui-slider-handle ui-corner-all ui-state-default"/>
                                         </div>
                                         <div className="range-slider">
                                             <div className="price-input">
-                                                <input type="text" id="minamount" />
-                                                <input type="text" id="maxamount" />
+                                                <input type="text" id="minamount"/>
+                                                <input type="text" id="maxamount"/>
                                             </div>
                                         </div>
                                     </div>
@@ -238,37 +270,37 @@ export default function Market(){
                                     <div className="sidebar__item__color sidebar__item__color--white">
                                         <label htmlFor="white">
                                             White
-                                            <input type="radio" id="white" />
+                                            <input type="radio" id="white"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__color sidebar__item__color--gray">
                                         <label htmlFor="gray">
                                             Gray
-                                            <input type="radio" id="gray" />
+                                            <input type="radio" id="gray"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__color sidebar__item__color--red">
                                         <label htmlFor="red">
                                             Red
-                                            <input type="radio" id="red" />
+                                            <input type="radio" id="red"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__color sidebar__item__color--black">
                                         <label htmlFor="black">
                                             Black
-                                            <input type="radio" id="black" />
+                                            <input type="radio" id="black"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__color sidebar__item__color--blue">
                                         <label htmlFor="blue">
                                             Blue
-                                            <input type="radio" id="blue" />
+                                            <input type="radio" id="blue"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__color sidebar__item__color--green">
                                         <label htmlFor="green">
                                             Green
-                                            <input type="radio" id="green" />
+                                            <input type="radio" id="green"/>
                                         </label>
                                     </div>
                                 </div>
@@ -277,25 +309,25 @@ export default function Market(){
                                     <div className="sidebar__item__size">
                                         <label htmlFor="large">
                                             Large
-                                            <input type="radio" id="large" />
+                                            <input type="radio" id="large"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__size">
                                         <label htmlFor="medium">
                                             Medium
-                                            <input type="radio" id="medium" />
+                                            <input type="radio" id="medium"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__size">
                                         <label htmlFor="small">
                                             Small
-                                            <input type="radio" id="small" />
+                                            <input type="radio" id="small"/>
                                         </label>
                                     </div>
                                     <div className="sidebar__item__size">
                                         <label htmlFor="tiny">
                                             Tiny
-                                            <input type="radio" id="tiny" />
+                                            <input type="radio" id="tiny"/>
                                         </label>
                                     </div>
                                 </div>
@@ -306,7 +338,7 @@ export default function Market(){
                                             <div className="latest-prdouct__slider__item">
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-1.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-1.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -315,7 +347,7 @@ export default function Market(){
                                                 </a>
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-2.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-2.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -324,7 +356,7 @@ export default function Market(){
                                                 </a>
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-3.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-3.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -335,7 +367,7 @@ export default function Market(){
                                             <div className="latest-prdouct__slider__item">
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-1.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-1.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -344,7 +376,7 @@ export default function Market(){
                                                 </a>
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-2.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-2.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -353,7 +385,7 @@ export default function Market(){
                                                 </a>
                                                 <a href="#" className="latest-product__item">
                                                     <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-3.jpg" alt="" />
+                                                        <img src="img/latest-product/lp-3.jpg" alt=""/>
                                                     </div>
                                                     <div className="latest-product__item__text">
                                                         <h6>Crab Pool Security</h6>
@@ -367,6 +399,11 @@ export default function Market(){
                             </div>
                         </div>
                         <div className="col-lg-9 col-md-7">
+                            <div className="row">
+                                {productRender}
+                                {loading && <div>Loading...</div>}
+                                {error && <div>Error fetching data.</div>}
+                            </div>
                             <div className="filter__item">
                                 <div className="row">
                                     <div className="col-lg-4 col-md-5">
@@ -380,27 +417,22 @@ export default function Market(){
                                     </div>
                                     <div className="col-lg-4 col-md-4">
                                         <div className="filter__found">
-                                            <h6><span>16</span> Products found</h6>
+                                            <h6><span>{desiredData.length}</span> Products found</h6>
                                         </div>
                                     </div>
                                     <div className="col-lg-4 col-md-3">
                                         <div className="filter__option">
-                                            <span className="icon_grid-2x2" />
-                                            <span className="icon_ul" />
+                                            <span className="icon_grid-2x2"/>
+                                            <span className="icon_ul"/>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row">
-                                    {product()}
-                                    {loading && <div>Loading...</div>}
-                                    {error && <div>Error fetching data.</div>}
                             </div>
                             <div className="product__pagination">
                                 <a href="#">1</a>
                                 <a href="#">2</a>
                                 <a href="#">3</a>
-                                <a href="#"><i className="fa fa-long-arrow-right" /></a>
+                                <a href="#"><i className="fa fa-long-arrow-right"/></a>
                             </div>
                         </div>
                     </div>
@@ -414,7 +446,7 @@ export default function Market(){
                         <div className="col-lg-3 col-md-6 col-sm-6">
                             <div className="footer__about">
                                 <div className="footer__about__logo">
-                                    <a href="./index.html"><img src="img/logo.png" alt="" /></a>
+                                    <a href="./index.html"><img src="img/logo.png" alt=""/></a>
                                 </div>
                                 <ul>
                                     <li>Address: 60-49 Road 11378 New York</li>
@@ -449,14 +481,14 @@ export default function Market(){
                                 <h6>Join Our Newsletter Now</h6>
                                 <p>Get E-mail updates about our latest shop and special offers.</p>
                                 <form action="#">
-                                    <input type="text" placeholder="Enter your mail" />
+                                    <input type="text" placeholder="Enter your mail"/>
                                     <button type="submit" className="site-btn">Subscribe</button>
                                 </form>
                                 <div className="footer__widget__social">
-                                    <a href="#"><i className="fa fa-facebook" /></a>
-                                    <a href="#"><i className="fa fa-instagram" /></a>
-                                    <a href="#"><i className="fa fa-twitter" /></a>
-                                    <a href="#"><i className="fa fa-pinterest" /></a>
+                                    <a href="#"><i className="fa fa-facebook"/></a>
+                                    <a href="#"><i className="fa fa-instagram"/></a>
+                                    <a href="#"><i className="fa fa-twitter"/></a>
+                                    <a href="#"><i className="fa fa-pinterest"/></a>
                                 </div>
                             </div>
                         </div>
@@ -464,10 +496,15 @@ export default function Market(){
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="footer__copyright">
-                                <div className="footer__copyright__text"><p>{/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                                    Copyright © All rights reserved | This template is made with <i className="fa fa-heart" aria-hidden="true" /> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                                    {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}</p></div>
-                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt="" /></div>
+                                <div className="footer__copyright__text">
+                                    <p>{/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
+                                        Copyright © All rights reserved | This template is made with <i
+                                            className="fa fa-heart" aria-hidden="true"/> by <a
+                                            href="https://colorlib.com" target="_blank">Colorlib</a>
+                                        {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
+                                    </p></div>
+                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt=""/>
+                                </div>
                             </div>
                         </div>
                     </div>
