@@ -84,7 +84,6 @@ function BusinessPage() {
                 var imageUrlWithPrefix;
                 if (product.image !== null) {
                     imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
-                    console.log(imageUrlWithPrefix);
                 }
                 return (
                     <div key={product.id} className="col-sm-6 col-lg-4 all pizza">

@@ -11,7 +11,6 @@ import BreadcrumbImage from '../../style/img/breadcrumb.jpg';
 import { CartContext } from "../../contexts/CartContext";
 
 function ShoppingCart({token}) {
-    // the totalPrice & totalQuantity are provided by CartContext -- consumed here & navbar -- and set on the Shopping cart
     const { cartData, fetchCartData, cartState } = useContext(CartContext);
 
 

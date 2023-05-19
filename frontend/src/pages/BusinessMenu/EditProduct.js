@@ -1,28 +1,21 @@
 import Business_Navbar from '../../Navigation/Business_Navbar'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState, useContext, useEffect } from 'react';
+import { useParams } from "react-router-dom";
+import React, { useContext, useEffect } from 'react';
 import { ProductFormContext } from '../../contexts/ProductFormContext';
 
-function AddProduct() {
-    const { handleSubmit, displayFileForm, productSubmitted, productAdded, setEditMode, setInitialValues, displayTextFormFieldsAdd } = useContext(ProductFormContext);
+function EditProduct() {
+    const { displayTextFormFields, handleSubmit, displayFileForm, productSubmitted, productAdded, setProductId, getProduct, setEditMode } = useContext(ProductFormContext);
+    const { productId } = useParams();
 
     useEffect(() => {
-        setEditMode(false)
-        setInitialValues(() => ({
-            name: "",
-            price: "",
-            cuisine: "",
-            category: "",
-            count_in_stock: "",
-            description: "",
-            image: null
-        }))
-    }, [])
+        setProductId(productId);
+        getProduct(productId)
+        setEditMode(true)
+    }, [productId, getProduct, setEditMode, setProductId])
 
     return (
         <>
             <Business_Navbar />
-            {/* Add Product */}
             <section className='container mt-2'>
                 <div className="container-fluid">
                     <div className="row justify-content-center ">
@@ -31,24 +24,25 @@ function AddProduct() {
                                 <div className="col-12">
                                     <div className="card">
                                         <div className="card-title text-center mt-3">
-                                            <h3>Add Product</h3>
+                                            <h3>Edit Product</h3>
                                         </div>
                                         <div className="card-body">
                                             {/* form start */}
-                                            <form action="#" onSubmit={handleSubmit}
+                                            <form action="true" onSubmit={handleSubmit}
                                             >
-                                                {displayTextFormFieldsAdd()}
+                                                {displayTextFormFields()}
                                                 {displayFileForm()}
-                                                <button className="btn btn-dark mt-5 mx-auto d-block" type="submit">Add
+                                                <button className="btn btn-dark mt-5 mx-auto d-block" type="submit">Submit
                                                     Product</button>
                                             </form>
-                                            {productSubmitted && ((productAdded === true) ?
+                                            {productSubmitted && ((productAdded === true)
+                                                ?
                                                 (<div className="alert alert-success" role="alert">
-                                                    The product is succesfully added.
+                                                    The product is succesfully edited.
                                                 </div>)
                                                 :
                                                 (<div className="alert alert-danger" role="alert">
-                                                    The product could not be added.
+                                                    The product could not be edited.
                                                 </div>))
                                             }
                                             {/* form end */}
@@ -60,8 +54,9 @@ function AddProduct() {
                     </div>
                 </div>
             </section>
+
         </>
     )
 }
 
-export default AddProduct;
+export default EditProduct
