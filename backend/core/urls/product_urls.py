@@ -1,4 +1,5 @@
 from django.urls import path
+
 from ..views import product_views as views
 
 urlpatterns = [
@@ -16,4 +17,6 @@ urlpatterns = [
         name="get-a-product-from-business",
     ),
     path("add-product/", views.add_product, name="add-product"),
+    path("edit-product/<int:pk>/", views.edit_product, name="edit-product"),
+    path("delete-product/<int:pk>/", views.delete_product, name="delete-product"),
 ]

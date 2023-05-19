@@ -416,11 +416,11 @@ a:focus {
   height: 215px;
   border-radius: 0 0 0 45px;
   margin: -1px;
-  padding: 25px;
+  padding: 0px;
 }
 .food_section .box .img-box img {
-  max-width: 100%;
-  max-height: 145px;
+  width: 100%;
+  height: 100%;
   transition: all 0.2s;
 }
 .food_section .box .detail-box {

@@ -5,7 +5,8 @@ from django.shortcuts import redirect, render
 from drf_spectacular.utils import extend_schema
 from loguru import logger
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -30,7 +31,6 @@ from ..serializers import (
     UserSerializer,
     UserSerializerWithToken,
 )
-
 
 # region GET requests - business products
 
@@ -166,6 +166,7 @@ def get_product(request, pk):
 @extend_schema(request=ProductSerializer, responses=ProductSerializer)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser])
 def add_product(request):
     """Adds a product to the database.
 
@@ -208,6 +209,103 @@ def add_product(request):
             {"detail": "Product could not be created"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser])
+def edit_product(request, pk):
+    """Edits a product in the database.
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+
+    Assuming editable attributes - Example as multipart/form-data:
+
+    ```JSON
+    {
+        "name": "Test Product",
+        "image": [file],
+        "cuisine": "Test Cuisine",
+        "category": "Test Category",
+        "description": "Test description",
+        "price": "10.99",
+        "count_in_stock": 20
+    }
+    ```
+    """
+    try:
+        business = BusinessProfile.objects.get(user=request.user)
+    except BusinessProfile.DoesNotExist as e:
+        logger.debug(f"business.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Business does not exist"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        # get product id from url param int:id
+        product = Product.objects.get(business=business, _id=pk)
+    except Product.DoesNotExist as e:
+        logger.debug(f"product.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Product does not exist for this business"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    request.data[
+        "business"
+    ] = business.id  # ensure product is owned by logged in business
+    product_serializer = ProductSerializer(product, data=request.data)
+    if product_serializer.is_valid():
+        product_serializer.save()
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
+    else:
+        logger.debug(f"product_serializer.errors: {product_serializer.errors}")
+        return Response(
+            {"detail": "Product could not be created"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_product(request, pk):
+    """Deletes  a product in the database.
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    try:
+        business = BusinessProfile.objects.get(user=request.user)
+    except BusinessProfile.DoesNotExist as e:
+        logger.debug(f"business.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Business does not exist"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        # get product id from url param int:id
+        product = Product.objects.get(business=business, _id=pk)
+        logger.info(f"deleting product: {product}")
+    except Product.DoesNotExist as e:
+        logger.debug(f"product.DoesNotExist: {e}")
+        return Response(
+            {"detail": "Product does not exist for this business"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    product.delete()
+    return Response(
+        {"detail": "Product deleted successfully"}, status=status.HTTP_200_OK
+    )
 
 
 # endregion

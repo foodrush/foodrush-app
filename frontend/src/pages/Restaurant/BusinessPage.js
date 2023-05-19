@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,12 +9,15 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import "jquery-nice-select/css/nice-select.css";
 import Business_Navbar from "../../Navigation/Business_Navbar"
 import Navbar from "../../Navigation/Navbar";
+import {UserContext} from "../../contexts/UserContextProvider";
 
 
 function BusinessPage() {
     const [businessData, setBusinessData] = useState(null);
     const [productResponse, setproductResponse] = useState(null);
     let businessId  = useParams();
+    const {userType} = useContext(UserContext)
+
 
 
 
@@ -41,14 +44,21 @@ function BusinessPage() {
 
 
     const product = () => {
+        console.log("askdahjshjd")
         return(
             productResponse.map((product)=>{
+
+                var imageUrlWithPrefix;
+                if (product.image !== null) {
+                    imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
+                    console.log(imageUrlWithPrefix);
+                }
                 return (
                     <div key={product.id} className="col-sm-6 col-lg-4 all pizza">
                         <div className="box">
                             <div>
                                 <div className="img-box">
-                                    <img src="images/f1.png" alt="" />
+                                    <img src={imageUrlWithPrefix} alt="" />
                                 </div>
                                 <div className="detail-box">
                                     <h5>
@@ -131,8 +141,9 @@ function BusinessPage() {
     return (
 
         <div>
-
-            <Business_Navbar />
+            {userType === 2 ?
+                (<Business_Navbar />) :
+                (<Navbar />)}
             <div className="hero_area">
                 {/*<div className="bg-box">*/}
                 {/*    <img src="images/hero-bg.jpg" alt="" />*/}

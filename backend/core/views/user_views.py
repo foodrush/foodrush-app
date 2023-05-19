@@ -14,10 +14,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from ..models import BusinessProfile, CustomerProfile, Product
+from ..models import BusinessProfile, CustomerProfile, Order, OrderItem, Product
 from ..serializers import (
     BusinessProfileSerializer,
     CustomerProfileSerializer,
+    OrderItemSerializer,
+    OrderSerializer,
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
@@ -93,6 +95,24 @@ def get_logged_in_user_profile(request):
 
 
 # region customer
+
+
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_orders_from_customer_profile(request):
+    """Gets all the orders from the customer profile
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    customer = CustomerProfile.objects.get(user=request.user)
+    orders = customer.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
@@ -221,6 +241,40 @@ def get_customer_profiles(request):
 
 
 # region business
+
+
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_orders_from_business(request):
+    try:
+        business_profile = BusinessProfile.objects.get(user=request.user)
+    except Exception as e:
+        logger.info(e)
+        return Response(
+            {"detail": "Business profile does not exist"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    products = business_profile.product_set.all()
+    logger.info(f"products from business: {products}")
+
+    try:
+        ordered_products = OrderItem.objects.filter(product__in=products)
+        logger.info(f"order items from business: {ordered_products}")
+        business_orders = []
+        for ordered_product in ordered_products:
+            # get the order from every ordered product
+            logger.success(f"calculated order: {ordered_product.order}")
+            business_orders.append(ordered_product.order)
+    except Exception as e:
+        logger.info(e)
+        return Response(
+            {"detail": "Business profile does not have any orders at the moment"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    serializer = OrderSerializer(business_orders, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)

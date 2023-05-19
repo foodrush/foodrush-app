@@ -1,9 +1,11 @@
+import json
+
 from django.test import TestCase
 from django.urls import reverse
+from loguru import logger
 from rest_framework import status
 from rest_framework.test import APITestCase
-import json
-from loguru import logger
+
 from .models import *
 
 # class ProductTests(APITestCase):

@@ -79,8 +79,33 @@ def add_order_items(request):
             product.count_in_stock -= item.qty
             product.save()
 
+        # delete products from user's cart
         serializer = OrderSerializer(order, many=False)
+
+        # order items are cart items sent from the frontend
+
+        CartItem.objects.filter(
+            customer=CustomerProfile.objects.get(user=user)
+        ).delete()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(request=OrderSerializer, responses=OrderSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_order_by_id(request, pk):
+    user = request.user
+    order = Order.objects.get(_id=pk)
+    # if user.is_staff or order.customer == user.customerprofile:
+    # FIXME: change this maybe if needed according to the requests
+    if CustomerProfile.objects.get(user=user) == order.customer:
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+    else:
+        return Response(
+            {"detail": "Not authorized to view this order"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
@@ -93,6 +118,19 @@ def add_to_cart(request):
     customer = CustomerProfile.objects.get(user=user)
     product = Product.objects.get(_id=data["product_id"])
     qty = data["qty"]
+
+    # Check if there are products from other businesses in cart
+    if CartItem.objects.filter(customer=customer).exists():
+        cart_items = CartItem.objects.filter(customer=customer)
+        for item in cart_items:
+            logger.info(f"item.product.business: {item.product.business}")
+            if item.product.business != product.business:
+                return Response(
+                    {
+                        "detail": "You cannot add products from different businesses to the cart"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
     # Check if product is already in cart
     cart_item = CartItem.objects.filter(product=product, customer=customer).first()
@@ -161,7 +199,6 @@ def remove_from_cart(request, pk):
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["DELETE"])
 def remove_all_items_from_cart(request):
-    # TODO: url not added, need to add to urls.py and test (later)
     """Removes all items from the cart
 
     Args:
@@ -179,7 +216,12 @@ def remove_all_items_from_cart(request):
     cart_items.delete()
 
     # Return a success response
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(
+        {
+            "detail": "All items were removed from the cart",
+        },
+        status=status.HTTP_204_NO_CONTENT,
+    )
 
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
