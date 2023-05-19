@@ -29,7 +29,7 @@ export default function Home() {
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [isMenuVisible, setMenuVisible] = useState(true);
-
+    const [searchText, setSearchText] = useState('');
 
     // taken from context -- every time a product is added to the cart cartData state is updated via -->
     const {fetchCartData} = useContext(CartContext)
@@ -71,14 +71,15 @@ export default function Home() {
                 }
                 return (
                     <div key={item._id} className="col-lg-3 col-md-4 col-sm-6 products">
-                        <div className="featured__item">
-                            <div className="featured__item__pic ">
+                        <div className="featured__item" >
+                            <div className="featured__item__pic">
                                 {imageUrlWithPrefix && (
                                     <img
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
                                         onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
+                                        onClick={() => routeToRestaurant(item.business)}
                                     />
                                 )}
                                 <ul className="featured__item__pic__hover">
@@ -123,12 +124,9 @@ export default function Home() {
         console.log(path);
         navigate(`/business/${path}`);
     }
-    const myMethod = () => {
-        // Your method logic
-        console.log("ajskdjkas")
-        return 'Result of myMethod';
+    const handleSearch = () => {
+        navigate(`/market?search=${searchText}`);
     };
-
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
@@ -168,13 +166,20 @@ export default function Home() {
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
+    const handleSearchTextChange = (event) => {
+        event.preventDefault();
+        setSearchText(event.target.value);
+    };
+
     const handleMenuClick = () => {
         setMenuVisible(!isMenuVisible);
     };
 
     return (
         <div className="App">
-            <Navbar/>
+            {userType === 2 ?
+                (<Business_Navbar/>) :
+                (<Navbar/>)}
             <section className="hero">
                 <div className="container">
                     <div className="row">
@@ -207,8 +212,8 @@ export default function Home() {
                                             All Categories
                                             <span className="arrow_carrot-down"/>
                                         </div>
-                                        <input type="text" placeholder="What do yo u need?"/>
-                                        <button type="submit" className="site-btn">SEARCH</button>
+                                        <input type="text" placeholder="What do yo u need?" value={searchText} onChange={handleSearchTextChange}/>
+                                        <button type="submit" className="site-btn" onClick={handleSearch}>SEARCH</button>
                                     </form>
                                 </div>
                                 <div className="hero__search__phone">

@@ -32,8 +32,8 @@ body {
 
 h1,
 h2 {
-  font-family: "Dancing Script", cursive;
-  color: black;
+  font-family: "Open Sans", cursive;
+  color: #e9831d;
 }
 
 .heading_container {
@@ -79,7 +79,7 @@ a:focus {
 /*header section*/
 .hero_area {
   position: relative;
-  min-height: 100vh;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
 }
@@ -126,7 +126,7 @@ a:focus {
 }
 
 .navbar-brand {
-  font-family: "Dancing Script", cursive;
+  font-family: "Open Sans", cursive;
   color: white;
 }
 .navbar-brand span {
@@ -254,8 +254,8 @@ a:focus {
 /*end header section*/
 /* slider section */
 .slider_section {
-  background:  #2b669a;
-  flex: 1;
+  background:  whitesmoke;
+  flex: 0.2;
   display: flex;
   align-items: center;
   position: relative;
@@ -325,7 +325,7 @@ a:focus {
   margin-top: 45px;
   border-radius: 5px;
   padding: 20px 15px;
-  background-color: #222831;
+  background-color: #e9831d;
   color: #ffffff;
 }
 .offer_section .box .img-box {
@@ -344,14 +344,13 @@ a:focus {
   transition: all 0.2s;
 }
 .offer_section .box .detail-box h5 {
-  font-family: "Dancing Script", cursive;
+  font-family: "Open Sans", cursive;
   color: white;
   font-size: 24px;
   margin: 0;
-  color: white;
 }
 .offer_section .box .detail-box h6 {
-  font-family: "Dancing Script", cursive;
+  font-family: "Open Sans", cursive;
   color: white;
   margin: 10px 0;
 }
@@ -395,7 +394,7 @@ a:focus {
   border-radius: 25px;
 }
 .food_section .filters_menu li.active {
-  background-color: #222831;
+  background-color: #e9831d;
   color: #ffffff;
 }
 .food_section .box {
@@ -406,7 +405,7 @@ a:focus {
   color: #ffffff;
   border-radius: 15px;
   overflow: hidden;
-  background: linear-gradient(to bottom, #f1f2f3 25px, #222831 25px);
+  background: linear-gradient(to bottom, #f1f2f3 25px, #e58547 25px);
 }
 .food_section .box .img-box {
   background: #f1f2f3;
@@ -428,8 +427,10 @@ a:focus {
 }
 .food_section .box .detail-box h5 {
   font-weight: 600;
+  color: whitesmoke;
 }
 .food_section .box .detail-box p {
+  color: white;
   font-size: 15px;
 }
 .food_section .box .detail-box h6 {
@@ -448,6 +449,16 @@ a:focus {
   justify-content: center;
   align-items: center;
 }
+.food_section .box .options a:hover {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background: #c78a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .food_section .box .options a svg {
   width: 18px;
   height: auto;
@@ -475,7 +486,7 @@ a:focus {
 }
 
 .about_section {
-  background: #222831;
+  background: #efeeee;
   color: #ffffff;
 }
 .about_section .row {
@@ -598,7 +609,7 @@ a:focus {
   transform: rotate(45deg) translateX(-50%);
 }
 .client_section .box .detail-box {
-  background-color: #222831;
+  background-color: #e9831d;
   color: #ffffff;
   padding: 25px 25px 15px 25px;
   border-radius: 5px;
@@ -694,7 +705,7 @@ a:focus {
 .footer_section .footer-logo {
   font-weight: 600;
   margin-bottom: 20px;
-  font-family: "Dancing Script", cursive;
+  font-family: "Open Sans", cursive;
   color: white;
 }
 .footer_section p {
