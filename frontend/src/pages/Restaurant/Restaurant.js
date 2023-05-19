@@ -998,7 +998,7 @@ export default function Restaurant(){
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form_container">
-                                <form action>
+                                <form action="#">
                                     <div>
                                         <input type="text" className="form-control" placeholder="Your Name" />
                                     </div>

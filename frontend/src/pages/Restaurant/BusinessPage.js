@@ -51,7 +51,6 @@ function BusinessPage() {
                 var imageUrlWithPrefix;
                 if (product.image !== null) {
                     imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
-                    console.log(imageUrlWithPrefix);
                 }
                 return (
                     <div key={product.id} className="col-sm-6 col-lg-4 all pizza">
@@ -270,7 +269,7 @@ function BusinessPage() {
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form_container">
-                                <form action>
+                                <form action="#">
                                     <div>
                                         <input type="text" className="form-control" placeholder="Your Name" />
                                     </div>

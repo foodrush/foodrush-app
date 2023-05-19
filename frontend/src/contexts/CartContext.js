@@ -11,20 +11,23 @@ export const CartProvider = ({ children, token, setToken }) => {
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [cartData, setCartData] = useState([]);
     const [cartState, setCartState] = useState({});
+    const [userType, setUserType] = useState(0);
 
-    // anywhere CartProvider is consumed fetch the cart data
     useEffect(() => {
-        fetchCartData();
+        const type = localStorage.getItem("userType");
+        setUserType(type);
+        if(type == 1)
+            fetchCartData();
     }, []);
 
     useEffect(() => {
-        fetchCartData();
+        if(userType == 1)
+            fetchCartData();
     }, [token]);
 
     useEffect(() => {
         cartInfo();
     }, [token, cartData]);
-
 
 
     // get cart data & set cartData 
@@ -43,7 +46,8 @@ export const CartProvider = ({ children, token, setToken }) => {
 
     const cartInfo = async () => {
         // await fetchCartData();
-        if (!token) {
+        // if no token or business user 
+        if (!token || userType === 2) {
             setCartState({
                 totalHearts: 0,
                 totalQuantity: 0,
@@ -72,7 +76,6 @@ export const CartProvider = ({ children, token, setToken }) => {
         });
         setTotalQuantity(currentQuantity);
         setTotalPrice(currentPrice);
-
     }, [cartData])
 
     // only the ones currently used are sent
@@ -82,7 +85,7 @@ export const CartProvider = ({ children, token, setToken }) => {
             fetchCartData,
             cartState,
             setToken,
-            setCartState
+            setCartState,
         })
     }, [cartData, cartState]);
 
