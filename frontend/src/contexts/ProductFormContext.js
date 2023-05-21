@@ -93,8 +93,12 @@ export const ProductProvider = ({ children }) => {
     }
 
     const handleEditChange = (e, field) => {
+        console.log(initialValues[field] );
+        e.preventDefault();
+        console.log("2")
         setInitialValues({ ...initialValues, [field]: e.target.value })
         setFieldTouched(field, true);
+        console.log(initialValues[field] );
         setFieldValue(field, e.target.value);
     };
 
@@ -156,6 +160,7 @@ export const ProductProvider = ({ children }) => {
                         // update the file label
                         const fileName = file ? file.name : 'Choose file...';
                         setFileLabel(fileName)
+                        console.log("3")
                         setInitialValues({ ...initialValues, 'image': file });
                         setFieldTouched('image', true);
                         setFieldValue('image', file);

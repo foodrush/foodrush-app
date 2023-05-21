@@ -11,7 +11,7 @@ function EditProduct() {
         setProductId(productId);
         getProduct(productId)
         setEditMode(true)
-    }, [productId, getProduct, setEditMode, setProductId])
+    }, [productId])
 
     return (
         <>
