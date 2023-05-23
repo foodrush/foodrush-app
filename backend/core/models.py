@@ -14,6 +14,11 @@ class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # add phone number field to profile
     phone_number = models.CharField(max_length=50, null=True, blank=True)
+    favorites = models.ManyToManyField(
+        "Product",
+        blank=True,
+        related_name="favorites",
+    )
 
     def __str__(self) -> str:
         return self.user.email
