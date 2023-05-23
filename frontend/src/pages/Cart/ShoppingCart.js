@@ -287,7 +287,7 @@ function ShoppingCart({token}) {
                                         <li>Subtotal <span>${cartState.totalPrice}</span></li>
                                         <li>Total <span>${cartState.totalPrice}</span></li>
                                     </ul>
-                                    <a href="#" className="primary-btn">PROCEED TO CHECKOUT</a>
+                                    <Link to="/checkout" className="primary-btn">PROCEED TO CHECKOUT</Link>
                                 </div>
                             </div>
                         </div>
