@@ -29,11 +29,12 @@ from ..serializers import (
     UserSerializer,
     UserSerializerWithToken,
 )
+from .user_views import IsCustomer
 
 
 @extend_schema(request=OrderSerializer, responses=OrderSerializer)
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def add_order_items(request):
     user = request.user
     data = request.data
@@ -48,8 +49,8 @@ def add_order_items(request):
         order = Order.objects.create(
             customer=CustomerProfile.objects.get(user=user),
             payment_method=data["payment_method"],
-            tax_price=data["tax_price"],
-            shipping_price=data["shipping_price"],
+            tax_price=data["tax_price"] if data["tax_price"] else 0.0,
+            shipping_price=data["shipping_price"] if data["shipping_price"] else 0.0,
             total_price=data["total_price"],
         )
 
@@ -92,7 +93,7 @@ def add_order_items(request):
 
 @extend_schema(request=OrderSerializer, responses=OrderSerializer)
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def get_order_by_id(request, pk):
     user = request.user
     order = Order.objects.get(_id=pk)
@@ -110,7 +111,7 @@ def get_order_by_id(request, pk):
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def add_to_cart(request):
     """Add to cart view"""
     data = request.data
@@ -146,7 +147,7 @@ def add_to_cart(request):
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def remove_from_cart(request, pk):
     """Remove product from cart
 
@@ -198,6 +199,7 @@ def remove_from_cart(request, pk):
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsCustomer])
 def remove_all_items_from_cart(request):
     """Removes all items from the cart
 
@@ -226,7 +228,7 @@ def remove_all_items_from_cart(request):
 
 @extend_schema(request=CartItemSerializer, responses=CartItemSerializer)
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def get_cart(request):
     """Gets the cart for the current user
     Args:

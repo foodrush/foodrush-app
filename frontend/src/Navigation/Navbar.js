@@ -101,14 +101,6 @@ export default function Navbar() {
                     <ul>
                         <li className="active"><a href="./index.html">Home</a></li>
                         <li><a href="./shop-grid.html">Shop</a></li>
-                        <li><a href="#">Pages</a>
-                            <ul className="header__menu__dropdown">
-                                <li><a href="./shop-details.html">Shop Details</a></li>
-                                <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                                <li><a href="./checkout.html">Check Out</a></li>
-                                <li><a href="./blog-details.html">Blog Details</a></li>
-                            </ul>
-                        </li>
                         <li><a href="./blog.html">Blog</a></li>
                         <li><a href="./contact.html">Contact</a></li>
                     </ul>
@@ -215,18 +207,9 @@ export default function Navbar() {
                                         <Link to="/market" onClick={() => handleItemClick(0)}>Market</Link>
                                     </li>
                                     <li className={activeItem === 1 ? 'active' : ''}>
-                                        <a href="#">Pages</a>
-                                        <ul className="header__menu__dropdown">
-                                            <li><a href="./shop-details.html">Shop Details</a></li>
-                                            <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                                            <li><a href="./checkout.html">Check Out</a></li>
-                                            <li><a href="./blog-details.html">Blog Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li className={activeItem === 2 ? 'active' : ''}>
                                         <Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link>
                                     </li>
-                                    <li className={activeItem === 3 ? 'active' : ''}>
+                                    <li className={activeItem === 2 ? 'active' : ''}>
                                         <Link to="/contact" onClick={() => handleItemClick(3)}>Contact</Link>
                                     </li>
                                 </ul>

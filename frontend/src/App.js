@@ -40,6 +40,7 @@ import { useState } from "react";
 import EditProduct from "./pages/BusinessMenu/EditProduct";
 
 import { ProductProvider } from "./contexts/ProductFormContext";
+import Checkout from "./pages/Checkout";
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
     return (
@@ -69,6 +70,7 @@ function App() {
                         <Route path="/business" element={<BusinessDashboard />} />
                         <Route path="/business/:id" element={<BusinessPage />} exact />
                         <Route path="/edit-product/:productId" element={<EditProduct />} />
+                        <Route path="/checkout" element={<Checkout />} />
                     </Routes></ProductProvider>
             </CartProvider>
         </UserContextProvider>
