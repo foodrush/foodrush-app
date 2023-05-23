@@ -34,6 +34,21 @@ urlpatterns = [
         views.get_logged_in_customer_profile,
         name="customer-logged-in-profile",
     ),
+    path(
+        "customer-profile/favorites/",
+        views.get_favorite_products,
+        name="customer-logged-in-profile-favorites",
+    ),
+    path(
+        "customer-profile/favorites/add/",
+        views.add_favorite_product,
+        name="customer-logged-in-profile-add-favorite",
+    ),
+    path(
+        "customer-profile/favorites/delete/<int:pk>/",
+        views.delete_from_favorites,
+        name="customer-logged-in-profile-delete-favorite",
+    ),
     path("businesses/", views.get_business_profiles, name="businesses"),
     path(
         "business-profile/products/",

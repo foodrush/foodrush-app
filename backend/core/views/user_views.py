@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from rest_framework.permissions import BasePermission
+
 # from .products import products
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -42,6 +44,20 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+class IsCustomer(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and hasattr(
+            request.user, "customerprofile"
+        )
+
+
+class IsBusiness(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and hasattr(
+            request.user, "businessprofile"
+        )
 
 
 # region all users
@@ -97,9 +113,99 @@ def get_logged_in_user_profile(request):
 # region customer
 
 
-@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
+@extend_schema(request=ProductSerializer, responses=ProductSerializer)
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
+def get_favorite_products(request):
+    """Gets all the favorite products from the customer profile
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    customer = CustomerProfile.objects.get(user=request.user)
+    products = customer.favorites.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@extend_schema(request=BusinessProfileSerializer, responses=BusinessProfileSerializer)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def add_favorite_product(request):
+    """Adds a product to the favorites list of the customer profile
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    customer = CustomerProfile.objects.get(user=request.user)
+    data = request.data
+    try:
+        product = Product.objects.get(_id=data["_id"])
+    except Product.DoesNotExist:
+        return Response(
+            {"detail": "Product does not exist"}, status=status.HTTP_404_NOT_FOUND
+        )
+    try:
+        # check if already in favorites
+        if product in customer.favorites.all():
+            return Response(
+                {"detail": "Product already in favorites"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            customer.favorites.add(product)
+    except:
+        return Response(
+            {"detail": "Product already in favorites"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    customer.save()
+    return Response({"detail": "Product added to favorites"}, status=status.HTTP_200_OK)
+
+
+@extend_schema(request=CustomerProfile, responses=CustomerProfile)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def delete_from_favorites(request, pk):
+    """Deletes a product from the favorites list of the customer profile
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    customer = CustomerProfile.objects.get(user=request.user)
+    try:
+        product = Product.objects.get(_id=pk)
+    except Product.DoesNotExist:
+        return Response(
+            {"detail": "Product does not exist"}, status=status.HTTP_404_NOT_FOUND
+        )
+    try:
+        product_to_be_removed = customer.favorites.get(_id=pk)
+        customer.favorites.remove(product_to_be_removed)
+    except Product.DoesNotExist:
+        return Response(
+            {"detail": "Product not in favorites"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    customer.save()
+    return Response(
+        {"detail": "Product removed from favorites"}, status=status.HTTP_200_OK
+    )
+
+
+@extend_schema(request=CustomerProfile, responses=CustomerProfile)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsCustomer])
 def get_orders_from_customer_profile(request):
     """Gets all the orders from the customer profile
 
@@ -117,7 +223,7 @@ def get_orders_from_customer_profile(request):
 
 @extend_schema(request=UserSerializerWithToken, responses=UserSerializerWithToken)
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsCustomer])
 def edit_customer(request):
     try:
         logger.info(f"request.data: {request.data}")
