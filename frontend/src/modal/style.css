@@ -1,4 +1,5 @@
 .popup-overlay {
+  /* pop-up background */
     position: fixed;
     top: 0;
     left: 0;
@@ -12,16 +13,15 @@
   }
   
   .popup {
+    /* the pop-up card */
     background-color: white;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 400px; /* Adjust the width of the pop-up as needed */
+    max-width: 400px;
     width: 100%;
   }
-  /* Rest of the styles remain the same */
-  
-  
+
   .close-button {
     border: none;
     background: none;
@@ -31,7 +31,7 @@
   }
   
   .popup-context {
-    /* Add your custom styles for the popup content */
+    /* the inner alignment of the card elements are handled here */
     display: flex;
     flex-direction: column;
   }
@@ -41,22 +41,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 150px; /* Add this to limit the width opxf the SVG */
-    max-height: 150px; /* Add this to limit the height of the SVG */
+
+    /* for size of svg */
+    max-width: 150px; 
+    max-height: 150px; 
   }
   
   .popup-sign svg {
-    width: 100%; /* Set the width of the SVG to 100% */
-    height: 100%; /* Set the height of the SVG to 100% */
-    margin-bottom: 20px;
+    width: 100%; 
+    height: 100%; 
 
+    margin-bottom: 20px;
   }
   
 
   .popup-content{
-    /* children -message */
+    /* children - message */
     align-self: center;
     margin: 10px 0 10px 0;
-
+    text-align: center;
   }
   
