@@ -62,7 +62,7 @@ function ShoppingCart({token}) {
         try {
             let deletedFlag = 0;
             for (let i = 0; i < qty; i++) {
-                await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
+                await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/all/`,
                     {}, {
                     headers: {
                         'Authorization': `Bearer ${token}`
