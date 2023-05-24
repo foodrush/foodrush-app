@@ -37,7 +37,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField(read_only=True)
-    shipping_address = ShippingAddressSerializer(read_only=True)
+    shipping_address = serializers.SerializerMethodField(read_only=True)
     customer = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -61,12 +61,10 @@ class OrderSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_shipping_address(self, obj):
-        try:
-            address = ShippingAddressSerializer(obj.shipping_address, many=False)
-        except Exception as e:
-            logger.error(f"Error with shipping address: {e}")
-            address = False
-        return address
+        """Returns a serialized representation of the related ShippingAddress object for the given object instance."""
+        address = ShippingAddress.objects.filter(order=obj).first()
+        serializer = ShippingAddressSerializer(address, many=False)
+        return serializer.data
 
     def get_customer(self, obj):
         customer_user = obj.customer
@@ -80,6 +78,7 @@ class OrderSerializer(serializers.ModelSerializer):
 # region product and cart serializers
 class ProductSerializer(serializers.ModelSerializer):
     business_name = serializers.SerializerMethodField(read_only=True)
+    business_id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -87,6 +86,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_business_name(self, obj):
         return obj.business.restaurant_name
+
+    def get_business_id(self, obj):
+        return obj.business.id
 
     # example of how to use a try/except block to get a field from a related model if needed later
     # def get_business_name(self, obj):
