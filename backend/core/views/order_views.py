@@ -28,6 +28,7 @@ from ..serializers import (
     ProductSerializer,
     UserSerializer,
     UserSerializerWithToken,
+    ShippingAddressSerializer,
 )
 from .user_views import IsCustomer
 
@@ -49,8 +50,8 @@ def add_order_items(request):
         order = Order.objects.create(
             customer=CustomerProfile.objects.get(user=user),
             payment_method=data["payment_method"],
-            tax_price=data["tax_price"] if data["tax_price"] else 0.0,
-            shipping_price=data["shipping_price"] if data["shipping_price"] else 0.0,
+            tax_price=data["tax_price"] if "tax_price" in data else 0.0,
+            shipping_price=data["shipping_price"] if "shipping_price" in data else 0.0,
             total_price=data["total_price"],
         )
 
@@ -73,11 +74,20 @@ def add_order_items(request):
                 name=product.name,
                 qty=cart_item["qty"],  # or item.qty
                 price=cart_item["price"],  # or product.price
-                # image=product.image.url, # need to have a real image for this to work, NOTE: can be null
+                image=product.image.url,
             )
 
             # Update stock
             product.count_in_stock -= item.qty
+            # If product is out of stock, set product to not available
+            if product.count_in_stock <= 0:
+                return Response(
+                    {
+                        "detail": f"Product {product.name} with id: {product._id} is out of stock"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             product.save()
 
         # delete products from user's cart
@@ -88,6 +98,7 @@ def add_order_items(request):
         CartItem.objects.filter(
             customer=CustomerProfile.objects.get(user=user)
         ).delete()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
