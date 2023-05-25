@@ -268,7 +268,7 @@ def register_customer(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.info(e)
-        message = {"detail": "User with this email already exists"}
+        message = {"detail": "Something is wrong with the provided data"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -499,7 +499,7 @@ def register_business(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.error(e)
-        message = {"detail": "User with this email already exists"}
+        message = {"detail": "Something is wrong with the provided data"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
