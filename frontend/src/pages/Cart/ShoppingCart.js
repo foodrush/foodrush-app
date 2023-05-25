@@ -10,89 +10,87 @@ import BreadcrumbImage from '../../style/img/breadcrumb.jpg';
 
 import { CartContext } from "../../contexts/CartContext";
 
-function ShoppingCart({token}) {
+function ShoppingCart({ token }) {
     const { cartData, fetchCartData, cartState } = useContext(CartContext);
 
 
     // const token = localStorage.getItem("token");
 
     const decreaseQuantity = async (productID) => {
-        if(token){
-        // an empty object is used to indicate that no data is being sent in the request 
-        await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
-            {}, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async (response) => {
-            if (response.status == 200) {
-                // fetches and updates the cartData state
-                // cartData changes so useEffect on display  
-                // state must be changed for this function to finish -- await 
-                await fetchCartData();
-            }
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
+        if (token) {
+            // an empty object is used to indicate that no data is being sent in the request 
+            await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
+                {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    // fetches and updates the cartData state
+                    // cartData changes so useEffect on display  
+                    // state must be changed for this function to finish -- await 
+                    await fetchCartData();
+                }
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
     };
 
     const increaseQuantity = async (productID) => {
-        if(token){
-        await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/', {
-            product_id: productID,
-            qty: 1
-        }, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async (response) => {
-            if (response.status == 201) {
-                await fetchCartData();
-            }
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
+        if (token) {
+            await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/', {
+                product_id: productID,
+                qty: 1
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(async (response) => {
+                if (response.status == 201) {
+                    await fetchCartData();
+                }
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
     };
 
     // not using Promises -- the order of requests does not matter but deleting the same productId messes up with the server (?) unless proceeded sequentially -- wait for one request to be over to run the next
     const deleteProduct = async (productID, qty) => {
-        if(token){
-        try {
-            let deletedFlag = 0;
-            for (let i = 0; i < qty; i++) {
-                await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/all/`,
-                    {}, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }).then((response) => {
-                    if (response.status == 200) {
-                        deletedFlag++;
-                    }
-                })
+        if (token) {
+            try {
+                let deletedFlag = 0;
+                for (let i = 0; i < qty; i++) {
+                    await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
+                        {}, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then((response) => {
+                        if (response.status == 200) {
+                            deletedFlag++;
+                        }
+                    })
+                }
+                if (deletedFlag === qty) {
+                    await fetchCartData();
+                }
             }
-            if (deletedFlag === qty) {
-                await fetchCartData();
+            catch (error) {
+                console.log(error);
             }
         }
-        catch (error) {
-            console.log(error);
-        }
-    }
     };
 
     const deleteAll = async () => {
         try {
-            // deleteProduct() requests are mapped into an array of promises 
-            const promises = cartData.map(({ product, qty }) => {
-                return deleteProduct(product._id, qty);
-            });
-
-            // promises make asynchronous operations complete successfully before proceeding -- deleteProducts --> cartData.len --> fetchCard
-            await Promise.all(promises);
-
+            await axios.delete(`http://127.0.0.1:8000/api/orders/remove-from-cart/all/`,
+                {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             await fetchCartData();
         }
         catch (error) {
@@ -101,7 +99,7 @@ function ShoppingCart({token}) {
     };
 
     const displayCartData = () => {
-        if(!token){
+        if (!token) {
             return null;
         }
         return (

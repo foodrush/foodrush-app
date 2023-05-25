@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import './css/style.css';
 
 // ON HoVER
@@ -10,25 +10,29 @@ import 'jquery-ui/dist/jquery-ui.min';
 import 'font-awesome/css/font-awesome.min.css';
 import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
-import {wait} from "@testing-library/user-event/dist/utils";
+import { wait } from "@testing-library/user-event/dist/utils";
 import { UserContext } from "../../contexts/UserContextProvider";
 
+import PopUp from '../../modal/PopUp';
 
-
-export default function LoginBusiness(){
+export default function LoginBusiness() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
     const [accsesstoken, setAccsessToken] = useState('');
     const { setUserId, setIsBusiness, setUserName, setUserType } = useContext(UserContext);
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpContent, setPopUpContent] = useState("");
+    const [popUpType, setPopUpType] = useState(0);
+
 
 
     let navigate = useNavigate();
-    const routeToDashboard = (path) =>{
+    const routeToDashboard = (path) => {
         console.log(path);
         navigate(path);
     }
@@ -74,14 +78,34 @@ export default function LoginBusiness(){
             }
         } catch (error) {
             console.error(error);
+            if (error.response.status == 401) {
+                setIsOpen(true);
+                setPopUpContent(`${error.response.data.detail}.
+                \nCheck your username and password please.`);
+                setPopUpType(0);
+            }
+            if (error.response.status == 400) {
+                setIsOpen(true);
+                setPopUpType(0);
+                let popUpMess = "";
+                if (error.response.data.password)
+                    popUpMess += "The password field cannot be blank. \n"
+                if (error.response.data.username)
+                    popUpMess += "The email field cannot be blank.\n"
+                if (error.response.data.password && error.response.data.username)
+                    popUpMess = "The password and email fields cannot be blank"
+                setPopUpContent(popUpMess)
+            }
         }
     };
 
     return (
-
         <div>
+            <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
             {/* nav bar with name */}
-            <Navbar/>
+            <Navbar />
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
@@ -95,7 +119,7 @@ export default function LoginBusiness(){
                                     <div className="form-group first">
                                         {/* Email input */}
                                         <label htmlFor="username">Email</label>
-                                        <input type="text" value={email} className="form-control" placeholder="your-email@gmail.com" id="username"  onChange={(e) => setEmail(e.target.value)}/>
+                                        <input type="text" value={email} className="form-control" placeholder="your-email@gmail.com" id="username" onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                     {/* Password input */}
                                     <div className="form-group last mb-3">
