@@ -369,6 +369,10 @@ def get_orders_from_business(request):
         for ordered_product in ordered_products:
             # get the order from every ordered product
             logger.success(f"calculated order: {ordered_product.order}")
+            # if order is same as the previous one, skip it
+            if ordered_product.order in business_orders:
+                continue
+
             business_orders.append(ordered_product.order)
     except Exception as e:
         logger.info(e)
