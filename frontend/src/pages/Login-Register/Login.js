@@ -15,13 +15,20 @@ import Navbar from "../../Navigation/Navbar";
 import axios from 'axios';
 import {UserContext} from "../../contexts/UserContextProvider";
 
+import PopUp from '../../modal/PopUp';
+
 export default function Login({setToken}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken2] = useState('');
     const { setUserId, setIsBusiness, setUserName,setUserType,setUserInfos} = useContext(UserContext);
 
-    // const [token, setToken] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpContent, setPopUpContent] = useState("");
+    const [popUpType, setPopUpType] = useState(0);
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
 
 
     let navigate = useNavigate();
@@ -29,7 +36,6 @@ export default function Login({setToken}){
         console.log(path);
         navigate(path);
     }
-
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -69,16 +75,33 @@ export default function Login({setToken}){
             }
         } catch (error) {
             console.error(error);
+            if(error.response.status == 401){
+                setIsOpen(true);
+                setPopUpContent(`${error.response.data.detail}.
+                \nCheck your username and password please.`);
+                setPopUpType(0);
+            }
+            if(error.response.status == 400){
+                setIsOpen(true);
+                setPopUpType(0);
+                let popUpMess = "";
+                if(error.response.data.password)
+                    popUpMess += "The password field cannot be blank. \n"
+                if(error.response.data.username)
+                    popUpMess += "The email field cannot be blank.\n"
+                if(error.response.data.password && error.response.data.username)
+                    popUpMess = "The password and email fields cannot be blank"
+                setPopUpContent(popUpMess)
+            }
         }
     };
 
-
     return (
-
         <div>
             {/* nav bar with name */}
-            {/* <Navbar/> */}
-            {/* nav bar end*/}
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
                     <div className="container">

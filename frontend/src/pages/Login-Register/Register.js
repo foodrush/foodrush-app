@@ -1,45 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import './css/style.css';
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../Navigation/Navbar";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function Register(){
+import PopUp from '../../modal/PopUp';
+
+export default function Register() {
     const [name, setFirstName] = useState('');
     const [surname, setLastName] = useState('');
     const [phone, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpContent, setPopUpContent] = useState("");
+    const [popUpType, setPopUpType] = useState(0);
 
     let navigate = useNavigate();
-    const routeToLogin = (path) =>{
+    const routeToLogin = (path) => {
         console.log(path);
         navigate(path);
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(email,password);
+        console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-customer/', {
-                first_name:name,
-                last_name:surname,
-                phone_number:phone,
-                email:email,
+                first_name: name,
+                last_name: surname,
+                phone_number: phone,
+                email: email,
                 name: name,
-                password:password
+                password: password
             }).then(response => {
                 if (response.status === 200) {
                     routeToLogin('/login');
-
                 }
             }).catch(error => {
                     console.error(error);
+                    let popUpMess ="";
+                    if (error.response.status == 400) {
+                        setIsOpen(true);
+                        setPopUpType(0);
+                        if(email === "" || phone === "" || name === "" || surname === "" || password === ""){
+                            popUpMess += `None of the fields cannot be empty. \n`
+                            
+                        }
+                        if(!email.includes("@")){
+                            popUpMess += `The email you've entered is invalid.\n`
+                        }
+                    setPopUpContent(popUpMess);
+                    }
                 });
-
-            console.log(response.data)
             // Clear the email and password fields
             setFirstName('');
             setLastName('');
@@ -48,7 +63,6 @@ export default function Register(){
             setPassword('');
             // routeToHome('/login');
         } catch (error) {
-
             console.error(error);
         }
     };
@@ -56,8 +70,10 @@ export default function Register(){
     return (
         <div>
             {/* nav bar with name */}
-            <Navbar/>
-
+            <Navbar />
+            <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
@@ -78,13 +94,13 @@ export default function Register(){
                                         {/* last name input */}
                                         <div className="form-group col-md-6">
                                             <label htmlFor="lastName" className="form-label">Last Name</label>
-                                            <input type="text" className="form-control" id="lastName" onChange={(e) => setLastName(e.target.value)}/>
+                                            <input type="text" className="form-control" id="lastName" onChange={(e) => setLastName(e.target.value)} />
                                         </div>
                                         {/* last name input end */}
                                         {/* phone number */}
                                         <div className="form-outline col-12">
                                             <label className="form-label" htmlFor="phoneNumber">Phone Number</label>
-                                            <input type="tel" id="phoneNumber" className="form-control form-control-lg" onChange={(e) => setPhoneNumber(e.target.value)}/>
+                                            <input type="tel" id="phoneNumber" className="form-control form-control-lg" onChange={(e) => setPhoneNumber(e.target.value)} />
                                         </div>
                                         {/* phone number end */}
                                         {/* Email input */}
