@@ -48,7 +48,10 @@ export default function Home(){
         console.log(path);
         navigate("/editmenu");
     }
-
+    const routeToOrders = (path) =>{
+        console.log(path);
+        navigate("/business-orders");
+    }
 
 
     if(isLoading){
@@ -63,7 +66,7 @@ export default function Home(){
                     <div>
 
                     </div>
-                    <button type="button" className="btn btn-primary btn-lg btn-block" onClick={routeToEditMenu}>Last Orders</button>
+                    <button type="button" className="btn btn-primary btn-lg btn-block" onClick={routeToOrders}>Orders</button>
                 </div>
 
             );

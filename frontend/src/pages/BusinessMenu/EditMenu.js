@@ -65,6 +65,7 @@ export default function EditMenu() {
                                 <img
                                     src={imageUrl}
                                     alt={product.name}
+                                    style={{ width: '200px', height: '150px' }}
 
                                 />
                             </div>

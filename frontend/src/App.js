@@ -41,6 +41,7 @@ import EditProduct from "./pages/BusinessMenu/EditProduct";
 
 import { ProductProvider } from "./contexts/ProductFormContext";
 import Checkout from "./pages/Checkout";
+import BusinessOrders from "./pages/BusinessMenu/BusinessOrders";
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
     return (
@@ -65,7 +66,7 @@ function App() {
                         <Route path="/editmenu" element={<EditMenu />} />
 
                         <Route path="/editmenu/add-product" element={<AddProduct />} />
-
+                        <Route path="/business-orders" element={<BusinessOrders />} />
                         <Route path="/shopping-cart" element={<ShoppingCart token={token} />} />
                         <Route path="/business" element={<BusinessDashboard />} />
                         <Route path="/business/:id" element={<BusinessPage />} exact />

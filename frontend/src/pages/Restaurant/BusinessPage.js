@@ -10,7 +10,6 @@ import "jquery-nice-select/css/nice-select.css";
 import Business_Navbar from "../../Navigation/Business_Navbar"
 import Navbar from "../../Navigation/Navbar";
 import {UserContext} from "../../contexts/UserContextProvider";
-// import banner2 from "./banner2.jpg";
 import banner from "../../style/img/hero/banner.jpg";
 import Alert from "react-bootstrap/Alert";
 
