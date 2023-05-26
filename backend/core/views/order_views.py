@@ -80,10 +80,10 @@ def add_order_items(request):
             # Update stock
             product.count_in_stock -= item.qty
             # If product is out of stock, set product to not available
-            if product.count_in_stock <= 0:
+            if product.count_in_stock < 0:
                 return Response(
                     {
-                        "detail": f"Product {product.name} with id: {product._id} is out of stock"
+                        "detail": f"Product {product.name} with id: {product._id} is out of stock. current stock: {product.count_in_stock}"
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
