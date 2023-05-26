@@ -5,15 +5,10 @@ import { Helmet } from 'react-helmet';
 import { useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
 import BreadcrumbImage from '../../style/img/breadcrumb.jpg';
-
 import { CartContext } from "../../contexts/CartContext";
-
 import Error from "../../pages/Error";
-
 import PopUp from "../../modal/PopUp";
-
 import { useState } from "react";
 
 function ShoppingCart({ token }) {
