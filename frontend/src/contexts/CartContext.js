@@ -7,8 +7,6 @@ export const CartContext = createContext();
 
 // token is a state taken from the app -- may be set on login
 export const CartProvider = ({ children, token, setToken }) => {
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [totalQuantity, setTotalQuantity] = useState(0);
     const [cartData, setCartData] = useState([]);
     const [cartState, setCartState] = useState({});
     const [userType, setUserType] = useState(0);
@@ -16,37 +14,26 @@ export const CartProvider = ({ children, token, setToken }) => {
     useEffect(() => {
         const type = localStorage.getItem("userType");
         setUserType(type);
-        if(type == 1)
+        if (type == 1)
             fetchCartData();
     }, []);
 
     useEffect(() => {
-        if(userType == 1)
+        if (userType == 1)
             fetchCartData();
     }, [token]);
 
+    // price & quantity calc
     useEffect(() => {
-        cartInfo();
-    }, [token, cartData]);
+        let currentPrice = 0;
+        let currentQuantity = 0;
 
-
-    // get cart data & set cartData 
-    const fetchCartData = async () => {
-        await axios.get("http://127.0.0.1:8000/api/orders/cart/", {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
-            // This state update triggers a re-render of the component
-            setCartData(response.data)
-        }).catch((error) => {
-            console.error(error);
+        // calculate cart values -- price & quantity 
+        cartData.forEach(({ product, qty }) => {
+            currentPrice += (product.price * qty)
+            currentQuantity += qty;
         });
-    }
 
-    const cartInfo = async () => {
-        // await fetchCartData();
-        // if no token or business user 
         if (!token || userType === 2) {
             setCartState({
                 totalHearts: 0,
@@ -58,25 +45,28 @@ export const CartProvider = ({ children, token, setToken }) => {
             setCartState({
                 // will be updated when favorites are decided*
                 totalHearts: 0,
-                totalQuantity: totalQuantity,
-                totalPrice: totalPrice
+                totalQuantity: currentQuantity,
+                totalPrice: currentPrice
             });
         }
-    }
 
-    // anywhere cartProvider is consumed -- update the total price and quantity states
-    useEffect(() => {
-        let currentPrice = 0;
-        let currentQuantity = 0;
+    }, [token, cartData])
 
-        // calculate cart values -- price & quantity 
-        cartData.forEach(({ product, qty }) => {
-            currentPrice += (product.price * qty)
-            currentQuantity += qty;
+
+    // get cart data & set cartData 
+    const fetchCartData = async () => {
+        await axios.get("http://127.0.0.1:8000/api/orders/cart/", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            // This state update triggers a re-render of the component
+            setCartData(response.data)
+
+        }).catch((error) => {
+            console.error(error);
         });
-        setTotalQuantity(currentQuantity);
-        setTotalPrice(currentPrice);
-    }, [cartData])
+    }
 
     // only the ones currently used are sent
     const cartObject = useMemo(() => {

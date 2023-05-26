@@ -142,7 +142,10 @@ export default function Home() {
         console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
-
+        if(userToken === null || userToken === ""){
+            setIsOpen(true);
+            setPopUpContent("To add products to your cart you must login.")
+        }
         if (userToken && product_id) {
             await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/',
                 {
@@ -154,7 +157,6 @@ export default function Home() {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }).then(async (response) => {
-                    console.log(response);
                     if (response.status === 201) {
                         await fetchCartData();
                         routeCart();
