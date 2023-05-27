@@ -6,19 +6,28 @@ import { Link } from 'react-router-dom';
 
 import Navbar from '../../Navigation/Navbar';
 import { UserContext } from '../../contexts/UserContextProvider';
+import Business_Navbar from "../../Navigation/Business_Navbar";
 
 
 function UserProfile() {
+    //TODO: needs verification to go on
     const {userName,userType,userInfos} = useContext(UserContext);
 
     useEffect(() => {
         console.log(userInfos.user);
+        if(userType===0){
+            return (<div>
+                LOGIN FIRST
+            </div>)
+        }
     }, []);
 
     return (
         <>
             {/* Navbar */}
-            <Navbar />
+            {userType === 2 ?
+                (<Business_Navbar/>) :
+                (<Navbar/>)}
             {/* Navbar end*/}
             <div className="d-flex align-items-center bg">
                 <div className="container ">

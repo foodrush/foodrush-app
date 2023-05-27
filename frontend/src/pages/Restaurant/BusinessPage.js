@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useNavigate} from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
@@ -12,16 +12,21 @@ import Navbar from "../../Navigation/Navbar";
 import {UserContext} from "../../contexts/UserContextProvider";
 import banner from "../../style/img/hero/banner.jpg";
 import Alert from "react-bootstrap/Alert";
+import {CartContext} from "../../contexts/CartContext";
 
 
 function BusinessPage() {
     const [businessData, setBusinessData] = useState(null);
     const [productResponse, setproductResponse] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpContent, setPopUpContent] = useState("");
+    const { cartData, fetchCartData, cartState } = useContext(CartContext);
 
     let businessId = useParams();
     const {userType} = useContext(UserContext)
 
+    let navigate = useNavigate();
 
     useEffect(() => {
         console.log(businessId);
@@ -66,14 +71,28 @@ function BusinessPage() {
                 }).then(async (response) => {
                 console.log(response);
                 if (response.status === 201) {
-                    setShowAlert(true);
+                    await fetchCartData();
+                    routeCart();
                 }
 
             }).catch((error) => {
                 console.error(error);
+                if (error.response.status) {
+                    setIsOpen(true);
+                    setPopUpContent(error.response.data.detail)
+                }
             })
         }
     };
+
+    const routeCart = () => {
+        navigate("/shopping-cart"); // navigate satkes to the bottom of the page without setTimeout
+        setTimeout(() => {
+            window.scrollTo(0, 0); // Scroll to top of the page
+        }, 1);
+        // window.location.href = "/shopping-cart"; // re-renders the whole page
+    };
+
 
     const product = () => {
         console.log("askdahjshjd")
@@ -105,6 +124,7 @@ function BusinessPage() {
                                         <h6>
                                             ${product.price}
                                         </h6>
+                                        {userType===1 &&
                                         <a href onClick={(e) => {
                                             handleAddToCart(e, product._id);
                                         }}>
@@ -165,6 +185,7 @@ function BusinessPage() {
                                                 </g>
                                             </svg>
                                         </a>
+                            }
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +273,7 @@ function BusinessPage() {
                             dismissible
                         >
                             <Alert.Heading>
-                                This is a success alert which has green background
+                                Successfully Added To Cart
                             </Alert.Heading>
                         </Alert>
                     )}

@@ -1,10 +1,9 @@
-import Business_Navbar from "../../Navigation/Business_Navbar";
-import {Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useEffect, useState, useContext} from "react";
 import axios from "axios";
-import {UserContext} from "../../contexts/UserContextProvider";
+import { UserContext } from "../contexts/UserContextProvider";
+import Navbar from "../Navigation/Navbar";
 
 export default function BusinessOrders() {
     const [status, setStatus] = useState(null);
@@ -21,8 +20,8 @@ export default function BusinessOrders() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`http://127.0.0.1:8000/api/users/business-profile/`, {headers}),
-                    axios.get(`http://127.0.0.1:8000/api/users/business-profile/orders/`, {headers})
+                    axios.get(`http://127.0.0.1:8000/api/users/customer-profile/`, {headers}),
+                    axios.get(`http://127.0.0.1:8000/api/users/customer-profile/orders/`, {headers})
                 ]);
                 setStatus(businessResponse.status);
                 setproductResponse(productResponse.data);
@@ -33,35 +32,14 @@ export default function BusinessOrders() {
                 console.error(error);
             }
         }
+
         fetchData();
     }, []);
 
 
     const backendURL = 'http://127.0.0.1:8000';
-    const displayItems = () => {
-        return (
-            <div>
-                {productResponse.map((order) => (
-                    <div key={order._id}>
-                        <h3>Order ID: {order._id}</h3>
 
-                        <ul>
-                            {order.order_items.map((item) => (
-                                <li key={item._id}>
-                                    <p>Item Name: {item.name}</p>
-                                    <p>Quantity: {item.qty}</p>
-                                    <p>Price: {item.price}</p>
-                                    {/* Render other item properties as needed */}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
-            </div>
-        )
-    }
     let navigate = useNavigate();
-
     const routeToRestaurant = (path) => {
         console.log(path);
         navigate(`/business/${path}`);
@@ -203,7 +181,7 @@ export default function BusinessOrders() {
         if (status === 200) {
             return (
                 <>
-                    <Business_Navbar/>
+                    <Navbar/>
                     {/* add new */}
                     <div className="card-header border-0 pt-5 d-flex justify-content-between">
                         <h3 className="card-title align-items-start flex-column">

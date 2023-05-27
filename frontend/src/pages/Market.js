@@ -28,6 +28,7 @@ export default function Market() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchParams] = useSearchParams();
     const searchText = searchParams.get('search');
+    const [isMenuVisible, setMenuVisible] = useState(true);
 
     useEffect(() => {
         console.log("asdhajsjd")
@@ -121,8 +122,6 @@ export default function Market() {
         //console.log(desiredData);
         return (
             desiredData.map((item) => {
-                console.log("----------------------");
-                console.log(item.name)
                 var imageUrlWithPrefix;
                 if (item.image !== null) {
                     imageUrlWithPrefix = `http://127.0.0.1:8000${item.image}`;
@@ -143,7 +142,6 @@ export default function Market() {
                                 )}
                                 <ul className="product__item__pic__hover">
                                     <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                    <li><a href="#"><i className="fa fa-retweet" /></a></li>
                                     <li><a href="#" onClick={(e) => { handleAddToCart(e, item._id); }}>
                                         <i className="fa fa-shopping-cart" />
                                     </a></li>
@@ -151,6 +149,8 @@ export default function Market() {
                             </div>
                             <div className="product__item__text" onClick={() => routeToRestaurant(item.business)}>
                                 <h6><a href="#">{item.name}</a></h6>
+                                <h6><a href="#">{item.business_name}</a></h6>
+
                                 <h5>{item.price}</h5>
                                 <h5>{item.rating}</h5>
                             </div>
@@ -162,6 +162,10 @@ export default function Market() {
     }
 
     const productRender = useMemo(() => product(), [desiredData]);
+
+    const handleMenuClick = () => {
+        setMenuVisible(!isMenuVisible);
+    };
 
 
     return (
@@ -176,11 +180,11 @@ export default function Market() {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="hero__categories">
-                                <div className="hero__categories__all">
+                                <div className="hero__categories__all" onClick={handleMenuClick}>
                                     <i className="fa fa-bars"/>
                                     <span>All departments</span>
                                 </div>
-                                <ul>
+                                <ul className={isMenuVisible ? '' : 'hidden'}>
                                     <li><a href="#">Fresh Meat</a></li>
                                     <li><a href="#">Vegetables</a></li>
                                     <li><a href="#">Fruit &amp; Nut Gifts</a></li>
@@ -199,9 +203,8 @@ export default function Market() {
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                        <div className="hero__search__categories">
-                                            All Categories
-                                            <span className="arrow_carrot-down"/>
+                                        <div className="hero__search__categories" onClick={fetchData}>
+                                            Reset Filters
                                         </div>
                                         <input type="text" placeholder="What do yo u need?" value={searchQuery}
                                                onChange={handleSearchQueryChange}/>
@@ -214,7 +217,7 @@ export default function Market() {
                                         <i className="fa fa-phone"/>
                                     </div>
                                     <div className="hero__search__phone__text">
-                                        <h5>+65 11.188.888</h5>
+                                        <h5>+90 534 510 3978</h5>
                                         <span>support 24/7 time</span>
                                     </div>
                                 </div>

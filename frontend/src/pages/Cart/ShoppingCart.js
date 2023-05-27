@@ -203,7 +203,7 @@ function ShoppingCart({token}) {
                                             <i className="fa fa-phone" />
                                         </div>
                                         <div className="hero__search__phone__text">
-                                            <h5>+65 11.188.888</h5>
+                                            <h5>+90 534 510 3978</h5>
                                             <span>support 24/7 time</span>
                                         </div>
                                     </div>

@@ -91,7 +91,6 @@ export default function Home() {
                                 )}
                                 <ul className="featured__item__pic__hover">
                                     <li><a href="#"><i className="fa fa-heart" /></a></li>
-                                    <li><a href="#"><i className="fa fa-retweet" /></a></li>
                                     <li><a href="#"
                                         onClick={(e) => {
                                             handleAddToCart(e, item._id);
@@ -103,6 +102,7 @@ export default function Home() {
                             </div>
                             <div className="featured__item__text" onClick={() => routeToRestaurant(item.business)}>
                                 <h6><a href="#">{item.name}</a></h6>
+                                <h6><a href="#">{item.business_name}</a></h6>
                                 <h5>{item.price}</h5>
                                 <h5>{item.rating}</h5>
                             </div>
@@ -133,6 +133,9 @@ export default function Home() {
         navigate(`/business/${path}`);
     }
     const handleSearch = () => {
+        console.log("markeeeeeeeeeeeeeeeeeettttttttttttttttttttt")
+
+        console.log(searchText)
         navigate(`/market?search=${searchText}`);
     };
 
@@ -178,10 +181,11 @@ export default function Home() {
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
-    const handleSearchTextChange = (event) => {
+    const handleSetSearchText = (newSearchText) => (event) => {
         event.preventDefault();
-        setSearchText(event.target.value);
+        setSearchText(newSearchText);
     };
+
 
     const handleMenuClick = () => {
         setMenuVisible(!isMenuVisible);
@@ -207,17 +211,17 @@ export default function Home() {
                                     <span>All departments</span>
                                 </div>
                                 <ul className={isMenuVisible ? '' : 'hidden'}>
-                                    <li><a href="#">Fresh Meat</a></li>
-                                    <li><a href="#">Vegetables</a></li>
-                                    <li><a href="#">Fruit &amp; Nut Gifts</a></li>
-                                    <li><a href="#">Fresh Berries</a></li>
-                                    <li><a href="#">Ocean Foods</a></li>
-                                    <li><a href="#">Butter &amp; Eggs</a></li>
-                                    <li><a href="#">Fastfood</a></li>
-                                    <li><a href="#">Fresh Onion</a></li>
-                                    <li><a href="#">Papayaya &amp; Crisps</a></li>
-                                    <li><a href="#">Oatmeal</a></li>
-                                    <li><a href="#">Fresh Bananas</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fresh Meat")}>Fresh Meat</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Vegetables")}>Vegetables</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fruit")}>Fruit &amp; Nut Gifts</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fresh Berries")}>Fresh Berries</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Ocean Foods")}>Ocean Foods</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Eggs")}>Butter &amp; Eggs</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fastfood")}>Fastfood</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fresh Onion")}>Fresh Onion</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Papayaya")}>Papayaya &amp; Crisps</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Oatmeal")}>Oatmeal</a></li>
+                                    <li><a href="#" onClick={handleSetSearchText("Fresh Bananas")}>Fresh Bananas</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -229,7 +233,7 @@ export default function Home() {
                                             All Categories
                                             <span className="arrow_carrot-down" />
                                         </div>
-                                        <input type="text" placeholder="What do yo u need?" value={searchText} onChange={handleSearchTextChange} />
+                                        <input type="text" placeholder="What do yo u need?" value={searchText} onChange={event => setSearchText(event.target.value)} />
                                         <button type="submit" className="site-btn" onClick={handleSearch}>SEARCH</button>
                                     </form>
                                 </div>
@@ -238,7 +242,7 @@ export default function Home() {
                                         <i className="fa fa-phone" />
                                     </div>
                                     <div className="hero__search__phone__text">
-                                        <h5>+65 11.188.888</h5>
+                                        <h5>+90 534 510 3978</h5>
                                         <span>support 24/7 time</span>
                                     </div>
                                 </div>
@@ -299,15 +303,7 @@ export default function Home() {
                             <div className="section-title">
                                 <h2>Featured Product</h2>
                             </div>
-                            <div className="featured__controls">
-                                <ul>
-                                    <li className="active" data-filter="*">All</li>
-                                    <li data-filter=".oranges">Oranges</li>
-                                    <li data-filter=".fresh-meat">Fresh Meat</li>
-                                    <li data-filter=".vegetables">Vegetables</li>
-                                    <li data-filter=".fastfood">Fastfood</li>
-                                </ul>
-                            </div>
+
                         </div>
                     </div>
                     <div className="row featured__filter">

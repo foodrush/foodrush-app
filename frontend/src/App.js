@@ -17,6 +17,7 @@ import Register from "./pages/Login-Register/Register";
 import RegisterBusiness from "./pages/Login-Register/RegisterBusiness";
 import LoginBusiness from "./pages/Login-Register/LoginBusiness";
 
+import Orders from "./pages/Orders";
 
 import Market from "./pages/Market";
 import Restaurant from "./pages/Restaurant/Restaurant";
@@ -67,11 +68,14 @@ function App() {
 
                         <Route path="/editmenu/add-product" element={<AddProduct />} />
                         <Route path="/business-orders" element={<BusinessOrders />} />
+                        <Route path="/orders" element={<Orders />} />
+
                         <Route path="/shopping-cart" element={<ShoppingCart token={token} />} />
                         <Route path="/business" element={<BusinessDashboard />} />
                         <Route path="/business/:id" element={<BusinessPage />} exact />
                         <Route path="/edit-product/:productId" element={<EditProduct />} />
                         <Route path="/checkout" element={<Checkout />} />
+
                     </Routes></ProductProvider>
             </CartProvider>
         </UserContextProvider>
