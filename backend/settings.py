@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-i%3c6z4mup7siaxxc(p4&h$xjqjcq#cajf8+f)zlm20o^-r)n3"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "foodrush-demo.herokuapp.com"]
 
