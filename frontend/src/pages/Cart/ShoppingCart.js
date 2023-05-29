@@ -114,17 +114,18 @@ function ShoppingCart({ token }) {
         }
         return (
             cartData.map(({ id, product, qty }) => {
+                let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
                 return (
                     <tr key={id}>
                         <td className="shoping__cart__item">
-                            <img src={product.image} alt="" />
+                            <img src={imageUrlWithPrefix} alt="" className="square-image"/>
                             <h5>{product.name}</h5>
                         </td>
                         <td className="shoping__cart__price">
                             ${product.price}
                         </td>
                         <td className="shoping__cart__quantity">
-                            <div className="quantity">
+                            <div className="quantity d-flex justify-content-center">
                                 <div className="pro-qty d-flex flex-row justify-content-around align-items-center">
                                     <span className="dec qtybtn" onClick={(() => decreaseQuantity(product._id))}>-</span>
                                     <span>{qty}</span>
