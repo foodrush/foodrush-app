@@ -378,17 +378,20 @@ ol {
 }
 
 .header__top__right__auth {
+	cursor: pointer;
 	display: inline-block;
 	padding-right: 10px;
 }
 
 .header__top__right__auth a {
+	cursor: pointer;
 	display: block;
 	font-size: 14px;
 	color: #1c1c1c;
 }
 
 .header__top__right__auth a i {
+	cursor: pointer;
 	margin-right: 6px;
 }
 
@@ -632,6 +635,7 @@ ol {
 }
 
 .hero__search__form form .hero__search__categories {
+	cursor: pointer;
 	width: 30%;
 	float: left;
 	font-size: 16px;
@@ -643,6 +647,7 @@ ol {
 }
 
 .hero__search__form form .hero__search__categories:after {
+	cursor: pointer;
 	position: absolute;
 	right: 0;
 	top: 14px;
@@ -654,6 +659,7 @@ ol {
 }
 
 .hero__search__form form .hero__search__categories span {
+	cursor: pointer;
 	position: absolute;
 	right: 14px;
 	top: 14px;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
-import {Link, useParams, useNavigate} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
@@ -93,6 +93,8 @@ function BusinessPage() {
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
+    const backendURL = 'http://127.0.0.1:8000';
+
 
     const product = () => {
         console.log("askdahjshjd")
@@ -101,14 +103,20 @@ function BusinessPage() {
 
                 var imageUrlWithPrefix;
                 if (product.image !== null) {
-                    imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
+                    imageUrlWithPrefix= `${backendURL}/static${product.image}`;
                 }
                 return (
                     <div key={product.id} className="col-sm-6 col-lg-4 all pizza">
                         <div className="box">
                             <div>
                                 <div className="img-box">
-                                    <img src={imageUrlWithPrefix} alt=""/>
+                                    {imageUrlWithPrefix && (
+                                        <img
+                                            src={imageUrlWithPrefix}
+                                            alt={product.name}
+                                            onLoad={() => console.log('Image loaded successfully')}
+                                        />
+                                    )}
                                 </div>
                                 <div className="detail-box">
                                     <h5>
@@ -290,41 +298,6 @@ function BusinessPage() {
                 </div>
             </section>
             {/* end food section */}
-            {/* about section */}
-            <section className="about_section layout_padding">
-                <div className="container  ">
-                    <div className="row">
-                        <div className="col-md-6 ">
-                            <div className="img-box">
-                                <img src="images/about-img.png" alt=""/>
-                            </div>
-                        </div>
-                        <div className="col-md-6">
-                            <div className="detail-box">
-                                <div className="heading_container">
-                                    <h2>
-                                        We Are Feane
-                                    </h2>
-                                </div>
-                                <p>
-                                    There are many variations of passages of Lorem Ipsum available, but the majority
-                                    have suffered alteration
-                                    in some form, by injected humour, or randomised words which don't look even slightly
-                                    believable. If you
-                                    are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
-                                    embarrassing hidden in
-                                    the middle of text. All
-                                </p>
-                                <a href>
-                                    Read More
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* end about section */}
-
             {/* footer section */}
             <footer className="footer_section">
                 <div className="container">
@@ -338,19 +311,19 @@ function BusinessPage() {
                                     <a href>
                                         <i className="fa fa-map-marker" aria-hidden="true"/>
                                         <span>
-                        Location
+                        Ankara, TEDU
                       </span>
                                     </a>
                                     <a href>
                                         <i className="fa fa-phone" aria-hidden="true"/>
                                         <span>
-                        Call +01 1234567890
+                        Call +90 534 5103978
                       </span>
                                     </a>
                                     <a href>
                                         <i className="fa fa-envelope" aria-hidden="true"/>
                                         <span>
-                        demo@gmail.com
+                        gokmen.caglar@tedu.edu.tr
                       </span>
                                     </a>
                                 </div>
@@ -362,8 +335,7 @@ function BusinessPage() {
                                     FoodRush
                                 </a>
                                 <p>
-                                    Necessary, making this the first true generator on the Internet. It uses a
-                                    dictionary of over 200 Latin words, combined with
+                                    Rush for your Food
                                 </p>
                                 <div className="footer_social">
                                     <a href>
@@ -386,13 +358,13 @@ function BusinessPage() {
                         </div>
                         <div className="col-md-4 footer-col">
                             <h4>
-                                Opening Hours
+                                Order Any Time
                             </h4>
                             <p>
                                 Everyday
                             </p>
                             <p>
-                                10.00 Am -10.00 Pm
+                                7 / 24
                             </p>
                         </div>
                     </div>

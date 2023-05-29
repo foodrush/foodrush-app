@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
 import Navbar from "../Navigation/Navbar";
 import {Routes, Route, Link, useNavigate, useSearchParams} from "react-router-dom";
 import '../style/css/style.css';
@@ -31,7 +31,6 @@ export default function Market() {
     const [isMenuVisible, setMenuVisible] = useState(true);
 
     useEffect(() => {
-        console.log("asdhajsjd")
         fetchData();
         if(searchText !== null){
             setSearchQuery(searchText);
@@ -44,10 +43,11 @@ export default function Market() {
             setLoading(true);
             setError(false);
             const response = await axios.get(`http://127.0.0.1:8000/api/products/`);
-            setCompleteData((prevData) => [prevData, ...response.data]);
-            setDesiredData((prevData) => [prevData, ...response.data]);
+            setCompleteData(response.data);
+            setDesiredData(response.data);
             setHasMore(response.data.length > 0);
             setLoading(false);
+            setSearchQuery('');
         } catch (error) {
             console.error(error);
             setError(true);
@@ -63,9 +63,6 @@ export default function Market() {
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
-        console.log(localStorage.getItem("token"))
-        console.log("CART OPERATİONN")
-
         const userToken = localStorage.getItem('token');
 
         if (userToken && product_id) {
@@ -106,8 +103,9 @@ export default function Market() {
         setDesiredData(results.map((result) => result.item));
     }
 
-    const handleSearchQueryChange = (event) => {
-        setSearchQuery(event.target.value);
+
+    const handleSearchQueryChange = (newSearchText) => {
+        setSearchQuery(newSearchText);
     };
 
     const routeCart = () => {
@@ -118,14 +116,15 @@ export default function Market() {
         // window.location.href = "/shopping-cart"; // re-renders the whole page
     };
 
+    const backendURL = 'http://127.0.0.1:8000';
+
     const product = () => {
         //console.log(desiredData);
         return (
             desiredData.map((item) => {
                 var imageUrlWithPrefix;
                 if (item.image !== null) {
-                    imageUrlWithPrefix = `http://127.0.0.1:8000${item.image}`;
-                    console.log(imageUrlWithPrefix);
+                    imageUrlWithPrefix= `${backendURL}/static${item.image}`;
                 }
                 return (
                     <div key={item._id} className="col-lg-4 col-md-6 col-sm-6 products">
@@ -180,34 +179,20 @@ export default function Market() {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="hero__categories">
-                                <div className="hero__categories__all" onClick={handleMenuClick}>
-                                    <i className="fa fa-bars"/>
-                                    <span>All departments</span>
+                                <div className="hidden" >
+
                                 </div>
-                                <ul className={isMenuVisible ? '' : 'hidden'}>
-                                    <li><a href="#">Fresh Meat</a></li>
-                                    <li><a href="#">Vegetables</a></li>
-                                    <li><a href="#">Fruit &amp; Nut Gifts</a></li>
-                                    <li><a href="#">Fresh Berries</a></li>
-                                    <li><a href="#">Ocean Foods</a></li>
-                                    <li><a href="#">Butter &amp; Eggs</a></li>
-                                    <li><a href="#">Fastfood</a></li>
-                                    <li><a href="#">Fresh Onion</a></li>
-                                    <li><a href="#">Papayaya &amp; Crisps</a></li>
-                                    <li><a href="#">Oatmeal</a></li>
-                                    <li><a href="#">Fresh Bananas</a></li>
-                                </ul>
                             </div>
                         </div>
                         <div className="col-lg-9">
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                        <div className="hero__search__categories" onClick={fetchData}>
+                                        <a className="hero__search__categories" onClick={fetchData}>
                                             Reset Filters
-                                        </div>
+                                        </a>
                                         <input type="text" placeholder="What do yo u need?" value={searchQuery}
-                                               onChange={handleSearchQueryChange}/>
+                                               onChange={event => setSearchQuery(event.target.value)}/>
                                         <button type="submit" className="site-btn" onClick={handleSearch}>SEARCH
                                         </button>
                                     </form>
@@ -235,169 +220,19 @@ export default function Market() {
                             <div className="sidebar">
                                 <div className="sidebar__item">
                                     <h4>Department</h4>
-                                    <ul>
-                                        <li><a href="#">Fresh Meat</a></li>
-                                        <li><a href="#">Vegetables</a></li>
-                                        <li><a href="#">Fruit &amp; Nut Gifts</a></li>
-                                        <li><a href="#">Fresh Berries</a></li>
-                                        <li><a href="#">Ocean Foods</a></li>
-                                        <li><a href="#">Butter &amp; Eggs</a></li>
-                                        <li><a href="#">Fastfood</a></li>
-                                        <li><a href="#">Fresh Onion</a></li>
-                                        <li><a href="#">Papayaya &amp; Crisps</a></li>
-                                        <li><a href="#">Oatmeal</a></li>
+                                    <ul className={isMenuVisible ? '' : 'hidden'}>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fresh Meat")}>Fresh Meat</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Vegetables")}>Vegetables</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fruit")}>Fruit &amp; Nut Gifts</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fresh Berries")}>Fresh Berries</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Ocean Foods")}>Ocean Foods</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Eggs")}>Butter &amp; Eggs</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fastfood")}>Fastfood</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fresh Onion")}>Fresh Onion</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Papayaya")}>Papayaya &amp; Crisps</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Oatmeal")}>Oatmeal</a></li>
+                                        <li><a href="#" onClick={() => handleSearchQueryChange("Fresh Bananas")}>Fresh Bananas</a></li>
                                     </ul>
-                                </div>
-                                <div className="sidebar__item">
-                                    <h4>Price</h4>
-                                    <div className="price-range-wrap">
-                                        <div
-                                            className="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                                            data-min={10} data-max={540}>
-                                            <div className="ui-slider-range ui-corner-all ui-widget-header"/>
-                                            <span tabIndex={0}
-                                                  className="ui-slider-handle ui-corner-all ui-state-default"/>
-                                            <span tabIndex={0}
-                                                  className="ui-slider-handle ui-corner-all ui-state-default"/>
-                                        </div>
-                                        <div className="range-slider">
-                                            <div className="price-input">
-                                                <input type="text" id="minamount"/>
-                                                <input type="text" id="maxamount"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="sidebar__item sidebar__item__color--option">
-                                    <h4>Colors</h4>
-                                    <div className="sidebar__item__color sidebar__item__color--white">
-                                        <label htmlFor="white">
-                                            White
-                                            <input type="radio" id="white"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__color sidebar__item__color--gray">
-                                        <label htmlFor="gray">
-                                            Gray
-                                            <input type="radio" id="gray"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__color sidebar__item__color--red">
-                                        <label htmlFor="red">
-                                            Red
-                                            <input type="radio" id="red"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__color sidebar__item__color--black">
-                                        <label htmlFor="black">
-                                            Black
-                                            <input type="radio" id="black"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__color sidebar__item__color--blue">
-                                        <label htmlFor="blue">
-                                            Blue
-                                            <input type="radio" id="blue"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__color sidebar__item__color--green">
-                                        <label htmlFor="green">
-                                            Green
-                                            <input type="radio" id="green"/>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="sidebar__item">
-                                    <h4>Popular Size</h4>
-                                    <div className="sidebar__item__size">
-                                        <label htmlFor="large">
-                                            Large
-                                            <input type="radio" id="large"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__size">
-                                        <label htmlFor="medium">
-                                            Medium
-                                            <input type="radio" id="medium"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__size">
-                                        <label htmlFor="small">
-                                            Small
-                                            <input type="radio" id="small"/>
-                                        </label>
-                                    </div>
-                                    <div className="sidebar__item__size">
-                                        <label htmlFor="tiny">
-                                            Tiny
-                                            <input type="radio" id="tiny"/>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="sidebar__item">
-                                    <div className="latest-product__text">
-                                        <h4>Latest Products</h4>
-                                        <div className="latest-product__slider owl-carousel">
-                                            <div className="latest-prdouct__slider__item">
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-1.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-2.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-3.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div className="latest-prdouct__slider__item">
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-1.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-2.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#" className="latest-product__item">
-                                                    <div className="latest-product__item__pic">
-                                                        <img src="img/latest-product/lp-3.jpg" alt=""/>
-                                                    </div>
-                                                    <div className="latest-product__item__text">
-                                                        <h6>Crab Pool Security</h6>
-                                                        <span>$30.00</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -410,13 +245,6 @@ export default function Market() {
                             <div className="filter__item">
                                 <div className="row">
                                     <div className="col-lg-4 col-md-5">
-                                        <div className="filter__sort">
-                                            <span>Sort By</span>
-                                            <select>
-                                                <option value={0}>Default</option>
-                                                <option value={0}>Default</option>
-                                            </select>
-                                        </div>
                                     </div>
                                     <div className="col-lg-4 col-md-4">
                                         <div className="filter__found">
@@ -425,17 +253,9 @@ export default function Market() {
                                     </div>
                                     <div className="col-lg-4 col-md-3">
                                         <div className="filter__option">
-                                            <span className="icon_grid-2x2"/>
-                                            <span className="icon_ul"/>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="product__pagination">
-                                <a href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <a href="#"><i className="fa fa-long-arrow-right"/></a>
                             </div>
                         </div>
                     </div>
@@ -449,33 +269,23 @@ export default function Market() {
                         <div className="col-lg-3 col-md-6 col-sm-6">
                             <div className="footer__about">
                                 <div className="footer__about__logo">
-                                    <a href="./index.html"><img src="img/logo.png" alt=""/></a>
+                                    <a href="./index.html"><img src="img/logo.png" alt="" /></a>
                                 </div>
                                 <ul>
-                                    <li>Address: 60-49 Road 11378 New York</li>
-                                    <li>Phone: +65 11.188.888</li>
-                                    <li>Email: hello@colorlib.com</li>
+                                    <li>Address: TEDU</li>
+                                    <li>Phone: +90 534 510 3978</li>
+                                    <li>Email: gokmen.caglar@tedu.edu.tr</li>
                                 </ul>
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
                             <div className="footer__widget">
-                                <h6>Useful Links</h6>
+                                <h6>Contributors</h6>
                                 <ul>
-                                    <li><a href="#">About Us</a></li>
-                                    <li><a href="#">About Our Shop</a></li>
-                                    <li><a href="#">Secure Shopping</a></li>
-                                    <li><a href="#">Delivery infomation</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                    <li><a href="#">Our Sitemap</a></li>
-                                </ul>
-                                <ul>
-                                    <li><a href="#">Who We Are</a></li>
-                                    <li><a href="#">Our Services</a></li>
-                                    <li><a href="#">Projects</a></li>
-                                    <li><a href="#">Contact</a></li>
-                                    <li><a href="#">Innovation</a></li>
-                                    <li><a href="#">Testimonials</a></li>
+                                    <li>Gökmen ÇAĞLAR</li>
+                                    <li>Sude ŞAHİN</li>
+                                    <li>S. Dora AÇIK</li>
+                                    <li>Anes MEMISEVIC</li>
                                 </ul>
                             </div>
                         </div>
@@ -483,15 +293,12 @@ export default function Market() {
                             <div className="footer__widget">
                                 <h6>Join Our Newsletter Now</h6>
                                 <p>Get E-mail updates about our latest shop and special offers.</p>
-                                <form action="#">
-                                    <input type="text" placeholder="Enter your mail"/>
-                                    <button type="submit" className="site-btn">Subscribe</button>
-                                </form>
+                                <p>Reach out to</p> <h5>gokmen.caglar@tedu.edu.tr</h5>
                                 <div className="footer__widget__social">
-                                    <a href="#"><i className="fa fa-facebook"/></a>
-                                    <a href="#"><i className="fa fa-instagram"/></a>
-                                    <a href="#"><i className="fa fa-twitter"/></a>
-                                    <a href="#"><i className="fa fa-pinterest"/></a>
+                                    <a href="#"><i className="fa fa-facebook" /></a>
+                                    <a href="#"><i className="fa fa-instagram" /></a>
+                                    <a href="#"><i className="fa fa-twitter" /></a>
+                                    <a href="#"><i className="fa fa-pinterest" /></a>
                                 </div>
                             </div>
                         </div>
@@ -501,12 +308,11 @@ export default function Market() {
                             <div className="footer__copyright">
                                 <div className="footer__copyright__text">
                                     <p>{/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                                        Copyright © All rights reserved | This template is made with <i
-                                            className="fa fa-heart" aria-hidden="true"/> by <a
-                                            href="https://colorlib.com" target="_blank">Colorlib</a>
+                                        Copyright © All rights reserved by FOODRUSH <i
+                                            className="fa fa-heart" aria-hidden="true" />
                                         {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
                                     </p></div>
-                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt=""/>
+                                <div className="footer__copyright__payment"><img src="img/payment-item.png" alt="" />
                                 </div>
                             </div>
                         </div>

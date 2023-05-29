@@ -156,11 +156,10 @@ export default function Navbar() {
                                             <div>
 
                                                 <div className="header__top__right__auth"
-                                                    // data-tooltip-id="my-tooltip"
-                                                    // data-tooltip-content={user}
-                                                    onClick={() => routeToProfile()}><i
-                                                        className="fa fa-user" /> Profile
-                                                    <Tooltip id="my-tooltip" />
+
+                                                    onClick={() => routeToProfile()}>
+                                                    <i className="fa fa-user" /> Profile
+
                                                 </div>
 
                                                 <div className="header__top__right__auth"
