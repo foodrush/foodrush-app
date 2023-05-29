@@ -1,91 +1,47 @@
-import Navbar from "../../Navigation/Navbar";
-import "../../style/css/owl.carousel.min.css"
-import "../../style/css/slicknav.min.css"
+import React from 'react';
+import Error from './Error';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useContext } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import BreadcrumbImage from '../../style/img/breadcrumb.jpg';
-import { CartContext } from "../../contexts/CartContext";
-import Error from "../../pages/Error";
-import PopUp from "../../modal/PopUp";
-import { useState } from "react";
+import Navbar from '../Navigation/Navbar';
+import BreadcrumbImage from '../style/img/breadcrumb.jpg';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function ShoppingCart({ token }) {
-    const { cartData, fetchCartData, cartState } = useContext(CartContext);
-
-    const [isOpen, setIsOpen] = useState(false);
-    const [popUpContent, setPopUpContent] = useState("");
-
-    const decreaseQuantity = async (productID) => {
-        if (token) {
-            // an empty object is used to indicate that no data is being sent in the request
-            await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
-                {}, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(async (response) => {
-                if (response.status == 200) {
-                    // fetches and updates the cartData state
-                    // cartData changes so useEffect on display
-                    // state must be changed for this function to finish -- await
-                    await fetchCartData();
-                }
-            }).catch((error) => {
-                console.log(error);
-            })
+function Favorites() {
+    const token = localStorage.getItem("token")
+    const headers = {
+        headers: {
+            Authorization: `Bearer ${token}`
         }
-    };
+    }
 
-    const increaseQuantity = async (productID, product) => {
-        if (token) {
-            const cartProduct = cartData.find((({ product }) => product._id === productID));
-            if (product.count_in_stock > cartProduct.qty) {
-                await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/', {
-                    product_id: productID,
-                    qty: 1
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }).then(async (response) => {
-                    if (response.status == 201) {
-                        await fetchCartData();
-                    }
-                }).catch((error) => {
-                    console.log(error);
+    useEffect(() => {
+        fetchFavorites()
+    }, [])
+    const [favoritesData, setFavoritesData] = useState([]);
+
+    const fetchFavorites = async () => {
+        try {
+            axios.get("http://127.0.0.1:8000/api/users/customer-profile/favorites/", headers)
+                .then(response => {
+                    console.log(response)
+                    setFavoritesData(response.data)
                 })
-            }
-            else {
-                await fetchCartData();
-                setIsOpen(true);
-                setPopUpContent("You have reached the maximum product stock, you cannot increase the quantity.")
-                console.log("Maximum product stock reached.")
-            }
         }
-    };
+        catch (error) {
+            console.log(error);
+        }
+    }
 
-    // not using Promises -- the order of requests does not matter but deleting the same productId messes up with the server (?) unless proceeded sequentially -- wait for one request to be over to run the next
-    const deleteProduct = async (productID, qty) => {
+    const deleteProduct = async (productID) => {
         if (token) {
             try {
-                let deletedFlag = 0;
-                for (let i = 0; i < qty; i++) {
-                    await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
-                        {}, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }).then((response) => {
-                        if (response.status == 200) {
-                            deletedFlag++;
-                        }
-                    })
-                }
-                if (deletedFlag === qty) {
-                    await fetchCartData();
-                }
+                await axios.delete(`http://127.0.0.1:8000/api/users/customer-profile/favorites/delete/${productID}/`, headers)
+                .then(async (response) => {
+                    console.log(response);
+                    if(response.status === 200)
+                        await fetchFavorites();
+                })
             }
             catch (error) {
                 console.log(error);
@@ -93,64 +49,37 @@ function ShoppingCart({ token }) {
         }
     };
 
-    const deleteAll = async () => {
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/orders/remove-from-cart/all/`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-            await fetchCartData();
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-
-    const displayCartData = () => {
-        if (!token) {
-            return null;
-        }
-        return (
-            cartData.map(({ id, product, qty }) => {
-                let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
-                return (
-                    <tr key={id}>
-                        <td className="shoping__cart__item">
-                            <img src={imageUrlWithPrefix} alt="" className="square-image"/>
-                            <h5>{product.name}</h5>
-                        </td>
-                        <td className="shoping__cart__price">
-                            ${product.price}
-                        </td>
-                        <td className="shoping__cart__quantity">
-                            <div className="quantity d-flex justify-content-center">
-                                <div className="pro-qty d-flex flex-row justify-content-around align-items-center">
-                                    <span className="dec qtybtn" onClick={(() => decreaseQuantity(product._id))}>-</span>
-                                    <span>{qty}</span>
-                                    <span className="inc qtybtn" onClick={(() => increaseQuantity(product._id, product))}>+</span>
-                                </div>
+    const displayFavorites = () => {
+        return (favoritesData.map((product) => {
+            let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
+            return (
+                <tr key={product._id}>
+                    <td className="shoping__cart__item">
+                        <img src={imageUrlWithPrefix} alt="" className='square-image' />
+                        <h5>{product.name}</h5>
+                    </td>
+                    <td className="shoping__cart__price">
+                        ${product.price}
+                    </td>
+                    <td className="shoping__cart__quantity">
+                        <div className="quantity d-flex justify-content-center">
+                            <div className="pro-qty d-flex flex-row justify-content-around align-items-center">
+                                <span>{product.count_in_stock}</span>
                             </div>
-                        </td>
-                        <td className="shoping__cart__total">
-                            ${qty * product.price}
-                        </td>
-                        <td className="shoping__cart__item__close">
-                            <span className="icon_close" onClick={(() => deleteProduct(product._id, qty))} />
-                        </td>
-                    </tr>
-                );
-            })
-        );
-    };
+                        </div>
+                    </td>
+                    <td className="shoping__cart__item__close">
+                        <span className="icon_close" onClick={(() => deleteProduct(product._id))} />
+                    </td>
+                </tr>
+            );
+        }
+        ));
+    }
 
-    if (token) {
+    if (token)
         return (
             <>
-                <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={0}>
-                    {popUpContent}
-                </PopUp>
                 <Helmet>
                     <link rel="stylesheet" href="../../style/css/bootstrap.min.css" />
                     <link rel="stylesheet" href="../../style/css/style.css" />
@@ -223,10 +152,10 @@ function ShoppingCart({ token }) {
                             <div className="row">
                                 <div className="col-lg-12 text-center">
                                     <div className="breadcrumb__text">
-                                        <h2>Shopping Cart</h2>
+                                        <h2>Favorites</h2>
                                         <div className="breadcrumb__option">
                                             <Link to="/">Home</Link>
-                                            <span>Shopping Cart</span>
+                                            <span>Favorites</span>
                                         </div>
                                     </div>
                                 </div>
@@ -247,14 +176,12 @@ function ShoppingCart({ token }) {
                                                 <tr>
                                                     <th className="shoping__product">Products</th>
                                                     <th>Price</th>
-                                                    <th>Quantity</th>
-                                                    <th>Total</th>
-                                                    <th />
+                                                    <th>Current Stock</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {/* iteams on the shopping cart */}
-                                                {displayCartData()}
+                                                {displayFavorites()}
                                             </tbody>
                                         </table>
                                     </div>
@@ -264,32 +191,10 @@ function ShoppingCart({ token }) {
 
                             <div className="row">
                                 <div className="col-lg-12">
-                                    <div className="shoping__cart__btns">
+                                    <div className="shoping__cart__btns d-flex justify-content-center align-items-center">
                                         <Link to="/">
                                             <div className="primary-btn cart-btn">CONTINUE SHOPPING</div>
                                         </Link>
-                                        <button className="primary-btn cart-btn cart-btn-right" onClick={() => { deleteAll() }}>Clear Cart</button >
-                                    </div>
-                                </div>
-                                <div className="col-lg-6">
-                                    <div className="shoping__continue">
-                                        <div className="shoping__discount">
-                                            <h5>Discount Codes</h5>
-                                            <form action="#">
-                                                <input type="text" placeholder="Enter your coupon code" />
-                                                <button type="submit" className="site-btn">APPLY COUPON</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6">
-                                    <div className="shoping__checkout">
-                                        <h5>Cart Total</h5>
-                                        <ul>
-                                            <li>Subtotal <span>${cartState.totalPrice}</span></li>
-                                            <li>Total <span>${cartState.totalPrice}</span></li>
-                                        </ul>
-                                        <Link to="/checkout" className="primary-btn">PROCEED TO CHECKOUT</Link>
                                     </div>
                                 </div>
                             </div>
@@ -366,15 +271,17 @@ function ShoppingCart({ token }) {
                 </div>
 
             </>
-        );
-    }
+        )
     else {
         return (<Error>
             Access Denied, Login First
             <br /><br />
             <Link to="/login">Login Page</Link>
-        </Error>);
+        </Error>)
     }
+
+
+
 }
 
-export default ShoppingCart;
+export default Favorites

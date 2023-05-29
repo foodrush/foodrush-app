@@ -24,7 +24,7 @@ export default function Navbar() {
     const { userType, resetUserContext } = useContext(UserContext)
 
     const { cartState, setToken, cartData } = useContext(CartContext);
-  
+
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -79,10 +79,10 @@ export default function Navbar() {
                 </div>
                 <div className="humberger__menu__cart">
                     <ul>
-                        <li><a href="#"><i className="fa fa-heart" /> <span>1</span></a></li>
-                        <li><a href="#"><i className="fa fa-shopping-bag" /> <span>3</span></a></li>
+                        <li><a href="#"><i className="fa fa-heart" /> <span>{cartState.totalHearts}</span></a></li>
+                        <li><a href="#"><i className="fa fa-shopping-bag" /> <span>{cartState.totalQuantity}</span></a></li>
                     </ul>
-                    <div className="header__cart__price">item: <span>$150.00</span></div>
+                    <div className="header__cart__price">item: <span>{cartState.totalPrice}</span></div>
                 </div>
                 <div className="humberger__menu__widget">
                     <div className="header__top__right__language">
@@ -227,12 +227,13 @@ export default function Navbar() {
                             <div className="header__cart">
 
                                 <ul>
-                                    <li><a href="#">
-                                        <i className="fa fa-heart" data-tooltip-id="my-tooltip"
-                                        // data-tooltip-content="Favorites
-                                        />
-                                        {/*<span></span>*/}
-                                    </a>
+                                    <li>
+                                        <Link to="/favorites">
+                                            <i className="fa fa-heart" data-tooltip-id="my-tooltip"
+                                            // data-tooltip-content="Favorites
+                                            />
+                                            {/*<span></span>*/}
+                                        </Link>
                                     </li>
                                     <li>
                                         <Link to="/shopping-cart">

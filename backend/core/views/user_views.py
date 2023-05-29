@@ -268,7 +268,7 @@ def register_customer(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.info(e)
-        message = {"detail": "User with this email already exists"}
+        message = {"detail": "Something is wrong with the provided data"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -369,6 +369,10 @@ def get_orders_from_business(request):
         for ordered_product in ordered_products:
             # get the order from every ordered product
             logger.success(f"calculated order: {ordered_product.order}")
+            # if order is same as the previous one, skip it
+            if ordered_product.order in business_orders:
+                continue
+
             business_orders.append(ordered_product.order)
     except Exception as e:
         logger.info(e)
@@ -495,7 +499,7 @@ def register_business(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.error(e)
-        message = {"detail": "User with this email already exists"}
+        message = {"detail": "Something is wrong with the provided data"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 

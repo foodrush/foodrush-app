@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import BusinessFormR from "./BusinessFormR";
 
+import PopUp from '../../modal/PopUp';
+
 export default function RegisterBusiness() {
     const [name, setFirstName] = useState('');
     const [surname, setLastName] = useState('');
@@ -15,6 +17,10 @@ export default function RegisterBusiness() {
 
     const [businessName, setBusinessName] = useState('');
 
+    
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpContent, setPopUpContent] = useState("");
+    const [popUpType, setPopUpType] = useState(0);
 
 
     let navigate = useNavigate();
@@ -43,6 +49,19 @@ export default function RegisterBusiness() {
                 }
             }).catch(error => {
                 console.error(error);
+                                    let popUpMess ="";
+                    if (error.response.status == 400) {
+                        setIsOpen(true);
+                        setPopUpType(0);
+                        if(email === "" || businessName === "" || name === "" || surname === "" || password === ""){
+                            popUpMess += `None of the fields cannot be empty. \n`
+                            
+                        }
+                        if(!email.includes("@")){
+                            popUpMess += `The email you've entered is invalid.\n`
+                        }
+                    setPopUpContent(popUpMess);
+                    }
             });
 
             // console.log(response.data)
@@ -54,7 +73,6 @@ export default function RegisterBusiness() {
             setBusinessName('');
             // routeToHome('/login');
         } catch (error) {
-
             console.error(error);
         }
     };
@@ -66,7 +84,9 @@ export default function RegisterBusiness() {
         <div>
             {/* nav bar with name */}
             <Navbar />
-
+            <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
             {/* nav bar end*/}
             <div className="d-lg-flex half justify-content-center">
                 <div className="contents order-2 order-md-1">
