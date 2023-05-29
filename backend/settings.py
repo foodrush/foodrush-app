@@ -241,6 +241,6 @@ AWS_QUERYSTRING_AUTH = False
 # s3_client = boto3.resource("s3", region_name="eu-central-1")
 
 
-if os.getcwd() == "/app":
-    DEBUG = False
-    ALLOWED_HOSTS = ["*"]
+# if os.getcwd() == "/app":
+#     DEBUG = False
+#     ALLOWED_HOSTS = ["*"]
