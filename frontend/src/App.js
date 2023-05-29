@@ -41,6 +41,9 @@ import EditProduct from "./pages/BusinessMenu/EditProduct";
 
 import { ProductProvider } from "./contexts/ProductFormContext";
 import Checkout from "./pages/Checkout";
+import Favorites from "./pages/Favorites";
+
+import Error from "./pages/Error";
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
     return (
@@ -71,7 +74,13 @@ function App() {
                         <Route path="/business/:id" element={<BusinessPage />} exact />
                         <Route path="/edit-product/:productId" element={<EditProduct />} />
                         <Route path="/checkout" element={<Checkout />} />
-                    </Routes></ProductProvider>
+                        <Route path="/favorites" element={<Favorites />} />
+                        <Route path='*' element={<Error>
+                            <h5>The page you are trying to reach does not exist.</h5>
+                            <Link to="/">Go back to home page.</Link>
+                        </Error>} />
+                    </Routes>
+                </ProductProvider>
             </CartProvider>
         </UserContextProvider>
     );

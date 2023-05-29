@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar"
 import Business_Navbar from "../Navigation/Business_Navbar"
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import '../style/css/style.css';
 import banner from "../style/img/hero/banner.jpg";
 import '../style/css/bootstrap.min.css';
@@ -33,6 +33,7 @@ export default function Home() {
     const [isMenuVisible, setMenuVisible] = useState(true);
     const [searchText, setSearchText] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [popUpType, setPopUpType] = useState(3);
     const [popUpContent, setPopUpContent] = useState("");
 
     // taken from context -- every time a product is added to the cart cartData state is updated via -->
@@ -90,7 +91,12 @@ export default function Home() {
                                     />
                                 )}
                                 <ul className="featured__item__pic__hover">
-                                    <li><a href="#"><i className="fa fa-heart" /></a></li>
+                                    <li>
+                                        <a href="#"
+                                            onClick={(e) => {
+                                                handleAddToFavorites(e, item._id);
+
+                                            }}><i className="fa fa-heart" /></a></li>
                                     <li><a href="#"><i className="fa fa-retweet" /></a></li>
                                     <li><a href="#"
                                         onClick={(e) => {
@@ -142,9 +148,15 @@ export default function Home() {
         console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
-        if(userToken === null || userToken === ""){
+        if (userToken === null || userToken === "") {
             setIsOpen(true);
-            setPopUpContent("To add products to your cart you must login.")
+            setPopUpType(0);
+            setPopUpContent(
+                <>
+                    <h5>To add products to your cart you must login.</h5>
+                    <Link to="/login">Login Page</Link>
+                </>
+            );
         }
         if (userToken && product_id) {
             await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/',
@@ -166,11 +178,49 @@ export default function Home() {
                     console.error(error);
                     if (error.response.status) {
                         setIsOpen(true);
+                        setPopUpType(0);
                         setPopUpContent(error.response.data.detail)
                     }
                 })
         }
     };
+
+    const handleAddToFavorites = async (e, product_id) => {
+        e.preventDefault();
+        const userToken = localStorage.getItem('token');
+        if (userToken === null || userToken === "") {
+            setIsOpen(true);
+            setPopUpType(0);
+            setPopUpContent(<>
+                <h5>To add products to your favorites you must login.</h5>
+                <Link to="/login">Login Page</Link></>)
+        }
+        if (userToken && product_id) {
+            await axios.post('http://127.0.0.1:8000/api/users/customer-profile/favorites/add/',
+                {
+                    _id: product_id,
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }).then(async (response) => {
+                    console.log(response);
+                    setIsOpen(true);
+                    setPopUpType(1);
+                    setPopUpContent(<>
+                        <h5>Product added to your favorites!</h5>
+                        <Link to="/favorites" className="d-flex flex-column align-items-center">
+                            <i className="fa fa-heart primary-btn favs-btn" data-tooltip-id="my-tooltip"
+                                style={{ fontSize: "45px" }}
+                            />
+                        </Link></>)
+                }).catch((error) => {
+                    console.error(error);
+                })
+        }
+    };
+
 
     const routeCart = () => {
         navigate("/shopping-cart"); // navigate satkes to the bottom of the page without setTimeout
@@ -192,7 +242,7 @@ export default function Home() {
     return (
         <div className="App">
             {/* returns null if isOpen is false */}
-            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={0}>
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
                 {popUpContent}
             </PopUp>
 
