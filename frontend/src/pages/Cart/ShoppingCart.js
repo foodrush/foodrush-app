@@ -108,13 +108,16 @@ function ShoppingCart({ token }) {
         }
     };
 
+    const backendURL = 'http://127.0.0.1:8000';
+
+
     const displayCartData = () => {
         if (!token) {
             return null;
         }
         return (
             cartData.map(({ id, product, qty }) => {
-                let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
+                let imageUrlWithPrefix= `${backendURL}/static${product.image}`;
                 return (
                     <tr key={id}>
                         <td className="shoping__cart__item">
