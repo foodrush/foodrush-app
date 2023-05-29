@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-i%3c6z4mup7siaxxc(p4&h$xjqjcq#cajf8+f)zlm20o^-r)n3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "foodrush-demo.herokuapp.com"]
 
 
 # Application definition
@@ -110,6 +110,8 @@ MIDDLEWARE = [
     # Custom:
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     # Default Django:
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -210,6 +212,8 @@ STATIC_URL = "static/"
 
 MEDIA_URL = "/images/"
 MEDIA_ROOT = "static/images"
+STATIC_ROOT = "staticfiles"
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     BASE_DIR / "frontend/build/static",
@@ -235,3 +239,8 @@ AWS_QUERYSTRING_AUTH = False
 # AWS_S3_SIGNATURE_VERSION = "v4"
 # s3_client = boto3.resource("s3", region_name="eu-central-1")
 # s3_client = boto3.resource("s3", region_name="eu-central-1")
+
+
+if os.getcwd() == "/app":
+    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
