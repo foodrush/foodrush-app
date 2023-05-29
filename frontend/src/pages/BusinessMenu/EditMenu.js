@@ -65,6 +65,7 @@ export default function EditMenu() {
                                 <img
                                     src={imageUrl}
                                     alt={product.name}
+                                    style={{ width: '200px', height: '150px' }}
 
                                 />
                             </div>
@@ -202,7 +203,7 @@ export default function EditMenu() {
                 <>
                     <Business_Navbar />
                     {/* add new */}
-                    <div className="card-header border-0 pt-5 d-flex justify-content-between">
+                    <div className="card-header border-0 pt-5 d-flex justify-content-around align-items-center">
                         <h3 className="card-title align-items-start flex-column">
                             <span className="card-label fw-bolder fs-3 mb-1">Manage Products</span>
                         </h3>

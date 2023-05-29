@@ -19,7 +19,7 @@ function ShoppingCart({ token }) {
 
     const decreaseQuantity = async (productID) => {
         if (token) {
-            // an empty object is used to indicate that no data is being sent in the request 
+            // an empty object is used to indicate that no data is being sent in the request
             await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
                 {}, {
                 headers: {
@@ -28,8 +28,8 @@ function ShoppingCart({ token }) {
             }).then(async (response) => {
                 if (response.status == 200) {
                     // fetches and updates the cartData state
-                    // cartData changes so useEffect on display  
-                    // state must be changed for this function to finish -- await 
+                    // cartData changes so useEffect on display
+                    // state must be changed for this function to finish -- await
                     await fetchCartData();
                 }
             }).catch((error) => {
@@ -108,13 +108,16 @@ function ShoppingCart({ token }) {
         }
     };
 
+    const backendURL = 'http://127.0.0.1:8000';
+
+
     const displayCartData = () => {
         if (!token) {
             return null;
         }
         return (
             cartData.map(({ id, product, qty }) => {
-                let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
+                let imageUrlWithPrefix= `${backendURL}/static${product.image}`;
                 return (
                     <tr key={id}>
                         <td className="shoping__cart__item">
