@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import boto3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
+    "storages",
 ]
 
 
@@ -129,7 +132,9 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "frontend/build"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -149,10 +154,18 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    # "default": {
+    # "ENGINE": "django.db.backends.sqlite3",
+    # "NAME": BASE_DIR / "db.sqlite3",
+    # },
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER": "anestedu",
+        "PASSWORD": "jabukA123!",
+        "HOST": "foodrush-demo-identifier.cont8ngp4trr.eu-central-1.rds.amazonaws.com",
+        "PORT": "5432",
+    },
 }
 
 
@@ -196,10 +209,12 @@ STATIC_URL = "static/"
 # region custom-media
 
 MEDIA_URL = "/images/"
+MEDIA_ROOT = "static/images"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    BASE_DIR / "frontend/build/static",
 ]
-MEDIA_ROOT = "static/images"
+
 
 # endregion
 
@@ -208,3 +223,15 @@ MEDIA_ROOT = "static/images"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+AWS_ACCESS_KEY_ID = "AKIAZW3PONJJVQ5NZEGL"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "foodrush-bucket"
+# AWS_S3_REGION_NAME = "eu-central-1"
+AWS_S3_ADDRESSING_STYLE = "virtual"
+AWS_QUERYSTRING_AUTH = False
+# AWS_S3_SIGNATURE_VERSION = "v4"
+# s3_client = boto3.resource("s3", region_name="eu-central-1")
+# s3_client = boto3.resource("s3", region_name="eu-central-1")
