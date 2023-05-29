@@ -32,8 +32,8 @@ from drf_spectacular.views import (
 # https://appliku.com/post/django-rest-framework-swagger-openapi-tutorial#whats-the-difference-between-swagger-and-openapi
 
 
-routes = getattr(settings, "REACT_ROUTES", [])
-react_routes = getattr(settings, "REACT_ROUTES", [])
+# routes = getattr(settings, "REACT_ROUTES", [])
+# react_routes = getattr(settings, "REACT_ROUTES", [])
 
 urlpatterns = [
     path("admin/", admin.site.urls),
