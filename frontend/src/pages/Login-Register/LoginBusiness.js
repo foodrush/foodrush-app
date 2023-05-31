@@ -94,6 +94,11 @@ export default function LoginBusiness() {
                     popUpMess += "The email field cannot be blank.\n"
                 if (error.response.data.password && error.response.data.username)
                     popUpMess = "The password and email fields cannot be blank"
+                if(error.response.data.detail)
+                    popUpMess = <>
+                    <h5>This is the business login page. Are you trying to login with customer credentials?</h5>
+                    <Link to="/login">Login Page</Link>
+                    </>
                 setPopUpContent(popUpMess)
             }
         }
