@@ -9,12 +9,7 @@ import { UserContext } from '../../contexts/UserContextProvider';
 
 
 function UserProfile() {
-    const {userName,userType,userInfos} = useContext(UserContext);
-
-    useEffect(() => {
-        console.log(userInfos.user);
-    }, []);
-
+    const {userName,userInfos} = useContext(UserContext);
     return (
         <>
             {/* Navbar */}
@@ -46,10 +41,19 @@ function UserProfile() {
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-sm-3">
-                                                <h6 className="mb-0">Full Name</h6>
+                                                <h6 className="mb-0">First Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
                                                 {userInfos.user.first_name}
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div className="row">
+                                            <div className="col-sm-3">
+                                                <h6 className="mb-0">Last Name</h6>
+                                            </div>
+                                            <div className="col-sm-9 text-secondary">
+                                                {userInfos.user.last_name}
                                             </div>
                                         </div>
                                         <hr />

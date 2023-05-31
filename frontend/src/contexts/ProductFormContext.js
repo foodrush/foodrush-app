@@ -93,12 +93,9 @@ export const ProductProvider = ({ children }) => {
     }
 
     const handleEditChange = (e, field) => {
-        console.log(initialValues[field] );
         e.preventDefault();
-        console.log("2")
         setInitialValues({ ...initialValues, [field]: e.target.value })
         setFieldTouched(field, true);
-        console.log(initialValues[field] );
         setFieldValue(field, e.target.value);
     };
 
