@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 
 import './css/style.css';
+
+import "../../style/css/style.css"
+
 import Navbar from '../../Navigation/Navbar';
 import Business_Navbar from "../../Navigation/Business_Navbar";
 import { UserContext } from "../../contexts/UserContextProvider";
@@ -248,7 +251,7 @@ export default function EditProfile() {
                                         <div className="row">
                                             {/* <div className="col-sm-3" /> */}
                                             <div className="col-sm-9 text-secondary">
-                                                <input type="button" className="btn btn-primary px-4" defaultValue="Save Changes" onClick={handleUpdateUser} />
+                                                <input type="button" className="btn btn-primary px-4 primary-btn" defaultValue="Save Changes" onClick={handleUpdateUser} />
                                             </div>
                                         </div>
                                     </div>
