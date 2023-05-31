@@ -19,6 +19,10 @@ export default function EditProfile() {
         navigate(`/profile`);
     }
 
+    useEffect(() => {
+        decideUser();
+    },[])
+
     const handleClose = () => {
         setIsOpen(false);
         if (popUpType === 1) {
@@ -26,59 +30,155 @@ export default function EditProfile() {
         }
     };
 
-    const { userName, userType, userInfos, setUserInfos, fetchDataCustomer } = useContext(UserContext);
-    const [customer, setCustomer] = useState({
-        email: userInfos.user.email,
-        username: userInfos.user.email,
-        first_name: userInfos.user.first_name,
-        last_name: userInfos.user.last_name,
-        phone: userInfos.phone_number,
-        address: ""
-    });
+    const { userName, userType, userInfos, setUserInfos } = useContext(UserContext);
 
+    const [user, setUser] = useState({})
+
+    const decideUser = () => {
+        if (userType == 1) {
+            setUser({
+                email: userInfos.user.email,
+                username: userInfos.user.email,
+                first_name: userInfos.user.first_name,
+                last_name: userInfos.user.last_name,
+                phone: userInfos.phone_number,
+                address: ""
+            })
+        }
+        if (userType === 2) {
+            setUser({
+                email: userInfos.user.email,
+                first_name: userInfos.user.first_name,
+                last_name: userInfos.user.last_name,
+                restaurant_name: userInfos.restaurant_name,
+            })
+        }
+    }
     const handleEditChange = (e, field) => {
         e.preventDefault();
-        setCustomer({ ...customer, [field]: e.target.value })
+        setUser({ ...user, [field]: e.target.value })
     };
 
     const handleUpdateUser = async (e) => {
         e.preventDefault();
-        const updatedUser = {
-            user: {
-                email: customer.email,
-                username: customer.username,
-                first_name: customer.first_name,
-                last_name: customer.last_name,
-            },
-            phone_number: customer.phone,
-        };
-        try {
-            await axios.put(
-                'http://127.0.0.1:8000/api/users/edit-customer',
-                updatedUser,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
-            ).then(response => {
-                if (response.data !== null) {
-                    console.log('User information updated successfully!');
-                    setUserInfos(response.data);
-                    setIsOpen(true);
-                    setPopUpContent("User information updated successfully!");
-                    setPopUpType(1);
-                }
-            })
-        } catch (error) {
-            console.error(error);
-            if (error.response.status === 400) {
-                setIsOpen(true);
-                setPopUpType(0);
-                if(error.response.data.user.email)
-                    setPopUpContent(error.response.data.user.email[0]);
-                
+        if (userType === 1) {
+            const updatedUser = {
+                user: {
+                    email: user.email,
+                    username: user.username,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                },
+                phone_number: user.phone,
             }
+            try {
+                await axios.put(
+                    'http://127.0.0.1:8000/api/users/edit-customer',
+                    updatedUser,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                ).then(response => {
+                    if (response.data !== null) {
+                        console.log('User information updated successfully!');
+                        setUserInfos(response.data);
+                        setIsOpen(true);
+                        setPopUpContent("User information updated successfully!");
+                        setPopUpType(1);
+                    }
+                })
+            } catch (error) {
+                console.error(error);
+                if (error.response.status === 400) {
+                    setIsOpen(true);
+                    setPopUpType(0);
+                    if (error.response.data.user.email)
+                        setPopUpContent(error.response.data.user.email[0]);
+
+                }
+            }
+        }
+        if (userType === 2) {
+            const updatedUser = {
+                user: {
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                },
+                restaurant_name: user.restaurant_name,
+            }
+            try {
+                await axios.put(
+                    'http://127.0.0.1:8000/api/users/edit-business',
+                    updatedUser,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                ).then(response => {
+                    if (response.data !== null) {
+                        console.log('User information updated successfully!');
+                        setUserInfos(response.data);
+                        setIsOpen(true);
+                        setPopUpContent("User information updated successfully!");
+                        setPopUpType(1);
+                    }
+                })
+            } catch (error) {
+                console.error(error);
+                if (error.response.status === 400) {
+                    setIsOpen(true);
+                    setPopUpType(0);
+                    if (error.response.data.user)
+                        setPopUpContent(error.response.data.user.email[0]);
+                    if(error.response.data.restaurant_name)
+                        setPopUpContent("The restaurant name cannot be left blank.");
+
+                }
+            }
+        }
+    };
+
+    const displayForm = () => {
+        console.log(user.first_name);
+        if (userType === 1) {
+            return (
+                <>
+                    <div className="row mb-3">
+                        <div className="col-sm-3">
+                            <h6 className="mb-0">Phone</h6>
+                        </div>
+                        <div className="col-sm-9 text-secondary">
+                            <input type="text" className="form-control" name="phone" value={user.phone}
+                                onChange={(e) => handleEditChange(e, "phone")} />
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-sm-3">
+                            <h6 className="mb-0">Address</h6>
+                        </div>
+                        <div className="col-sm-9 text-secondary">
+                            <input type="text" className="form-control" name="address" value={user.restaurant_name}
+                                onChange={(e) => handleEditChange(e, "restaurant_name")} />
+                        </div>
+                    </div></>
+            );
+        }
+        if (userType === 2) {
+            return (
+                <div className="row mb-3">
+                    <div className="col-sm-3">
+                        <h6 className="mb-0">Restaurant Name</h6>
+                    </div>
+                    <div className="col-sm-9 text-secondary">
+                        <input type="text" className="form-control" name="restaurant_name" value={user.restaurant_name}
+                            onChange={(e) => handleEditChange(e, "restaurant_name")} />
+                    </div>
+                </div>
+            )
         }
     };
 
@@ -120,7 +220,7 @@ export default function EditProfile() {
                                                 <h6 className="mb-0">First Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                <input type="text" className="form-control" name="first_name" value={customer.first_name}
+                                                <input type="text" className="form-control" name="first_name" value={user.first_name}
                                                     onChange={(e) => handleEditChange(e, "first_name")}
                                                 />
                                             </div>
@@ -130,7 +230,7 @@ export default function EditProfile() {
                                                 <h6 className="mb-0">Last Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                <input type="text" className="form-control" name="last_name" value={customer.last_name}
+                                                <input type="text" className="form-control" name="last_name" value={user.last_name}
                                                     onChange={(e) => handleEditChange(e, "last_name")}
                                                 />
                                             </div>
@@ -140,28 +240,11 @@ export default function EditProfile() {
                                                 <h6 className="mb-0">Email</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                <input type="text" className="form-control" name="email" value={customer.email}
+                                                <input type="text" className="form-control" name="email" value={user.email}
                                                     onChange={(e) => handleEditChange(e, "email")} />
                                             </div>
                                         </div>
-                                        <div className="row mb-3">
-                                            <div className="col-sm-3">
-                                                <h6 className="mb-0">Phone</h6>
-                                            </div>
-                                            <div className="col-sm-9 text-secondary">
-                                                <input type="text" className="form-control" name="phone" value={customer.phone}
-                                                    onChange={(e) => handleEditChange(e, "phone")} />
-                                            </div>
-                                        </div>
-                                        <div className="row mb-3">
-                                            <div className="col-sm-3">
-                                                <h6 className="mb-0">Address</h6>
-                                            </div>
-                                            <div className="col-sm-9 text-secondary">
-                                                <input type="text" className="form-control" name="address" value={customer.address}
-                                                    onChange={(e) => handleEditChange(e, "address")} />
-                                            </div>
-                                        </div>
+                                        {displayForm()}
                                         <div className="row">
                                             {/* <div className="col-sm-3" /> */}
                                             <div className="col-sm-9 text-secondary">
