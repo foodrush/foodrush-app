@@ -19,23 +19,29 @@ import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 import PopUp from "../modal/PopUp";
+import { UserContext } from "../contexts/UserContextProvider";
+
 
 export default function Checkout() {
-    const { cartData, cartState, fetchCartData } = useContext(CartContext)
+    const { cartData, cartState, fetchCartData, calculateDiscount } = useContext(CartContext)
+
+    const { setSDGPoints } = useContext(UserContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
     const [popUpType, setPopUpType] = useState(3);
+    const cartDataDiscounted = calculateDiscount(cartData);
 
     const handleCheckoutSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
-        const orderItems = cartData.map(({ product, qty }) => {
+        const orderItems = cartDataDiscounted.map(({ item, discPrice }) => {
+            let { product, qty } = item;
             return ({
                 product: product._id,
                 qty: qty,
-                price: product.price
+                price: discPrice
             })
         });
 
@@ -44,7 +50,7 @@ export default function Checkout() {
                 payment_method: "cash",
                 tax_price: 3,
                 shipping_price: 5,
-                total_price: cartState.totalPrice,
+                total_price: cartState.totalPriceDiscounted,
                 order_items: orderItems,
                 shipping_address: {
                     address: formData.get("address_street"),
@@ -65,6 +71,17 @@ export default function Checkout() {
                     setPopUpType(1);
                 }
             })
+
+            await axios.get(
+                'http://127.0.0.1:8000/api/users/customer-profile/orders/',
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            ).then(response => {
+                setSDGPoints((response.data.length) * 5)
+            })
         }
         catch (error) {
             console.log(error)
@@ -73,9 +90,9 @@ export default function Checkout() {
     };
 
     const displayOrderInfo = () => {
-        return (cartData.map(product => {
+        return (cartDataDiscounted.map(({ item, discPrice }) => {
             return (
-                <li key={product.id}>{product.product.name}<span>${product.product.price * product.qty}</span></li>
+                <li key={item.id}>{item.product.name}<span>${(discPrice * item.qty).toFixed(2)}</span></li>
             )
         }));
     }
@@ -133,21 +150,6 @@ export default function Checkout() {
                                 onSubmit={handleCheckoutSubmit}>
                                 <div className="row">
                                     <div className="col-lg-8 col-md-6">
-                                        <div className="row">
-                                            {/* <div className="col-lg-6">
-                                                <div className="checkout__input">
-                                                    <p>Fist Name<span>*</span></p>
-                                                    <input type="text" name="firstName" />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="checkout__input">
-                                                    <p>Last Name<span>*</span></p>
-                                                    <input type="text"
-                                                        name="lastName" />
-                                                </div>
-                                            </div> */}
-                                        </div>
                                         <h5><strong> Address information </strong></h5>
                                         <hr />
                                         <div className="checkout__input">
@@ -178,46 +180,6 @@ export default function Checkout() {
                                             <input type="text"
                                                 name="zip" />
                                         </div>
-                                        {/* <div className="row">
-                                            <div className="col-lg-6">
-                                                <div className="checkout__input">
-                                                    <p>Phone<span>*</span></p>
-                                                    <input type="text"
-                                                        name="phone" />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="checkout__input">
-                                                    <p>Email<span>*</span></p>
-                                                    <input type="text"
-                                                        name="email" />
-                                                </div>
-                                            </div>
-                                        </div> */}
-                                        {/* <div className="checkout__input__checkbox">
-                                            <label htmlFor="acc">
-                                                Create an account?
-                                                <input type="checkbox" id="acc"
-                                                    name="accCheckbox" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div>
-                                        <p>Create an account by entering the information below. If you are a
-                                            returning customer
-                                            please login at the top of the page</p>
-                                        <div className="checkout__input">
-                                            <p>Account Password<span>*</span></p>
-                                            <input type="text"
-                                                name="password" />
-                                        </div> */}
-                                        {/* <div className="checkout__input__checkbox">
-                                            <label htmlFor="diff-acc">
-                                                Ship to a different address?
-                                                <input type="checkbox" id="diff-acc"
-                                                    name="diffAcc" />
-                                                <span className="checkmark" />
-                                            </label>
-                                        </div> */}
                                         <div className="checkout__input">
                                             <p>Order notes<span>*</span></p>
                                             <input type="text"
@@ -235,33 +197,9 @@ export default function Checkout() {
                                             </ul>
                                             <div className="checkout__order__subtotal">Subtotal <span>${cartState.totalPrice}</span>
                                             </div>
-                                            <div className="checkout__order__total">Total <span>${cartState.totalPrice}</span></div>
-                                            {/* <div className="checkout__input__checkbox">
-                                                <label htmlFor="acc-or">
-                                                    Create an account?
-                                                    <input type="checkbox" id="acc-or" />
-                                                    <span className="checkmark" />
-                                                </label>
+                                            <div className="checkout__order__total">Total Disount <span>${(cartState.totalPrice - cartState.totalPriceDiscounted).toFixed(2)}</span>
                                             </div>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod
-                                                tempor incididunt
-                                                ut labore et dolore magna aliqua.</p>
-                                            <div className="checkout__input__checkbox">
-                                                <label htmlFor="payment">
-                                                    Check Payment
-                                                    <input type="checkbox" id="payment"
-                                                        name="payment" />
-                                                    <span className="checkmark" />
-                                                </label>
-                                            </div>
-                                            <div className="checkout__input__checkbox">
-                                                <label htmlFor="paypal">
-                                                    Paypal
-                                                    <input type="checkbox" id="paypal"
-                                                        name="paypal" />
-                                                    <span className="checkmark" />
-                                                </label>
-                                            </div> */}
+                                            <div className="checkout__order__total">Total <span>${cartState.totalPriceDiscounted}</span></div>
                                             <button
                                                 type="submit" className="site-btn">PLACE ORDER</button>
                                         </div>

@@ -12,7 +12,7 @@ import PopUp from "../../modal/PopUp";
 import { useState } from "react";
 
 function ShoppingCart({ token }) {
-    const { cartData, fetchCartData, cartState } = useContext(CartContext);
+    const { cartData, fetchCartData, cartState, cartDataDiscount } = useContext(CartContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
@@ -116,16 +116,22 @@ function ShoppingCart({ token }) {
             return null;
         }
         return (
-            cartData.map(({ id, product, qty }) => {
-                let imageUrlWithPrefix= `${backendURL}/static${product.image}`;
+            cartDataDiscount.map(({ item, discPrice }) => {
+                let { id, product, qty } = item;
+                let imageUrlWithPrefix = `${backendURL}/static${product.image}`;
                 return (
                     <tr key={id}>
                         <td className="shoping__cart__item">
-                            <img src={imageUrlWithPrefix} alt="" className="square-image"/>
+                            <img src={imageUrlWithPrefix} alt="" className="square-image" />
                             <h5>{product.name}</h5>
                         </td>
                         <td className="shoping__cart__price">
-                            ${product.price}
+                            <span className="old-information">
+                                ${(product.price)}
+                            </span>
+                            <br />
+                            <br />
+                            <span>${(discPrice)}</span>
                         </td>
                         <td className="shoping__cart__quantity">
                             <div className="quantity d-flex justify-content-center">
@@ -137,7 +143,7 @@ function ShoppingCart({ token }) {
                             </div>
                         </td>
                         <td className="shoping__cart__total">
-                            ${qty * product.price}
+                            ${(qty * discPrice).toFixed(2)}
                         </td>
                         <td className="shoping__cart__item__close">
                             <span className="icon_close" onClick={(() => deleteProduct(product._id, qty))} />
@@ -290,7 +296,10 @@ function ShoppingCart({ token }) {
                                         <h5>Cart Total</h5>
                                         <ul>
                                             <li>Subtotal <span>${cartState.totalPrice}</span></li>
-                                            <li>Total <span>${cartState.totalPrice}</span></li>
+                                            <li>Total Discount <span>
+                                            ${(cartState.totalPrice-cartState.totalPriceDiscounted).toFixed(2)}
+                                            </span></li>
+                                            <li>Total <span>${cartState.totalPriceDiscounted}</span></li>
                                         </ul>
                                         <Link to="/checkout" className="primary-btn">PROCEED TO CHECKOUT</Link>
                                     </div>

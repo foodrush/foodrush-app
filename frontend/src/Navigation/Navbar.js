@@ -13,14 +13,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { CartContext } from '../contexts/CartContext';
 import { UserContext } from '../contexts/UserContextProvider';
+import Alert from '../modal/Alert';
 
 
 export default function Navbar() {
     const [user, setUser] = useState(null);
     const [isMenuVisible, setMenuVisible] = useState(false);
     const [activeItem, setActiveItem] = useState(-1);
-
-    const { totalPrice, totalQuantity } = useContext(CartContext);
     const { userType, resetUserContext } = useContext(UserContext)
 
     const { cartState, setToken, cartData } = useContext(CartContext);
@@ -92,7 +91,7 @@ export default function Navbar() {
                         </li>
                         <li><a href="#"><i className="fa fa-shopping-bag" /> <span>{cartState.totalQuantity}</span></a></li>
                     </ul>
-                    <div className="header__cart__price">item: <span>{cartState.totalPrice}</span></div>
+                    <div className="header__cart__price">item: <span>{cartState.totalPriceDiscounted}</span></div>
                 </div>
                 <div className="humberger__menu__widget">
                     <div className="header__top__right__language">
@@ -279,7 +278,7 @@ export default function Navbar() {
                                 </ul>
                                 {/*TODO: Total quantity is remains after login with another account*/}
 
-                                <div className="header__cart__price">item: <span>${cartState.totalPrice}</span></div>
+                                <div className="header__cart__price">item: <span>${cartState.totalPriceDiscounted}</span></div>
                             </div>
                         </div>
                     </div>
@@ -288,6 +287,7 @@ export default function Navbar() {
                     </div>
                 </div>
             </header>
+            <Alert type="default" isDynamic={false} />
         </div>
     );
 

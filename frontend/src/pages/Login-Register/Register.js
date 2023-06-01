@@ -35,7 +35,7 @@ export default function Register() {
                 name: name,
                 password: password
             }).then(response => {
-                if (response.status === 200) {
+                if (response.status === 201) {
                     routeToLogin('/login');
                 }
             }).catch(error => {
