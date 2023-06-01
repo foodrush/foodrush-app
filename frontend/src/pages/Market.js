@@ -14,6 +14,7 @@ import Business_Navbar from "../Navigation/Business_Navbar";
 import {UserContext} from "../contexts/UserContextProvider";
 import {CartContext} from "../contexts/CartContext";
 import Fuse from 'fuse.js';
+import PopUp from "../modal/PopUp";
 
 
 export default function Market() {
@@ -29,6 +30,10 @@ export default function Market() {
     const [searchParams] = useSearchParams();
     const searchText = searchParams.get('search');
     const [isMenuVisible, setMenuVisible] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpType, setPopUpType] = useState(3);
+    const [popUpContent, setPopUpContent] = useState("");
+
 
     useEffect(() => {
         fetchData();
@@ -60,6 +65,42 @@ export default function Market() {
         console.log(path);
         navigate(`/business/${path}`);
     }
+
+    const handleAddToFavorites = async (e, product_id) => {
+        e.preventDefault();
+        const userToken = localStorage.getItem('token');
+        if (userToken === null || userToken === "") {
+            setIsOpen(true);
+            setPopUpType(0);
+            setPopUpContent(<>
+                <h5>To add products to your favorites you must login.</h5>
+                <Link to="/login">Login Page</Link></>)
+        }
+        if (userToken && product_id) {
+            await axios.post('http://127.0.0.1:8000/api/users/customer-profile/favorites/add/',
+                {
+                    _id: product_id,
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }).then(async (response) => {
+                console.log(response);
+                setIsOpen(true);
+                setPopUpType(1);
+                setPopUpContent(<>
+                    <h5>Product added to your favorites!</h5>
+                    <Link to="/favorites" className="d-flex flex-column align-items-center">
+                        <i className="fa fa-heart primary-btn favs-btn" data-tooltip-id="my-tooltip"
+                           style={{ fontSize: "45px" }}
+                        />
+                    </Link></>)
+            }).catch((error) => {
+                console.error(error);
+            })
+        }
+    };
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
@@ -102,7 +143,9 @@ export default function Market() {
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
     }
-
+    const handleClose = () => {
+        setIsOpen(false);
+    };
 
     const handleSearchQueryChange = (newSearchText) => {
         setSearchQuery(newSearchText);
@@ -140,7 +183,8 @@ export default function Market() {
                                     />
                                 )}
                                 <ul className="product__item__pic__hover">
-                                    <li><a href="#"><i className="fa fa-heart" /></a></li>
+                                    <li><a href="#" onClick={(e) => { handleAddToFavorites(e, item._id);}}>
+                                        <i className="fa fa-heart" /></a></li>
                                     <li><a href="#" onClick={(e) => { handleAddToCart(e, item._id); }}>
                                         <i className="fa fa-shopping-cart" />
                                     </a></li>
@@ -168,7 +212,11 @@ export default function Market() {
 
 
     return (
-        <div>
+        <div className="App">
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
+            {popUpContent}
+        </PopUp>
+
             {userType === 2 ?
                 (<Business_Navbar/>) :
                 (<Navbar/>)}

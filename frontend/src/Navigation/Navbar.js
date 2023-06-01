@@ -79,7 +79,12 @@ export default function Navbar() {
                 </div>
                 <div className="humberger__menu__cart">
                     <ul>
-                        <li><a href="#"><i className="fa fa-heart" /> <span>{cartState.totalHearts}</span></a></li>
+                        <li>
+                            <Link to="/favorites">
+                                <i className="fa fa-heart"
+                                />
+                            </Link>
+                        </li>
                         <li><a href="#"><i className="fa fa-shopping-bag" /> <span>{cartState.totalQuantity}</span></a></li>
                     </ul>
                     <div className="header__cart__price">item: <span>{cartState.totalPrice}</span></div>
@@ -90,7 +95,6 @@ export default function Navbar() {
                         <div>English</div>
                         <span className="arrow_carrot-down" />
                         <ul>
-                            <li><a href="#">Spanis</a></li>
                             <li><a href="#">English</a></li>
                         </ul>
                     </div>
@@ -100,23 +104,28 @@ export default function Navbar() {
                 </div>
                 <nav className="humberger__menu__navs mobile-menus">
                     <ul>
-                        <li className="active"><a href="./index.html">Home</a></li>
-                        <li><a href="./shop-grid.html">Shop</a></li>
-                        <li><a href="./blog.html">Blog</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
+                        <li className="active"><Link to="/" onClick={() => handleItemClick(-1)}>Home</Link></li>
+                        <li><Link to="/market" onClick={() => handleItemClick(0)}>Market</Link></li>
+                        {userType === 1 &&
+                        (
+                        <li>
+                            <Link to="/orders" onClick={() => handleItemClick(1)}>Orders</Link>
+                        </li>
+                        )}
+                        <li><Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link></li>
+                        <li> <Link to="/contact" onClick={() => handleItemClick(3)}>Contact</Link></li>
                     </ul>
                 </nav>
                 <div id="mobile-menu-wrap" />
                 <div className="header__top__right__social">
-                    <a href="#"><i className="fa fa-facebook" /></a>
-                    <a href="#"><i className="fa fa-twitter" /></a>
-                    <a href="#"><i className="fa fa-linkedin" /></a>
-                    <a href="#"><i className="fa fa-pinterest-p" /></a>
+                    <a href="https://gokmencaglarofc.wixsite.com/foodrush"  target="_blank" rel="noopener noreferrer">
+                        FoodRush Info: <i className="fa fa-info-circle" /></a>
+
                 </div>
                 <div className="humberger__menu__contact">
                     <ul>
-                        <li><i className="fa fa-envelope" /> hello@colorlib.com</li>
-                        <li>Free Shipping for all Order of $99</li>
+                        <li><i className="fa fa-envelope" /> FoodRUSH</li>
+                        <li>All rights reserved. 2023</li>
                     </ul>
                 </div>
             </div>
@@ -135,17 +144,14 @@ export default function Navbar() {
                             <div className="col-lg-6 col-md-6">
                                 <div className="header__top__right">
                                     <div className="header__top__right__social">
-                                        <a href="#"><i className="fa fa-facebook" /></a>
-                                        <a href="#"><i className="fa fa-twitter" /></a>
-                                        <a href="#"><i className="fa fa-linkedin" /></a>
-                                        <a href="#"><i className="fa fa-pinterest-p" /></a>
+                                        <a href="https://gokmencaglarofc.wixsite.com/foodrush"  target="_blank" rel="noopener noreferrer">
+                                            FoodRush Info: <i className="fa fa-info-circle" /></a>
                                     </div>
                                     <div className="header__top__right__language">
                                         <img src="styletyle/img/language.png" alt="" />
                                         <div>English</div>
                                         <span className="arrow_carrot-down" />
                                         <ul>
-                                            <li><a href="#">Turkish</a></li>
                                             <li><a href="#">English</a></li>
                                         </ul>
                                     </div>
@@ -209,8 +215,8 @@ export default function Navbar() {
                                     {
                                         userType === 1 &&
                                         (
-                                            <li className={activeItem === 0 ? 'active' : ''}>
-                                                <Link to="/orders" onClick={() => handleItemClick(0)}>Orders</Link>
+                                            <li className={activeItem === 1 ? 'active' : ''}>
+                                                <Link to="/orders" onClick={() => handleItemClick(1)}>Orders</Link>
                                             </li>
                                         )
                                     }
@@ -229,7 +235,7 @@ export default function Navbar() {
                                 <ul>
                                     <li>
                                         <Link to="/favorites">
-                                            <i className="fa fa-heart" data-tooltip-id="my-tooltip"
+                                            <i className="fa fa-heart"
                                             // data-tooltip-content="Favorites
                                             />
                                             {/*<span></span>*/}
