@@ -25,29 +25,18 @@ import { UserContext } from "../contexts/UserContextProvider";
 export default function Checkout() {
     const { cartData, cartState, fetchCartData, calculateDiscount } = useContext(CartContext)
 
-    const { SDGPoints, setSDGPoints  } = useContext(UserContext);
+    const { setSDGPoints } = useContext(UserContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
     const [popUpType, setPopUpType] = useState(3);
     const cartDataDiscounted = calculateDiscount(cartData);
 
-    const [succesfulCheckout,setSuccessfulCheckout] = useState(false);
-
-    useEffect(() => {
-        if(succesfulCheckout){
-            let currentPoints = SDGPoints;
-            currentPoints += Math.ceil((cartState.totalPrice-cartState.totalPriceDiscounted) * 10)
-            setSDGPoints(currentPoints);
-            localStorage.setItem("SDGPoints",currentPoints) 
-        }
-    },[succesfulCheckout]);
-
     const handleCheckoutSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
-        const orderItems = cartDataDiscounted.map(({item, discPrice}) => {
+        const orderItems = cartDataDiscounted.map(({ item, discPrice }) => {
             let { product, qty } = item;
             return ({
                 product: product._id,
@@ -80,8 +69,18 @@ export default function Checkout() {
                     setIsOpen(true);
                     setPopUpContent("Your order has been placed!")
                     setPopUpType(1);
-                    setSuccessfulCheckout(true);
                 }
+            })
+
+            await axios.get(
+                'http://127.0.0.1:8000/api/users/customer-profile/orders/',
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            ).then(response => {
+                setSDGPoints((response.data.length) * 5)
             })
         }
         catch (error) {
@@ -91,7 +90,7 @@ export default function Checkout() {
     };
 
     const displayOrderInfo = () => {
-        return (cartDataDiscounted.map(({item, discPrice}) => {
+        return (cartDataDiscounted.map(({ item, discPrice }) => {
             return (
                 <li key={item.id}>{item.product.name}<span>${(discPrice * item.qty).toFixed(2)}</span></li>
             )
@@ -198,7 +197,7 @@ export default function Checkout() {
                                             </ul>
                                             <div className="checkout__order__subtotal">Subtotal <span>${cartState.totalPrice}</span>
                                             </div>
-                                            <div className="checkout__order__total">Total Disount <span>${(cartState.totalPrice-cartState.totalPriceDiscounted).toFixed(2)}</span>
+                                            <div className="checkout__order__total">Total Disount <span>${(cartState.totalPrice - cartState.totalPriceDiscounted).toFixed(2)}</span>
                                             </div>
                                             <div className="checkout__order__total">Total <span>${cartState.totalPriceDiscounted}</span></div>
                                             <button

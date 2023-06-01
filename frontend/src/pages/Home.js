@@ -246,7 +246,6 @@ export default function Home() {
 
     return (
         <div className="App">
-            <Alert type="default" isDynamic={false} />
             {/* returns null if isOpen is false */}
             <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
                 {popUpContent}

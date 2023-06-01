@@ -9,7 +9,6 @@ function Alert({ type, isDynamic }) {
     const [isShow, setIsShow] = useState(true);
     const [discPercentage, setDiscPercentage] = useState(0);
 
-
     const [timeMessage, setTimeMessage] = useState('');
     useEffect(() => {
         const interval = setInterval(() => {
@@ -22,10 +21,12 @@ function Alert({ type, isDynamic }) {
             setTimeMessage(formattedTime);
 
             const discountMult = Math.floor((hours - 8) / 4) + 1;
-            const discountPer = 3 * discountMult;
+            let discountPer = 3 * discountMult;
+            if(hours < 8){
+                discountPer = 0;
+            }
             setDiscPercentage(discountPer);
         }, 1000);
-
         return () => {
             clearInterval(interval);
         };

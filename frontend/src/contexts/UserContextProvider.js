@@ -18,15 +18,8 @@ export const UserContextProvider = ({ children }) => {
     const [userInfos, setUserInfos] = useState('');
 
     // to make it safe for refresh 
-    const [SDGPoints, setSDGPoints] = useState(() => {
-        // get the value from localStorage init 
-        const storedPoints = localStorage.getItem('SDGPoints');
-        return storedPoints ? parseInt(storedPoints) : 0;
-      });
+    const [SDGPoints, setSDGPoints] = useState(0);
 
-      useEffect(() => {
-        localStorage.setItem('SDGPoints', SDGPoints.toString());
-      }, [SDGPoints]);
 
     useEffect(() => {
         async function fetchDataCustomer() {
@@ -75,10 +68,9 @@ export const UserContextProvider = ({ children }) => {
         }else{
 
         }
-
-
     }, []);
 
+    
 
     const resetUserContext = () => {
         setUserId(null);

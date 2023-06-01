@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
@@ -12,14 +12,11 @@ import axios from "axios";
 
 function UserProfile() {
     //TODO: needs verification to go on
-    const { userName, userType,SDGPoints, setSDGPoints  } = useContext(UserContext);
+    const { userName, userType, SDGPoints, setSDGPoints } = useContext(UserContext);
     const [userInfos, setUserInfos] = useState('');
     const [userType2, setUserType] = useState(0);
 
-
-
     useEffect(() => {
-        console.log("asdasdasda")
         async function fetchDataBusiness() {
             try {
                 const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
@@ -28,8 +25,7 @@ function UserProfile() {
                     }
                 });
                 setUserInfos(responseSecond.data);
-                console.log(responseSecond.data)
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
@@ -43,32 +39,44 @@ function UserProfile() {
                     }
                 });
                 setUserInfos(responseSecond.data);
-                console.log(responseSecond.data)
 
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
 
-        if(userType===0){
+        async function fetchDataOrder() {
+            await axios.get(
+                'http://127.0.0.1:8000/api/users/customer-profile/orders/',
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            ).then(response => {
+                setSDGPoints((response.data.length) * 5)
+            })
+        }
+        if (userType === 0) {
             return (<div>
                 LOGIN FIRST
             </div>)
         }
 
-        if(parseInt(localStorage.getItem("userType")) === 1){
+        if (parseInt(localStorage.getItem("userType")) === 1) {
             fetchDataCustomer();
             setUserType(1);
-
-        }else if(parseInt(localStorage.getItem("userType")) === 2){
+            fetchDataOrder();
+        } else if (parseInt(localStorage.getItem("userType")) === 2) {
             fetchDataBusiness();
             setUserType(2);
-        }else{
+        } else {
             return (<div>
                 LOGIN FIRST
             </div>)
         }
     }, []);
+
 
     const displaySDG = () => {
         if (userType === 1) {
@@ -81,7 +89,7 @@ function UserProfile() {
                                     <h3 className="mb-0">Your SDG Points:                               <span className='text-success'> {SDGPoints}</span>!</h3>
                                     <br />
                                     <hr />
-                                    <h5 className="mb-0">Keep up the good work :)</h5>
+                                    {(SDGPoints > 0) && (<h5 className="mb-0">Keep up the good work :)</h5>)}
                                 </div>
                             </div>
                         </div>
