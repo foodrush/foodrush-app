@@ -8,10 +8,34 @@ export const CartContext = createContext();
 // token is a state taken from the app -- may be set on login
 export const CartProvider = ({ children, token, setToken }) => {
     const [cartData, setCartData] = useState([]);
+    const [cartDataDiscount, setCartDataDiscount] = useState([]);
     const [cartState, setCartState] = useState({});
     const [userType, setUserType] = useState(0);
 
+    const date = new Date();
+    const startHour = 8;
+    const hourlyDiscount = [
+        {
+            hour: 8,
+            discount: 5
+        },
+        {
+            hour: 12,
+            discount: 10
+        },
+        {
+            hour: 16,
+            discount: 15
+        },
+        {
+            hour: 20,
+            discount: 20
+        },
+    ];
+
     useEffect(() => {
+        calculateDiscount()
+        // get cart data if customer user
         const type = localStorage.getItem("userType");
         setUserType(type);
         if (type == 1)
@@ -25,6 +49,7 @@ export const CartProvider = ({ children, token, setToken }) => {
 
     // price & quantity calc
     useEffect(() => {
+        let currentPriceDiscounted = 0;
         let currentPrice = 0;
         let currentQuantity = 0;
 
@@ -34,11 +59,17 @@ export const CartProvider = ({ children, token, setToken }) => {
             currentQuantity += qty;
         });
 
+        cartDataDiscount.forEach(({ item, discPrice }) => {
+            let { qty } = item;
+            currentPriceDiscounted += (discPrice * qty)
+        });
+
         if (!token || userType === 2) {
             setCartState({
                 totalHearts: 0,
                 totalQuantity: 0,
-                totalPrice: 0
+                totalPrice: 0,
+                totalPriceDiscounted: 0,
             });
         }
         else {
@@ -46,7 +77,8 @@ export const CartProvider = ({ children, token, setToken }) => {
                 // will be updated when favorites are decided*
                 totalHearts: 0,
                 totalQuantity: currentQuantity,
-                totalPrice: currentPrice
+                totalPrice: currentPrice.toFixed(2),
+                totalPriceDiscounted: currentPriceDiscounted.toFixed(2),
             });
         }
 
@@ -61,12 +93,45 @@ export const CartProvider = ({ children, token, setToken }) => {
             }
         }).then((response) => {
             // This state update triggers a re-render of the component
-            setCartData(response.data)
-
+            setCartData(response.data);
+            // cartData with discounted prices added -- cartDataDiscount
+            calculateDiscount(response.data);
         }).catch((error) => {
             console.error(error);
         });
     }
+
+    const calculateDiscount = (productArray) => {
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+
+        const discountMult = Math.floor((hour - 8) / 4) + 1;
+        const discountPer = 3 * discountMult;
+
+        console.log(productArray);
+        console.log(productArray !== undefined);
+        if (productArray !== undefined) {
+            const discArr = productArray.map(item => {
+                if (item.price) {
+                    return ({
+                        item,
+                        discPrice: (item.price - (item.price * discountPer / 100)).toFixed(2)
+                    });
+                }
+                if (item.product.price) {
+                    return ({
+                        item,
+                        discPrice: (item.product.price - (item.product.price * discountPer / 100)).toFixed(2)
+                    });
+                }
+
+            });
+
+            setCartDataDiscount(discArr);
+            return discArr;
+        }
+
+    };
 
     // only the ones currently used are sent
     const cartObject = useMemo(() => {
@@ -76,6 +141,9 @@ export const CartProvider = ({ children, token, setToken }) => {
             cartState,
             setToken,
             setCartState,
+            cartDataDiscount,
+            calculateDiscount,
+            date
         })
     }, [cartData, cartState]);
 

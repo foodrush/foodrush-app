@@ -23,6 +23,8 @@ import { CartContext } from "../contexts/CartContext";
 import { UserContext } from "../contexts/UserContextProvider";
 
 import PopUp from "../modal/PopUp"
+import Alert from "../modal/Alert";
+
 
 export default function Home() {
     const [data, setData] = useState([]);
@@ -32,12 +34,13 @@ export default function Home() {
     const [pageNumber, setPageNumber] = useState(1);
     const [isMenuVisible, setMenuVisible] = useState(true);
     const [searchText, setSearchText] = useState('');
+    // pop-up states
     const [isOpen, setIsOpen] = useState(false);
     const [popUpType, setPopUpType] = useState(3);
     const [popUpContent, setPopUpContent] = useState("");
 
     // taken from context -- every time a product is added to the cart cartData state is updated via -->
-    const { fetchCartData } = useContext(CartContext)
+    const { fetchCartData, cartData, calculateDiscount } = useContext(CartContext)
     const { userType } = useContext(UserContext)
 
     const handleClose = () => {
@@ -50,8 +53,7 @@ export default function Home() {
             Sum of all counters is now { }
         </p>
     );
-
-
+    
     useEffect(() => {
         fetchData();
     }, [pageNumber]);
@@ -73,8 +75,10 @@ export default function Home() {
     const backendURL = 'http://127.0.0.1:8000';
 
     const product = () => {
+        const discDataArr = calculateDiscount(data);
+        console.log(discDataArr);
         return (
-            data.map((item) => {
+            discDataArr.map(({item, discPrice}) => {
                 var imageUrlWithPrefix;
                 if (item.image !== null) {
                     imageUrlWithPrefix= `${backendURL}/static${item.image}`;
@@ -113,8 +117,8 @@ export default function Home() {
                             <div className="featured__item__text" onClick={() => routeToRestaurant(item.business)}>
                                 <h6><a href="#">{item.name}</a></h6>
                                 <h6><a href="#">{item.business_name}</a></h6>
-                                <h5>{item.price}</h5>
-                                <h5>{item.rating}</h5>
+                                <h5><span className="old-information">${item.price}</span></h5>
+                                <h5>${discPrice}</h5>
                             </div>
                         </div>
                     </div>
@@ -246,6 +250,7 @@ export default function Home() {
 
     return (
         <div className="App">
+            <Alert type="default" isDynamic={false} />
             {/* returns null if isOpen is false */}
             <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
                 {popUpContent}

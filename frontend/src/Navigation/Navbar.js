@@ -249,7 +249,7 @@ export default function Navbar() {
                                 </ul>
                                 {/*TODO: Total quantity is remains after login with another account*/}
 
-                                <div className="header__cart__price">item: <span>${cartState.totalPrice}</span></div>
+                                <div className="header__cart__price">item: <span>${cartState.totalPriceDiscounted}</span></div>
                             </div>
                         </div>
                     </div>
