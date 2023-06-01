@@ -206,7 +206,7 @@ export default function Checkout() {
                                     </div>
                                     <ul>
                                         <li>Address: 60-49 Road 11378 New York</li>
-                                        <li>Phone: +65 11.188.888</li>
+                                        <li>Phone: +90 534 510 3978</li>
                                         <li>Email: hello@colorlib.com</li>
                                     </ul>
                                 </div>

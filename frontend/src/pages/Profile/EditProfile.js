@@ -146,7 +146,6 @@ export default function EditProfile() {
     };
 
     const displayForm = () => {
-        console.log(user.first_name);
         if (userType === 1) {
             return (
                 <>

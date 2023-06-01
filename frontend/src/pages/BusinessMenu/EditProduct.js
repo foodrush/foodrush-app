@@ -40,7 +40,6 @@ function EditProduct() {
             submit.then(({ productAdded, productSubmitted, success }) => {
                 if (productSubmitted) {
                     setIsOpen(true);
-                    console.log(productAdded);
                     if (productAdded && success) {
                         setPopUpType(1);
                         setPopUpContent(

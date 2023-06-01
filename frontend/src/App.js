@@ -56,7 +56,6 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/contact" element={<Contact />} />
-                        <Route path="/blog" element={<Blog />} />
                         <Route path="/login" element={<Login setToken={setToken} />} />
                         <Route path="/login-business" element={<LoginBusiness />} />
 

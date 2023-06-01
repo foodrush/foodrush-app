@@ -33,13 +33,13 @@ export default function Login({setToken}){
 
     let navigate = useNavigate();
     const routeToHome = (path) =>{
-        console.log(path);
+
         navigate(path);
     }
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log(email, password);
+
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
                 username: email,
@@ -52,8 +52,7 @@ export default function Login({setToken}){
                     }
                 });
                 if (responseSecond.status === 200) {
-                    console.log("TOKEN:")
-                    console.log(responseSecond.data)
+
 
                     localStorage.setItem('token', response.data.access);
                     setToken(response.data.access);
@@ -132,8 +131,6 @@ export default function Login({setToken}){
                                             <input type="checkbox" defaultChecked="checked" />
                                             <div className="control__indicator" />
                                         </label>
-                                        {/* Forgot password */}
-                                        <span className="ml-auto"><a href="#" className="forgot-pass">Forgot Password</a></span>
                                     </div>
                                     <div className="text-center">
                                         <p className="lead fw-normal ml-0 mr-3 mb-0"> Not a member? <Link to="/register">Register as Customer</Link></p>
@@ -151,8 +148,11 @@ export default function Login({setToken}){
                                             <br/>
                                             <p className="lead fw-normal ml-0 mr-3 mb-0"> <Link to="/register-business">Want to register as a Business? </Link></p>
                                             <br/>
-                                            <p className="lead fw-normal ml-0 mr-3 mb-0"> <Link to="/">Go Back To Landing Page </Link></p>
-
+                                            <p className="lead fw-normal ml-0 mr-3 mb-0">
+                                                <Link to="/" style={{ color: 'orangered' }}>
+                                                    Go Back To Landing Page
+                                                </Link>
+                                            </p>
                                         </div>
                                     </div>
                                     {/* log in with socials end*/}

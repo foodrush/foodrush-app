@@ -73,7 +73,6 @@ export const ProductProvider = ({ children }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // formData -- returns an array of arrays -- each input is an array
-        console.log("acf")
         const formData = new FormData(e.currentTarget);
         formData.set("image", initialValues["image"]);
         setProductSubmitted(true);
@@ -175,7 +174,6 @@ export const ProductProvider = ({ children }) => {
                         // update the file label
                         const fileName = file ? file.name : 'Choose file...';
                         setFileLabel(fileName)
-                        console.log("3")
                         setInitialValues({ ...initialValues, 'image': file });
                         setFieldTouched('image', true);
                         setFieldValue('image', file);

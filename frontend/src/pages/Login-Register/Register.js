@@ -20,13 +20,12 @@ export default function Register() {
 
     let navigate = useNavigate();
     const routeToLogin = (path) => {
-        console.log(path);
+
         navigate(path);
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-customer/', {
                 first_name: name,
@@ -70,7 +69,6 @@ export default function Register() {
     return (
         <div>
             {/* nav bar with name */}
-            <Navbar />
             <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={popUpType}>
                 {popUpContent}
             </PopUp>
@@ -127,14 +125,19 @@ export default function Register() {
                                     {/* Register Button */}
                                     <input type="submit" defaultValue="Register" className="btn btn-block btn-primary mb-4" />
                                 </form>
-                                {/* register form */}
-                            </div>
-                            <div className="col-md-5">
-                                {/* login page link */}
-                                <div className="text-center mb-4">
-                                    <p>Already have an account? <Link to="/login">Login</Link></p>
+                                <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                                {/* log in with socials */}
+                                <div className="d-flex flex-row align-items-center justify-content-center  mt-4">
+                                    <div className="text-center">
+                                        <p className="lead fw-normal ml-0 mr-3 mb-0"> <Link to="/login">Already have an account? </Link></p>
+                                        <br/>
+                                        <p className="lead fw-normal ml-0 mr-3 mb-0">
+                                            <Link to="/" style={{ color: 'orangered' }}>
+                                                Go Back To Landing Page
+                                            </Link>
+                                        </p>
+                                    </div>
                                 </div>
-                                {/* login page link end */}
                             </div>
                         </div>
                     </div>

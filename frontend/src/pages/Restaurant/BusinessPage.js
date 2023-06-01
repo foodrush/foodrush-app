@@ -1,6 +1,6 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
@@ -12,7 +12,9 @@ import Navbar from "../../Navigation/Navbar";
 import { UserContext } from "../../contexts/UserContextProvider";
 import banner from "../../style/img/hero/banner.jpg";
 import Alert from "react-bootstrap/Alert";
-import { CartContext } from "../../contexts/CartContext";
+import {CartContext} from "../../contexts/CartContext";
+import Fuse from 'fuse.js';
+import {Backdrop, CircularProgress} from "@mui/material";
 
 import PopUp from '../../modal/PopUp';
 import { Link } from "react-router-dom";
@@ -27,6 +29,9 @@ function BusinessPage() {
     const [isOpen, setIsOpen] = useState(false);
     const [popUpType, setPopUpType] = useState(3);
     const [popUpContent, setPopUpContent] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [completeData, setCompleteData] = useState([]);
 
     let businessId = useParams();
     const { userType } = useContext(UserContext)
@@ -34,7 +39,6 @@ function BusinessPage() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        console.log(businessId);
 
         async function fetchData() {
             try {
@@ -44,6 +48,8 @@ function BusinessPage() {
                 ]);
                 setBusinessData(businessResponse.data);
                 setproductResponse(productResponse.data);
+                setFilteredProducts(productResponse.data)
+                setCompleteData(productResponse.data)
             } catch (error) {
                 console.error(error);
             }
@@ -53,13 +59,17 @@ function BusinessPage() {
     }, [businessId]);
 
     if (!businessData || !productResponse) {
-        return <div>Loading...</div>;
+        return <div>
+            <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop></div>;
     }
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
-        console.log(localStorage.getItem("token"))
-        console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
         if (userToken === null || userToken === "") {
@@ -109,11 +119,25 @@ function BusinessPage() {
 
     const backendURL = 'http://127.0.0.1:8000';
 
+
+    const handleSearch= (text) => {
+
+
+        // Perform the search when the search query changes
+        const fuse = new Fuse(completeData, {
+            keys: ['name', 'cuisine','category'], // Specify the fields you want to search on
+            threshold: 0.4, // Adjust the similarity threshold as per your preference
+        });
+
+        const searchResults = fuse.search(text);
+        setFilteredProducts(searchResults.map((result) => result.item));
+    };
+
     const product = () => {
-        const discArr = calculateDiscount(productResponse);
+        const discArr = calculateDiscount(filteredProducts);
         return (
             discArr.map(({ item, discPrice }) => {
-                console.log(discPrice);
+
                 var imageUrlWithPrefix;
                 if (item.image !== null) {
                     imageUrlWithPrefix = `${backendURL}/static${item.image}`;
@@ -127,7 +151,6 @@ function BusinessPage() {
                                         <img
                                             src={imageUrlWithPrefix}
                                             alt={item.name}
-                                            onLoad={() => console.log('Image loaded successfully')}
                                         />
                                     )}
                                 </div>
@@ -285,11 +308,39 @@ function BusinessPage() {
                         </h2>
                     </div>
                     <ul className="filters_menu">
-                        <li className="active" data-filter="*">All</li>
-                        <li data-filter=".burger">Burger</li>
-                        <li data-filter=".pizza">Pizza</li>
-                        <li data-filter=".pasta">Pasta</li>
-                        <li data-filter=".fries">Fries</li>
+                        <li className="active" data-filter="*" onClick={() => setFilteredProducts(productResponse)}>
+                            All
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Burger")}
+                        >
+                            Burger
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Pizza")}
+                            >
+                            Pizza
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Pasta")}
+                        >
+                            Pasta
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Fries")}
+                        >
+                            Fries
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Veggies")}
+                        >
+                            Veggies
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Fruits")}
+                        >
+                            Fruits
+                        </li>
                     </ul>
                     {showAlert && (
                         <Alert
