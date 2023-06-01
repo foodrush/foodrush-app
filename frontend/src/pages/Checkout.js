@@ -19,14 +19,29 @@ import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 import PopUp from "../modal/PopUp";
+import { UserContext } from "../contexts/UserContextProvider";
+
 
 export default function Checkout() {
     const { cartData, cartState, fetchCartData, calculateDiscount } = useContext(CartContext)
+
+    const { SDGPoints, setSDGPoints  } = useContext(UserContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
     const [popUpType, setPopUpType] = useState(3);
     const cartDataDiscounted = calculateDiscount(cartData);
+
+    const [succesfulCheckout,setSuccessfulCheckout] = useState(false);
+
+    useEffect(() => {
+        if(succesfulCheckout){
+            let currentPoints = SDGPoints;
+            currentPoints += Math.ceil((cartState.totalPrice-cartState.totalPriceDiscounted) * 10)
+            setSDGPoints(currentPoints);
+            localStorage.setItem("SDGPoints",currentPoints) 
+        }
+    },[succesfulCheckout]);
 
     const handleCheckoutSubmit = async (e) => {
         e.preventDefault();
@@ -65,6 +80,7 @@ export default function Checkout() {
                     setIsOpen(true);
                     setPopUpContent("Your order has been placed!")
                     setPopUpType(1);
+                    setSuccessfulCheckout(true);
                 }
             })
         }

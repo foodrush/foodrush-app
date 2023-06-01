@@ -17,6 +17,16 @@ export const UserContextProvider = ({ children }) => {
     const [lastName, setLastName] = useState('');
     const [userInfos, setUserInfos] = useState('');
 
+    // to make it safe for refresh 
+    const [SDGPoints, setSDGPoints] = useState(() => {
+        // get the value from localStorage init 
+        const storedPoints = localStorage.getItem('SDGPoints');
+        return storedPoints ? parseInt(storedPoints) : 0;
+      });
+
+      useEffect(() => {
+        localStorage.setItem('SDGPoints', SDGPoints.toString());
+      }, [SDGPoints]);
 
     useEffect(() => {
         async function fetchDataCustomer() {
@@ -82,6 +92,7 @@ export const UserContextProvider = ({ children }) => {
         setLastName('');
         setUserType(0);
         setUserInfos('');
+        setSDGPoints(0);
     };
 
     const userObject = {
@@ -98,6 +109,8 @@ export const UserContextProvider = ({ children }) => {
         email,setEmailContext,address,setAddress,
         phoneNumber,setPhoneNumber,firstName,lastName,userInfos,setUserInfos,
         resetUserContext,
+        setSDGPoints,
+        SDGPoints,
 
     }
 

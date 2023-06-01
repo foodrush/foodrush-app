@@ -31,27 +31,27 @@ function Alert({ type, isDynamic }) {
         };
     }, []);
 
-    // const classes = `d-flex justify-content-around ${css(style[`${type}-text`])}`
-
     if (isShow) {
-        return (
-            <div className={css(style.alert, style[type])}>
-                {isDynamic && (
-                    <span className={style.closebtn}
-                        onClick={() => setIsShow(false)}>
-                        &times;
-                    </span>
-                )}
-                <div className="d-flex justify-content-around">
-                    <span>
-                    Current Time: {timeMessage} 
-                    </span>
-                    <span>
-                    Current Discount: %{discPercentage}
-                    </span>
+        if (timeMessage !== null && discPercentage > 0) {
+            return (
+                <div className={css(style.alert, style[type])}>
+                    {isDynamic && (
+                        <span className={style.closebtn}
+                            onClick={() => setIsShow(false)}>
+                            &times;
+                        </span>
+                    )}
+                    <div className="d-flex justify-content-around">
+                        <span>
+                            Current Time: {timeMessage}
+                        </span>
+                        <span>
+                            Current Discount: %{discPercentage}
+                        </span>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
     }
     else {
         return null;

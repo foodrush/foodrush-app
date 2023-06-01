@@ -103,13 +103,8 @@ export const CartProvider = ({ children, token, setToken }) => {
 
     const calculateDiscount = (productArray) => {
         let hour = date.getHours();
-        let minute = date.getMinutes();
-
         const discountMult = Math.floor((hour - 8) / 4) + 1;
         const discountPer = 3 * discountMult;
-
-        console.log(productArray);
-        console.log(productArray !== undefined);
         if (productArray !== undefined) {
             const discArr = productArray.map(item => {
                 if (item.price) {
