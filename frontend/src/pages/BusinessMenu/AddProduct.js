@@ -2,9 +2,16 @@ import Business_Navbar from '../../Navigation/Business_Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useContext, useEffect } from 'react';
 import { ProductFormContext } from '../../contexts/ProductFormContext';
-
+import PopUp from '../../modal/PopUp';
+import { useNavigate } from 'react-router';
 function AddProduct() {
-    const { handleSubmit, displayFileForm, productSubmitted, productAdded, setEditMode, setInitialValues, displayTextFormFieldsAdd } = useContext(ProductFormContext);
+    const { handleSubmit, displayFileForm, productSubmitted, productAdded, setEditMode, setInitialValues, displayTextFormFieldsAdd, setProductAdded, setProductSubmitted } = useContext(ProductFormContext);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpType, setPopUpType] = useState(3);
+    const [popUpContent, setPopUpContent] = useState("");
+
+    const [submit, setSubmit] = useState({});
 
     useEffect(() => {
         setEditMode(false)
@@ -19,8 +26,52 @@ function AddProduct() {
         }))
     }, [])
 
+    const handleClose = () => {
+        setIsOpen(false);
+        if (popUpType === 1)
+            routeEditMenu();
+    };
+
+    let navigate = useNavigate();
+    const routeEditMenu = () => {
+        navigate(`/editmenu`);
+    }
+
+    useEffect(() => {
+        console.log(submit);
+        if(submit instanceof Promise){
+            submit.then(({ productAdded, productSubmitted, success }) => {
+                if (productSubmitted) {
+                    setIsOpen(true);
+                    console.log(productAdded);
+                    if (productAdded && success) {
+                        setPopUpType(1);
+                        setPopUpContent(
+                            <>
+                                <h5>Product successfully added.</h5>
+                            </>
+                        );
+                        setProductAdded(false);
+                    }
+                    else {
+                        setPopUpType(0);
+                        setPopUpContent(
+                            <>
+                                <h5>Product could not be added. Please check the added information.</h5>
+                            </>
+                        );
+                    }
+                    setProductSubmitted(false);
+                }
+            });
+        }
+    }, [submit])
+
     return (
         <>
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
             <Business_Navbar />
             {/* Add Product */}
             <section className='container mt-2'>
@@ -35,22 +86,15 @@ function AddProduct() {
                                         </div>
                                         <div className="card-body">
                                             {/* form start */}
-                                            <form action="#" onSubmit={handleSubmit}
+                                            <form action="#" onSubmit={(e) => {
+                                                setSubmit(handleSubmit(e))
+                                            }}
                                             >
                                                 {displayTextFormFieldsAdd()}
                                                 {displayFileForm()}
                                                 <button className="btn btn-dark mt-5 mx-auto d-block" type="submit">Add
                                                     Product</button>
                                             </form>
-                                            {productSubmitted && ((productAdded === true) ?
-                                                (<div className="alert alert-success" role="alert">
-                                                    The product is succesfully added.
-                                                </div>)
-                                                :
-                                                (<div className="alert alert-danger" role="alert">
-                                                    The product could not be added.
-                                                </div>))
-                                            }
                                             {/* form end */}
                                         </div>
                                     </div>

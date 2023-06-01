@@ -3,9 +3,26 @@ import { useParams } from "react-router-dom";
 import React, { useContext, useEffect } from 'react';
 import { ProductFormContext } from '../../contexts/ProductFormContext';
 
+import PopUp from '../../modal/PopUp';
+
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 function EditProduct() {
-    const { displayTextFormFields, handleSubmit, displayFileForm, productSubmitted, productAdded, setProductId, getProduct, setEditMode } = useContext(ProductFormContext);
+    const { displayTextFormFields, handleSubmit, displayFileForm, productSubmitted, productAdded, setProductId, getProduct, setEditMode, setProductSubmitted, setProductAdded } = useContext(ProductFormContext);
     const { productId } = useParams();
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpType, setPopUpType] = useState(3);
+    const [popUpContent, setPopUpContent] = useState("");
+
+    const [submit, setSubmit] = useState({});
+
+    const handleClose = () => {
+        setIsOpen(false);
+        if (popUpType === 1)
+            routeEditMenu();
+    };
 
     useEffect(() => {
         setProductId(productId);
@@ -13,8 +30,45 @@ function EditProduct() {
         setEditMode(true)
     }, [productId])
 
+    let navigate = useNavigate();
+    const routeEditMenu = () => {
+        navigate(`/editmenu`);
+    }
+
+    useEffect(() => {
+        if(submit instanceof Promise){
+            submit.then(({ productAdded, productSubmitted, success }) => {
+                if (productSubmitted) {
+                    setIsOpen(true);
+                    console.log(productAdded);
+                    if (productAdded && success) {
+                        setPopUpType(1);
+                        setPopUpContent(
+                            <>
+                                <h5>Product successfully edited.</h5>
+                            </>
+                        );
+                        setProductAdded(false);
+                    }
+                    else {
+                        setPopUpType(0);
+                        setPopUpContent(
+                            <>
+                                <h5>Product could not be edited. Please check the added information.</h5>
+                            </>
+                        );
+                    }
+                    setProductSubmitted(false);
+                }
+            });
+        }
+    }, [submit])
     return (
         <>
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
+                {popUpContent}
+            </PopUp>
+
             <Business_Navbar />
             <section className='container mt-2'>
                 <div className="container-fluid">
@@ -28,23 +82,15 @@ function EditProduct() {
                                         </div>
                                         <div className="card-body">
                                             {/* form start */}
-                                            <form action="true" onSubmit={handleSubmit}
+                                            <form action="true" onSubmit={(e) => {
+                                                setSubmit(handleSubmit(e))
+                                            }}
                                             >
                                                 {displayTextFormFields()}
                                                 {displayFileForm()}
                                                 <button className="btn btn-dark mt-5 mx-auto d-block" type="submit">Submit
                                                     Product</button>
                                             </form>
-                                            {productSubmitted && ((productAdded === true)
-                                                ?
-                                                (<div className="alert alert-success" role="alert">
-                                                    The product is succesfully edited.
-                                                </div>)
-                                                :
-                                                (<div className="alert alert-danger" role="alert">
-                                                    The product could not be edited.
-                                                </div>))
-                                            }
                                             {/* form end */}
                                         </div>
                                     </div>

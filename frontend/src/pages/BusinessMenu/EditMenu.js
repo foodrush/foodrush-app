@@ -11,8 +11,6 @@ export default function EditMenu() {
     const [productResponse, setproductResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const { userId } = useContext(UserContext)
-
     const headers = {
         Authorization: `Bearer ${localStorage.getItem("token")}`
     };
