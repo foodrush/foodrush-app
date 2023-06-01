@@ -56,7 +56,7 @@ export default function EditMenu() {
     const displayProducts = () => {
         return (productResponse.map(product => {
             // const imageUrl = `${backendURL}/static${product.image}`;
-            const imageUrl = `{product.image}`; 
+            const imageUrl = product.image; 
             return (
                 <tr key={product._id} >
                     {/* image */}

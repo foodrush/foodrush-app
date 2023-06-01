@@ -72,7 +72,8 @@ export default function BusinessOrders() {
         return ((productResponse.map(order => {
                 return (order.order_items.map((product) => {
                         console.log(product)
-                        const imageUrl = `${backendURL}/static${product.image}`;
+                        // const imageUrl = `${backendURL}/static${product.image}`;
+                        const imageUrl = `${product.image}`;
                         return (
                             <tr key={product._id}>
                                 {/* orderID */}
