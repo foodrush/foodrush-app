@@ -67,7 +67,7 @@ function UserProfile() {
                 (<Business_Navbar/>) :
                 (<Navbar/>)}
             {/* Navbar end*/}
-            <div className="d-flex align-items-center bg">
+            <div className="d-flex align-items-center bg" >
                 <div className="container ">
                     <div className="main-body">
                         <div className="row gutters-sm gy-3">

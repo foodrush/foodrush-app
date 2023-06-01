@@ -23,6 +23,7 @@ import { CartContext } from "../contexts/CartContext";
 import { UserContext } from "../contexts/UserContextProvider";
 
 import PopUp from "../modal/PopUp"
+import {Backdrop, CircularProgress} from "@mui/material";
 
 export default function Home() {
     const [data, setData] = useState([]);
@@ -100,7 +101,6 @@ export default function Home() {
                                                 handleAddToFavorites(e, item._id);
 
                                             }}><i className="fa fa-heart" /></a></li>
-                                    <li><a href="#"><i className="fa fa-retweet" /></a></li>
                                     <li><a href="#"
                                         onClick={(e) => {
                                             handleAddToCart(e, item._id);
@@ -283,8 +283,7 @@ export default function Home() {
                                 <div className="hero__search__form">
                                     <form action="#">
                                         <div className="hero__search__categories">
-                                            All Categories
-                                            <span className="arrow_carrot-down" />
+                                            Search
                                         </div>
                                         <input type="text" placeholder="What do yo u need?" value={searchText}
                                                onChange={event => setSearchText(event.target.value)} />
@@ -303,9 +302,9 @@ export default function Home() {
                             </div>
                             <div className="hero__item set-bg" style={{ backgroundImage: `url(${banner})` }}>
                                 <div className="hero__text">
-                                    <span>FRUIT FRESH</span>
-                                    <h2>Vegetable <br />100% Organic</h2>
-                                    <p>Free Pickup and Delivery Available</p>
+                                    <span>FRESH FOODS</span>
+                                    <h2>Food<br />100% Organic</h2>
+                                    <p>Free Pickup Available</p>
                                     <a href="#" className="primary-btn">SHOP NOW</a>
                                 </div>
                             </div>
@@ -362,7 +361,13 @@ export default function Home() {
                     </div>
                     <div className="row featured__filter">
                         {productRender}
-                        {loading && <div>Loading...</div>}
+                        {loading && <div>
+                            <Backdrop
+                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            open
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop></div>}
                         {error && <div>Error fetching data.</div>}
                     </div>
                 </div>

@@ -14,6 +14,8 @@ import Business_Navbar from "../Navigation/Business_Navbar";
 import {UserContext} from "../contexts/UserContextProvider";
 import {CartContext} from "../contexts/CartContext";
 import Fuse from 'fuse.js';
+import PopUp from "../modal/PopUp";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 
 export default function Market() {
@@ -22,13 +24,17 @@ export default function Market() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const [pageNumber, setPageNumber] = useState(1);
     const {userType} = useContext(UserContext)
     const {fetchCartData} = useContext(CartContext)
     const [searchQuery, setSearchQuery] = useState('');
+    const [isMenuVisible, setMenuVisible] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
+    const [popUpType, setPopUpType] = useState(3);
+    const [popUpContent, setPopUpContent] = useState("");
+    const [initQuery, setInitQuery] = useState(null);
+
     const [searchParams] = useSearchParams();
     const searchText = searchParams.get('search');
-    const [isMenuVisible, setMenuVisible] = useState(true);
 
     useEffect(() => {
         fetchData();
@@ -60,6 +66,42 @@ export default function Market() {
         console.log(path);
         navigate(`/business/${path}`);
     }
+
+    const handleAddToFavorites = async (e, product_id) => {
+        e.preventDefault();
+        const userToken = localStorage.getItem('token');
+        if (userToken === null || userToken === "") {
+            setIsOpen(true);
+            setPopUpType(0);
+            setPopUpContent(<>
+                <h5>To add products to your favorites you must login.</h5>
+                <Link to="/login">Login Page</Link></>)
+        }
+        if (userToken && product_id) {
+            await axios.post('http://127.0.0.1:8000/api/users/customer-profile/favorites/add/',
+                {
+                    _id: product_id,
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }).then(async (response) => {
+                console.log(response);
+                setIsOpen(true);
+                setPopUpType(1);
+                setPopUpContent(<>
+                    <h5>Product added to your favorites!</h5>
+                    <Link to="/favorites" className="d-flex flex-column align-items-center">
+                        <i className="fa fa-heart primary-btn favs-btn" data-tooltip-id="my-tooltip"
+                           style={{ fontSize: "45px" }}
+                        />
+                    </Link></>)
+            }).catch((error) => {
+                console.error(error);
+            })
+        }
+    };
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
@@ -98,11 +140,20 @@ export default function Market() {
         fuseSearchresults();
     };
 
-    const fuseSearchresults =()=> {
+    const fuseSearchresultsInitial =(searchQuery)=> {
+        console.log("made2")
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
     }
 
+    const fuseSearchresults =()=> {
+        console.log("made")
+        const results = fuse.search(searchQuery);
+        setDesiredData(results.map((result) => result.item));
+    }
+    const handleClose = () => {
+        setIsOpen(false);
+    };
 
     const handleSearchQueryChange = (newSearchText) => {
         setSearchQuery(newSearchText);
@@ -140,7 +191,8 @@ export default function Market() {
                                     />
                                 )}
                                 <ul className="product__item__pic__hover">
-                                    <li><a href="#"><i className="fa fa-heart" /></a></li>
+                                    <li><a href="#" onClick={(e) => { handleAddToFavorites(e, item._id);}}>
+                                        <i className="fa fa-heart" /></a></li>
                                     <li><a href="#" onClick={(e) => { handleAddToCart(e, item._id); }}>
                                         <i className="fa fa-shopping-cart" />
                                     </a></li>
@@ -168,7 +220,11 @@ export default function Market() {
 
 
     return (
-        <div>
+        <div className="App">
+            <PopUp isOpen={isOpen} onClose={handleClose} popUpType={popUpType}>
+            {popUpContent}
+        </PopUp>
+
             {userType === 2 ?
                 (<Business_Navbar/>) :
                 (<Navbar/>)}
@@ -239,7 +295,13 @@ export default function Market() {
                         <div className="col-lg-9 col-md-7">
                             <div className="row">
                                 {productRender}
-                                {loading && <div>Loading...</div>}
+                                {loading && <div>
+                                    <Backdrop
+                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                    open
+                                >
+                                    <CircularProgress color="inherit" />
+                                </Backdrop></div>}
                                 {error && <div>Error fetching data.</div>}
                             </div>
                             <div className="filter__item">

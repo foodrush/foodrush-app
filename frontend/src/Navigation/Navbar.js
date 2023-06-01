@@ -75,11 +75,23 @@ export default function Navbar() {
                 onMouseDown={handleMenuUnclick}
             >
                 <div className="humberger__menu__logo">
-                    <a href="#"><img src="img/logo.png" alt="" /></a>
-                </div>
+                    <Link to="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor"
+                             className="bi bi-egg-fried" viewBox="0 0 16 16">
+                            <path fill="#e9831d" path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            <path fill="#e9831d" path
+                                  d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z">
+                            </path>
+                        </svg>
+                    </Link>                </div>
                 <div className="humberger__menu__cart">
                     <ul>
-                        <li><a href="#"><i className="fa fa-heart" /> <span>{cartState.totalHearts}</span></a></li>
+                        <li>
+                            <Link to="/favorites">
+                                <i className="fa fa-heart"
+                                />
+                            </Link>
+                        </li>
                         <li><a href="#"><i className="fa fa-shopping-bag" /> <span>{cartState.totalQuantity}</span></a></li>
                     </ul>
                     <div className="header__cart__price">item: <span>{cartState.totalPrice}</span></div>
@@ -88,35 +100,61 @@ export default function Navbar() {
                     <div className="header__top__right__language">
                         <img src="img/language.png" alt="" />
                         <div>English</div>
-                        <span className="arrow_carrot-down" />
                         <ul>
-                            <li><a href="#">Spanis</a></li>
                             <li><a href="#">English</a></li>
                         </ul>
                     </div>
                     <div className="header__top__right__auth">
-                        <a href="#"><i className="fa fa-user" /> Login</a>
+                        {user ? (
+                            // <Link to="/profile">Welcome {localStorage.getItem("name")}<i className="fa fa-user"/> </Link>
+
+                            <div>
+
+                                <div className="header__top__right__auth"
+
+                                     onClick={() => routeToProfile()}>
+                                    <i className="fa fa-user" /> Profile
+
+                                </div>
+
+                                <div className="header__top__right__auth"
+                                    // data-tooltip-id="my-tooltip"
+                                    // data-tooltip-content="Logout"
+                                     onClick={() => logOut()}>
+
+
+                                    <i className="fa fa-times" /> Logout
+                                </div>
+                            </div>
+                        ) : (
+                            <Link to="/login"><i className="fa fa-user" /> Login</Link>
+                        )
+                        }
                     </div>
                 </div>
                 <nav className="humberger__menu__navs mobile-menus">
                     <ul>
-                        <li className="active"><a href="./index.html">Home</a></li>
-                        <li><a href="./shop-grid.html">Shop</a></li>
-                        <li><a href="./blog.html">Blog</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
+                        <li className="active"><Link to="/" onClick={() => handleItemClick(-1)}>Home</Link></li>
+                        <li><Link to="/market" onClick={() => handleItemClick(0)}>Market</Link></li>
+                        {userType === 1 &&
+                        (
+                        <li>
+                            <Link to="/orders" onClick={() => handleItemClick(1)}>Orders</Link>
+                        </li>
+                        )}
+                        <li> <Link to="/contact" onClick={() => handleItemClick(2)}>Contact</Link></li>
                     </ul>
                 </nav>
                 <div id="mobile-menu-wrap" />
                 <div className="header__top__right__social">
-                    <a href="#"><i className="fa fa-facebook" /></a>
-                    <a href="#"><i className="fa fa-twitter" /></a>
-                    <a href="#"><i className="fa fa-linkedin" /></a>
-                    <a href="#"><i className="fa fa-pinterest-p" /></a>
+                    <a href="https://gokmencaglarofc.wixsite.com/foodrush"  target="_blank" rel="noopener noreferrer">
+                        FoodRush Info: <i className="fa fa-info-circle" /></a>
+
                 </div>
                 <div className="humberger__menu__contact">
                     <ul>
-                        <li><i className="fa fa-envelope" /> hello@colorlib.com</li>
-                        <li>Free Shipping for all Order of $99</li>
+                        <li><i className="fa fa-envelope" /> FoodRUSH</li>
+                        <li>All rights reserved. 2023</li>
                     </ul>
                 </div>
             </div>
@@ -135,17 +173,14 @@ export default function Navbar() {
                             <div className="col-lg-6 col-md-6">
                                 <div className="header__top__right">
                                     <div className="header__top__right__social">
-                                        <a href="#"><i className="fa fa-facebook" /></a>
-                                        <a href="#"><i className="fa fa-twitter" /></a>
-                                        <a href="#"><i className="fa fa-linkedin" /></a>
-                                        <a href="#"><i className="fa fa-pinterest-p" /></a>
+                                        <a href="https://gokmencaglarofc.wixsite.com/foodrush"  target="_blank" rel="noopener noreferrer">
+                                            FoodRush Info: <i className="fa fa-info-circle" /></a>
                                     </div>
                                     <div className="header__top__right__language">
                                         <img src="styletyle/img/language.png" alt="" />
                                         <div>English</div>
                                         <span className="arrow_carrot-down" />
                                         <ul>
-                                            <li><a href="#">Turkish</a></li>
                                             <li><a href="#">English</a></li>
                                         </ul>
                                     </div>
@@ -186,7 +221,7 @@ export default function Navbar() {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="header__logo">
-                                <Link to="/"> <Link to="/">
+                                <Link to="/">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor"
                                         className="bi bi-egg-fried" viewBox="0 0 16 16">
                                         <path fill="#e9831d" path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
@@ -194,7 +229,7 @@ export default function Navbar() {
                                             d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z">
                                         </path>
                                     </svg>
-                                </Link> </Link>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -209,16 +244,13 @@ export default function Navbar() {
                                     {
                                         userType === 1 &&
                                         (
-                                            <li className={activeItem === 0 ? 'active' : ''}>
-                                                <Link to="/orders" onClick={() => handleItemClick(0)}>Orders</Link>
+                                            <li className={activeItem === 1 ? 'active' : ''}>
+                                                <Link to="/orders" onClick={() => handleItemClick(1)}>Orders</Link>
                                             </li>
                                         )
                                     }
-                                    <li className={activeItem === 1 ? 'active' : ''}>
-                                        <Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link>
-                                    </li>
                                     <li className={activeItem === 2 ? 'active' : ''}>
-                                        <Link to="/contact" onClick={() => handleItemClick(3)}>Contact</Link>
+                                        <Link to="/contact" onClick={() => handleItemClick(2)}>Contact</Link>
                                     </li>
                                 </ul>
                             </nav>
@@ -229,7 +261,7 @@ export default function Navbar() {
                                 <ul>
                                     <li>
                                         <Link to="/favorites">
-                                            <i className="fa fa-heart" data-tooltip-id="my-tooltip"
+                                            <i className="fa fa-heart"
                                             // data-tooltip-content="Favorites
                                             />
                                             {/*<span></span>*/}

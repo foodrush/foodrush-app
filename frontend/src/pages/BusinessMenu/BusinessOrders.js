@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useEffect, useState, useContext} from "react";
 import axios from "axios";
 import {UserContext} from "../../contexts/UserContextProvider";
+import {Backdrop, Button, CircularProgress} from "@mui/material";
 
 export default function BusinessOrders() {
     const [status, setStatus] = useState(null);
@@ -198,14 +199,20 @@ export default function BusinessOrders() {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop></div>;
     } else {
         if (status === 200) {
             return (
                 <>
                     <Business_Navbar/>
                     {/* add new */}
-                    <div className="card-header border-0 pt-5 d-flex justify-content-between">
+                    <div className="card-header border-0 pt-5 d-flex justify-content-around align-items-center">
                         <h3 className="card-title align-items-start flex-column">
                             <span className="card-label fw-bolder fs-3 mb-1">Orders</span>
                         </h3>
