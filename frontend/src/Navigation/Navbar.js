@@ -62,6 +62,7 @@ export default function Navbar() {
     const logOut = async () => {
         setUser(null);
         localStorage.clear()
+        resetUserContext();
         navigate("/");
         setToken(null);
     }
@@ -155,11 +156,10 @@ export default function Navbar() {
                                             <div>
 
                                                 <div className="header__top__right__auth"
-                                                    // data-tooltip-id="my-tooltip"
-                                                    // data-tooltip-content={user}
-                                                    onClick={() => routeToProfile()}><i
-                                                        className="fa fa-user" /> Profile
-                                                    <Tooltip id="my-tooltip" />
+
+                                                    onClick={() => routeToProfile()}>
+                                                    <i className="fa fa-user" /> Profile
+
                                                 </div>
 
                                                 <div className="header__top__right__auth"
@@ -206,6 +206,14 @@ export default function Navbar() {
                                     <li className={activeItem === 0 ? 'active' : ''}>
                                         <Link to="/market" onClick={() => handleItemClick(0)}>Market</Link>
                                     </li>
+                                    {
+                                        userType === 1 &&
+                                        (
+                                            <li className={activeItem === 0 ? 'active' : ''}>
+                                                <Link to="/orders" onClick={() => handleItemClick(0)}>Orders</Link>
+                                            </li>
+                                        )
+                                    }
                                     <li className={activeItem === 1 ? 'active' : ''}>
                                         <Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link>
                                     </li>

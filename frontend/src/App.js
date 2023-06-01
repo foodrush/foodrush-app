@@ -17,6 +17,7 @@ import Register from "./pages/Login-Register/Register";
 import RegisterBusiness from "./pages/Login-Register/RegisterBusiness";
 import LoginBusiness from "./pages/Login-Register/LoginBusiness";
 
+import Orders from "./pages/Orders";
 
 import Market from "./pages/Market";
 import Restaurant from "./pages/Restaurant/Restaurant";
@@ -41,6 +42,7 @@ import EditProduct from "./pages/BusinessMenu/EditProduct";
 
 import { ProductProvider } from "./contexts/ProductFormContext";
 import Checkout from "./pages/Checkout";
+import BusinessOrders from "./pages/BusinessMenu/BusinessOrders";
 import Favorites from "./pages/Favorites";
 
 import Error from "./pages/Error";
@@ -68,6 +70,8 @@ function App() {
                         <Route path="/editmenu" element={<EditMenu />} />
 
                         <Route path="/editmenu/add-product" element={<AddProduct />} />
+                        <Route path="/business-orders" element={<BusinessOrders />} />
+                        <Route path="/orders" element={<Orders />} />
 
                         <Route path="/shopping-cart" element={<ShoppingCart token={token} />} />
                         <Route path="/business" element={<BusinessDashboard />} />
