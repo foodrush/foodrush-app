@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +13,8 @@ import {UserContext} from "../../contexts/UserContextProvider";
 import banner from "../../style/img/hero/banner.jpg";
 import Alert from "react-bootstrap/Alert";
 import {CartContext} from "../../contexts/CartContext";
+import Fuse from 'fuse.js';
+import {Backdrop, CircularProgress} from "@mui/material";
 
 
 function BusinessPage() {
@@ -22,6 +24,9 @@ function BusinessPage() {
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
     const { cartData, fetchCartData, cartState } = useContext(CartContext);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [completeData, setCompleteData] = useState([]);
 
     let businessId = useParams();
     const {userType} = useContext(UserContext)
@@ -39,6 +44,8 @@ function BusinessPage() {
                 ]);
                 setBusinessData(businessResponse.data);
                 setproductResponse(productResponse.data);
+                setFilteredProducts(productResponse.data)
+                setCompleteData(productResponse.data)
             } catch (error) {
                 console.error(error);
             }
@@ -48,7 +55,13 @@ function BusinessPage() {
     }, [businessId]);
 
     if (!businessData || !productResponse) {
-        return <div>Loading...</div>;
+        return <div>
+            <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop></div>;
     }
 
     const handleAddToCart = async (e, product_id) => {
@@ -96,10 +109,23 @@ function BusinessPage() {
     const backendURL = 'http://127.0.0.1:8000';
 
 
+    const handleSearch= (text) => {
+
+
+        // Perform the search when the search query changes
+        const fuse = new Fuse(completeData, {
+            keys: ['name', 'cuisine','category'], // Specify the fields you want to search on
+            threshold: 0.4, // Adjust the similarity threshold as per your preference
+        });
+
+        const searchResults = fuse.search(text);
+        setFilteredProducts(searchResults.map((result) => result.item));
+    };
+
     const product = () => {
         console.log("askdahjshjd")
         return (
-            productResponse.map((product) => {
+            filteredProducts.map((product) => {
 
                 var imageUrlWithPrefix;
                 if (product.image !== null) {
@@ -267,11 +293,39 @@ function BusinessPage() {
                         </h2>
                     </div>
                     <ul className="filters_menu">
-                        <li className="active" data-filter="*">All</li>
-                        <li data-filter=".burger">Burger</li>
-                        <li data-filter=".pizza">Pizza</li>
-                        <li data-filter=".pasta">Pasta</li>
-                        <li data-filter=".fries">Fries</li>
+                        <li className="active" data-filter="*" onClick={() => setFilteredProducts(productResponse)}>
+                            All
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Burger")}
+                        >
+                            Burger
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Pizza")}
+                            >
+                            Pizza
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Pasta")}
+                        >
+                            Pasta
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Fries")}
+                        >
+                            Fries
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Veggies")}
+                        >
+                            Veggies
+                        </li>
+                        <li
+                            onClick={() => handleSearch("Fruits")}
+                        >
+                            Fruits
+                        </li>
                     </ul>
                     {showAlert && (
                         <Alert

@@ -12,10 +12,10 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'slicknav/dist/slicknav.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import BusinessOrders from "./BusinessOrders";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 export default function Home() {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
@@ -70,7 +70,13 @@ export default function Home() {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>
+            <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop></div>;
     } else {
         if (status === 200) {
             return (

@@ -75,8 +75,15 @@ export default function Navbar() {
                 onMouseDown={handleMenuUnclick}
             >
                 <div className="humberger__menu__logo">
-                    <a href="#"><img src="img/logo.png" alt="" /></a>
-                </div>
+                    <Link to="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor"
+                             className="bi bi-egg-fried" viewBox="0 0 16 16">
+                            <path fill="#e9831d" path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            <path fill="#e9831d" path
+                                  d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z">
+                            </path>
+                        </svg>
+                    </Link>                </div>
                 <div className="humberger__menu__cart">
                     <ul>
                         <li>
@@ -135,8 +142,7 @@ export default function Navbar() {
                             <Link to="/orders" onClick={() => handleItemClick(1)}>Orders</Link>
                         </li>
                         )}
-                        <li><Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link></li>
-                        <li> <Link to="/contact" onClick={() => handleItemClick(3)}>Contact</Link></li>
+                        <li> <Link to="/contact" onClick={() => handleItemClick(2)}>Contact</Link></li>
                     </ul>
                 </nav>
                 <div id="mobile-menu-wrap" />
@@ -215,7 +221,7 @@ export default function Navbar() {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="header__logo">
-                                <Link to="/"> <Link to="/">
+                                <Link to="/">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor"
                                         className="bi bi-egg-fried" viewBox="0 0 16 16">
                                         <path fill="#e9831d" path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
@@ -223,7 +229,7 @@ export default function Navbar() {
                                             d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z">
                                         </path>
                                     </svg>
-                                </Link> </Link>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -243,11 +249,8 @@ export default function Navbar() {
                                             </li>
                                         )
                                     }
-                                    <li className={activeItem === 1 ? 'active' : ''}>
-                                        <Link to="/blog" onClick={() => handleItemClick(2)}>Blog</Link>
-                                    </li>
                                     <li className={activeItem === 2 ? 'active' : ''}>
-                                        <Link to="/contact" onClick={() => handleItemClick(3)}>Contact</Link>
+                                        <Link to="/contact" onClick={() => handleItemClick(2)}>Contact</Link>
                                     </li>
                                 </ul>
                             </nav>

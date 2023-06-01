@@ -23,6 +23,7 @@ import { CartContext } from "../contexts/CartContext";
 import { UserContext } from "../contexts/UserContextProvider";
 
 import PopUp from "../modal/PopUp"
+import {Backdrop, CircularProgress} from "@mui/material";
 
 export default function Home() {
     const [data, setData] = useState([]);
@@ -359,7 +360,13 @@ export default function Home() {
                     </div>
                     <div className="row featured__filter">
                         {productRender}
-                        {loading && <div>Loading...</div>}
+                        {loading && <div>
+                            <Backdrop
+                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            open
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop></div>}
                         {error && <div>Error fetching data.</div>}
                     </div>
                 </div>

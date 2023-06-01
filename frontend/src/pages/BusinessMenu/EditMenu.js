@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContextProvider";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 export default function EditMenu() {
     const [status, setStatus] = useState(null);
@@ -196,7 +197,12 @@ export default function EditMenu() {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>            <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop></div>;
     } else {
         if (status === 200) {
             return (

@@ -15,6 +15,7 @@ import {UserContext} from "../contexts/UserContextProvider";
 import {CartContext} from "../contexts/CartContext";
 import Fuse from 'fuse.js';
 import PopUp from "../modal/PopUp";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 
 export default function Market() {
@@ -23,17 +24,17 @@ export default function Market() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const [pageNumber, setPageNumber] = useState(1);
     const {userType} = useContext(UserContext)
     const {fetchCartData} = useContext(CartContext)
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchParams] = useSearchParams();
-    const searchText = searchParams.get('search');
     const [isMenuVisible, setMenuVisible] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [popUpType, setPopUpType] = useState(3);
     const [popUpContent, setPopUpContent] = useState("");
+    const [initQuery, setInitQuery] = useState(null);
 
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('search');
 
     useEffect(() => {
         fetchData();
@@ -139,7 +140,14 @@ export default function Market() {
         fuseSearchresults();
     };
 
+    const fuseSearchresultsInitial =(searchQuery)=> {
+        console.log("made2")
+        const results = fuse.search(searchQuery);
+        setDesiredData(results.map((result) => result.item));
+    }
+
     const fuseSearchresults =()=> {
+        console.log("made")
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
     }
@@ -287,7 +295,13 @@ export default function Market() {
                         <div className="col-lg-9 col-md-7">
                             <div className="row">
                                 {productRender}
-                                {loading && <div>Loading...</div>}
+                                {loading && <div>
+                                    <Backdrop
+                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                    open
+                                >
+                                    <CircularProgress color="inherit" />
+                                </Backdrop></div>}
                                 {error && <div>Error fetching data.</div>}
                             </div>
                             <div className="filter__item">
