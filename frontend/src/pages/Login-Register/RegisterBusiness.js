@@ -25,13 +25,11 @@ export default function RegisterBusiness() {
 
     let navigate = useNavigate();
     const routeToLogin = (path) => {
-        console.log(path);
         navigate(path);
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-business/', {
                 name: name,
@@ -41,7 +39,6 @@ export default function RegisterBusiness() {
                 restaurant_name: businessName
             }).then(response => {
                 if (response.status === 200) {
-                    console.log(response.data);
                     routeToLogin('/login');
                 }else{
                     console.log("failed");

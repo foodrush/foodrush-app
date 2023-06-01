@@ -14,7 +14,7 @@ function UserProfile() {
     const { userName, userInfos, userType } = useContext(UserContext);
 
     const displayForm = () => {
-        console.log(userType);
+
         if (userType === 1) {
             return (
                 <>
@@ -52,7 +52,6 @@ function UserProfile() {
         }
     };
     useEffect(() => {
-        console.log(userInfos.user);
         if(userType===0){
             return (<div>
                 LOGIN FIRST

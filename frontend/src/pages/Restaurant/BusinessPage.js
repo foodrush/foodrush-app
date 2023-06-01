@@ -34,7 +34,6 @@ function BusinessPage() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        console.log(businessId);
 
         async function fetchData() {
             try {
@@ -66,8 +65,6 @@ function BusinessPage() {
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
-        console.log(localStorage.getItem("token"))
-        console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
 
@@ -82,7 +79,6 @@ function BusinessPage() {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }).then(async (response) => {
-                console.log(response);
                 if (response.status === 201) {
                     await fetchCartData();
                     routeCart();
@@ -123,7 +119,7 @@ function BusinessPage() {
     };
 
     const product = () => {
-        console.log("askdahjshjd")
+
         return (
             filteredProducts.map((product) => {
 
@@ -140,7 +136,6 @@ function BusinessPage() {
                                         <img
                                             src={imageUrlWithPrefix}
                                             alt={product.name}
-                                            onLoad={() => console.log('Image loaded successfully')}
                                         />
                                     )}
                                 </div>

@@ -38,12 +38,10 @@ function AddProduct() {
     }
 
     useEffect(() => {
-        console.log(submit);
         if(submit instanceof Promise){
             submit.then(({ productAdded, productSubmitted, success }) => {
                 if (productSubmitted) {
                     setIsOpen(true);
-                    console.log(productAdded);
                     if (productAdded && success) {
                         setPopUpType(1);
                         setPopUpContent(
