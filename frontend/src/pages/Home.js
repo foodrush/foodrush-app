@@ -281,7 +281,7 @@ export default function Home() {
                                 <div className="hero__search__form">
                                     <form action="#">
                                         <div className="hero__search__categories">
-                                            Search Products
+                                            Search
                                         </div>
                                         <input type="text" placeholder="What do yo u need?" value={searchText}
                                                onChange={event => setSearchText(event.target.value)} />

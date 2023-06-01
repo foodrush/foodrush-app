@@ -93,13 +93,36 @@ export default function Navbar() {
                     <div className="header__top__right__language">
                         <img src="img/language.png" alt="" />
                         <div>English</div>
-                        <span className="arrow_carrot-down" />
                         <ul>
                             <li><a href="#">English</a></li>
                         </ul>
                     </div>
                     <div className="header__top__right__auth">
-                        <a href="#"><i className="fa fa-user" /> Login</a>
+                        {user ? (
+                            // <Link to="/profile">Welcome {localStorage.getItem("name")}<i className="fa fa-user"/> </Link>
+
+                            <div>
+
+                                <div className="header__top__right__auth"
+
+                                     onClick={() => routeToProfile()}>
+                                    <i className="fa fa-user" /> Profile
+
+                                </div>
+
+                                <div className="header__top__right__auth"
+                                    // data-tooltip-id="my-tooltip"
+                                    // data-tooltip-content="Logout"
+                                     onClick={() => logOut()}>
+
+
+                                    <i className="fa fa-times" /> Logout
+                                </div>
+                            </div>
+                        ) : (
+                            <Link to="/login"><i className="fa fa-user" /> Login</Link>
+                        )
+                        }
                     </div>
                 </div>
                 <nav className="humberger__menu__navs mobile-menus">

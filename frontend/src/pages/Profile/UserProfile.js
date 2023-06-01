@@ -29,7 +29,7 @@ function UserProfile() {
                 (<Business_Navbar/>) :
                 (<Navbar/>)}
             {/* Navbar end*/}
-            <div className="d-flex align-items-center bg">
+            <div className="d-flex align-items-center bg" >
                 <div className="container ">
                     <div className="main-body">
                         <div className="row gutters-sm gy-3">
@@ -41,7 +41,7 @@ function UserProfile() {
                                         <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" className="rounded-circle" width={150} />
                                         <div className="mt-3">
                                             <h4>{userName}</h4>
-                                            <p className="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                                            <p className="text-muted font-size-sm">TEDU, Ankara</p>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Address</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                Bay Area, San Francisco, CA
+                                                TEDU, Ankara
                                             </div>
                                         </div>
                                         <hr />
