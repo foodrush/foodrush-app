@@ -51,11 +51,9 @@ export default function Home() {
 
     let navigate = useNavigate();
     const routeToEditMenu = (path) => {
-        console.log(path);
         navigate("/editmenu");
     }
     const routeToOrders = (path) => {
-        console.log(path);
         navigate("/business-orders");
     }
 

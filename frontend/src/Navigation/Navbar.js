@@ -30,9 +30,7 @@ export default function Navbar() {
         const token = localStorage.getItem('token')
         // console.log(JSON.parse(localStorage.getItem('name')));
 
-        console.log(localStorage.getItem('name'));
         if (token == null || token == 'undefined') {
-            console.log("no token")
 
         } else {
             // console.log(JSON.parse(localStorage.getItem('token')));

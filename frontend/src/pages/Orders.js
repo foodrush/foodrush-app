@@ -42,7 +42,6 @@ export default function BusinessOrders() {
 
     let navigate = useNavigate();
     const routeToRestaurant = (path) => {
-        console.log(path);
         navigate(`/business/${path}`);
     }
 
@@ -50,7 +49,6 @@ export default function BusinessOrders() {
 
         return ((productResponse.map(order => {
                 return (order.order_items.map((product) => {
-                        console.log(product)
                         const imageUrl = `${backendURL}/static${product.image}`;
                         return (
                             <tr key={product._id}>
@@ -144,7 +142,7 @@ export default function BusinessOrders() {
         return (
             (productResponse.map(order => {
                     return ((order.order_items.map((product) => {
-                        console.log(product)
+
                         return (
                             <tr key={product._id}>
 

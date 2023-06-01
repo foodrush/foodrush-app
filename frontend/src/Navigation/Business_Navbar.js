@@ -21,11 +21,8 @@ export default function Business_Navbar() {
 
     useEffect(() => {
         const token = localStorage.getItem('token')
-        // console.log(JSON.parse(localStorage.getItem('name')));
 
-        console.log(localStorage.getItem('name'));
         if (token == null || token == 'undefined') {
-            console.log("no token")
 
         } else {
             // console.log(JSON.parse(localStorage.getItem('token')));
@@ -42,7 +39,6 @@ export default function Business_Navbar() {
     }
 
     const routeToBusinessProfile = () => {
-        console.log(localStorage.getItem("user_id"));
         navigate(`/business/${localStorage.getItem("business_id")}`)
 
     }

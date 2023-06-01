@@ -63,7 +63,6 @@ export default function Market() {
 
     let navigate = useNavigate();
     const routeToRestaurant = (path) => {
-        console.log(path);
         navigate(`/business/${path}`);
     }
 
@@ -87,7 +86,6 @@ export default function Market() {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }).then(async (response) => {
-                console.log(response);
                 setIsOpen(true);
                 setPopUpType(1);
                 setPopUpContent(<>
@@ -118,7 +116,6 @@ export default function Market() {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }).then(async (response) => {
-                console.log(response);
                 if (response.status === 201) {
                     await fetchCartData();
                     routeCart();
@@ -141,13 +138,11 @@ export default function Market() {
     };
 
     const fuseSearchresultsInitial =(searchQuery)=> {
-        console.log("made2")
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
     }
 
     const fuseSearchresults =()=> {
-        console.log("made")
         const results = fuse.search(searchQuery);
         setDesiredData(results.map((result) => result.item));
     }
@@ -185,7 +180,6 @@ export default function Market() {
                                     <img
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
-                                        onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
                                         onClick={() => routeToRestaurant(item.business)}
                                     />

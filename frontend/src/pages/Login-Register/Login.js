@@ -33,13 +33,13 @@ export default function Login({setToken}){
 
     let navigate = useNavigate();
     const routeToHome = (path) =>{
-        console.log(path);
+
         navigate(path);
     }
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log(email, password);
+
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
                 username: email,
@@ -52,8 +52,7 @@ export default function Login({setToken}){
                     }
                 });
                 if (responseSecond.status === 200) {
-                    console.log("TOKEN:")
-                    console.log(responseSecond.data)
+
 
                     localStorage.setItem('token', response.data.access);
                     setToken(response.data.access);

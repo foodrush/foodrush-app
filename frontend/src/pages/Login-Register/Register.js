@@ -20,13 +20,12 @@ export default function Register() {
 
     let navigate = useNavigate();
     const routeToLogin = (path) => {
-        console.log(path);
+
         navigate(path);
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/register-customer/', {
                 first_name: name,

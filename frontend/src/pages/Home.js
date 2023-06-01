@@ -89,7 +89,6 @@ export default function Home() {
                                     <img
                                         src={imageUrlWithPrefix}
                                         alt={item.name}
-                                        onLoad={() => console.log('Image loaded successfully')}
                                         className="featured__item__pic__image rounded-4"
                                         onClick={() => routeToRestaurant(item.business)}
                                     />
@@ -139,7 +138,6 @@ export default function Home() {
 
     let navigate = useNavigate();
     const routeToRestaurant = (path) => {
-        console.log(path);
         navigate(`/business/${path}`);
     }
     const handleSearch = () => {
@@ -148,8 +146,6 @@ export default function Home() {
 
     const handleAddToCart = async (e, product_id) => {
         e.preventDefault();
-        console.log(localStorage.getItem("token"))
-        console.log("CART OPERATİONN")
 
         const userToken = localStorage.getItem('token');
         if (userToken === null || userToken === "") {
@@ -209,7 +205,7 @@ export default function Home() {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }).then(async (response) => {
-                    console.log(response);
+
                     setIsOpen(true);
                     setPopUpType(1);
                     setPopUpContent(<>

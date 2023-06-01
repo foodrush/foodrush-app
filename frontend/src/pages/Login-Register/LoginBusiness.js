@@ -33,7 +33,7 @@ export default function LoginBusiness() {
 
     let navigate = useNavigate();
     const routeToDashboard = (path) => {
-        console.log(path);
+
         navigate(path);
     }
 
@@ -41,7 +41,6 @@ export default function LoginBusiness() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log(email, password);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
                 username: email,
@@ -54,9 +53,6 @@ export default function LoginBusiness() {
                     }
                 });
                 if (responseSecond.status === 200) {
-                    console.log("TOKEN:")
-
-                    console.log(responseSecond.data)
 
                     setAccsessToken(response.data.access)
                     localStorage.setItem('token', (response.data.access));

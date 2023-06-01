@@ -46,7 +46,6 @@ export default function EditMenu() {
         try {
             const response = await axios.delete(`http://127.0.0.1:8000/api/products/delete-product/${product_id}/`, { headers })
             await fetchProduct();
-            console.log(response.data);
         }
         catch (error) {
             console.error(error.response);

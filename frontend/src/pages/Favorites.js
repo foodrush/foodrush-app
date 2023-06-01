@@ -24,7 +24,6 @@ function Favorites() {
         try {
             axios.get("http://127.0.0.1:8000/api/users/customer-profile/favorites/", headers)
                 .then(response => {
-                    console.log(response)
                     setFavoritesData(response.data)
                 })
         }
@@ -38,7 +37,6 @@ function Favorites() {
             try {
                 await axios.delete(`http://127.0.0.1:8000/api/users/customer-profile/favorites/delete/${productID}/`, headers)
                 .then(async (response) => {
-                    console.log(response);
                     if(response.status === 200)
                         await fetchFavorites();
                 })
