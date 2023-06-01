@@ -38,7 +38,7 @@ export default function EditProfile() {
     const [user, setUser] = useState({})
 
     const decideUser = () => {
-        if (userType == 1) {
+        if (userType === 1 && userInfos && userInfos.user) {
             setUser({
                 email: userInfos.user.email,
                 username: userInfos.user.email,
@@ -46,17 +46,17 @@ export default function EditProfile() {
                 last_name: userInfos.user.last_name,
                 phone: userInfos.phone_number,
                 address: ""
-            })
+            });
         }
-        if (userType === 2) {
+        if (userType === 2 && userInfos && userInfos.user) {
             setUser({
                 email: userInfos.user.email,
                 first_name: userInfos.user.first_name,
                 last_name: userInfos.user.last_name,
                 restaurant_name: userInfos.restaurant_name,
-            })
+            });
         }
-    }
+    };
     const handleEditChange = (e, field) => {
         e.preventDefault();
         setUser({ ...user, [field]: e.target.value })
@@ -206,7 +206,7 @@ export default function EditProfile() {
                                             <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" className="rounded-circle p-1 bg-primary" width={110} />
                                             <div className="mt-3">
                                                 <h4>{userName}</h4>
-                                                <p className="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                                                <p className="text-muted font-size-sm">TEDU ANKARA</p>
                                             </div>
                                         </div>
                                     </div>

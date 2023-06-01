@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
@@ -7,11 +7,68 @@ import { Link } from 'react-router-dom';
 import Navbar from '../../Navigation/Navbar';
 import { UserContext } from '../../contexts/UserContextProvider';
 import Business_Navbar from "../../Navigation/Business_Navbar";
+import axios from "axios";
 
 
 function UserProfile() {
     //TODO: needs verification to go on
-    const { userName, userInfos, userType, SDGPoints, setSDGPoints } = useContext(UserContext);
+    const { userName, userType,SDGPoints, setSDGPoints  } = useContext(UserContext);
+    const [userInfos, setUserInfos] = useState('');
+    const [userType2, setUserType] = useState(0);
+
+
+
+    useEffect(() => {
+        console.log("asdasdasda")
+        async function fetchDataBusiness() {
+            try {
+                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                setUserInfos(responseSecond.data);
+                console.log(responseSecond.data)
+            }catch (error) {
+                console.error(error);
+            }
+        }
+
+
+        async function fetchDataCustomer() {
+            try {
+                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/customer-profile/', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                setUserInfos(responseSecond.data);
+                console.log(responseSecond.data)
+
+            }catch (error) {
+                console.error(error);
+            }
+        }
+
+        if(userType===0){
+            return (<div>
+                LOGIN FIRST
+            </div>)
+        }
+
+        if(parseInt(localStorage.getItem("userType")) === 1){
+            fetchDataCustomer();
+            setUserType(1);
+
+        }else if(parseInt(localStorage.getItem("userType")) === 2){
+            fetchDataBusiness();
+            setUserType(2);
+        }else{
+            return (<div>
+                LOGIN FIRST
+            </div>)
+        }
+    }, []);
 
     const displaySDG = () => {
         if (userType === 1) {
@@ -36,7 +93,8 @@ function UserProfile() {
     };
 
     const displayForm = () => {
-        if (userType === 1) {
+
+        if (parseInt(localStorage.getItem("userType")) === 1) {
             return (
                 <>
                     <div className="row">
@@ -53,13 +111,13 @@ function UserProfile() {
                             <h6 className="mb-0">Address</h6>
                         </div>
                         <div className="col-sm-9 text-secondary">
-                            Bay Area, San Francisco, CA
+                            TEDU, ANKARA
                         </div>
                     </div>
                 </>
             );
         }
-        if (userType === 2) {
+        if (parseInt(localStorage.getItem("userType")) === 2) {
             return (
                 <div className="row">
                     <div className="col-sm-3">
@@ -72,13 +130,7 @@ function UserProfile() {
             )
         }
     };
-    useEffect(() => {
-        if (userType === 0) {
-            return (<div>
-                LOGIN FIRST
-            </div>)
-        }
-    }, []);
+
 
     return (
         <>
@@ -100,7 +152,7 @@ function UserProfile() {
                                             <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" className="rounded-circle" width={150} />
                                             <div className="mt-3">
                                                 <h4>{userName}</h4>
-                                                <p className="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                                                <p className="text-muted font-size-sm">TEDU, ANKARA</p>
                                             </div>
                                         </div>
                                     </div>
@@ -117,7 +169,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">First Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                {userInfos.user.first_name}
+                                                {userInfos.user && <p>{userInfos.user.first_name}</p>}
                                             </div>
                                         </div>
                                         <hr />
@@ -126,7 +178,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Last Name</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                {userInfos.user.last_name}
+                                                {userInfos.user && <p>{userInfos.user.last_name}</p>}
                                             </div>
                                         </div>
                                         <hr />
@@ -135,7 +187,7 @@ function UserProfile() {
                                                 <h6 className="mb-0">Email</h6>
                                             </div>
                                             <div className="col-sm-9 text-secondary">
-                                                {userInfos.user.email}
+                                                {userInfos.user && <p>{userInfos.user.email}</p>}
                                             </div>
                                         </div>
                                         <hr />

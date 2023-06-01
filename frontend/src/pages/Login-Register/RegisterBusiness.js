@@ -38,8 +38,8 @@ export default function RegisterBusiness() {
                 email: email,
                 restaurant_name: businessName
             }).then(response => {
-                if (response.status === 200) {
-                    routeToLogin('/login');
+                if (response.status === 201) {
+                    routeToLogin('/login-business');
                 }else{
                     console.log("failed");
 
