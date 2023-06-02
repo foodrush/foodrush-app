@@ -21,8 +21,8 @@ export default function BusinessOrders() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`api/users/customer-profile/`, {headers}),
-                    axios.get(`api/users/customer-profile/orders/`, {headers})
+                    axios.get(`/api/users/customer-profile/`, {headers}),
+                    axios.get(`/api/users/customer-profile/orders/`, {headers})
                 ]);
                 setStatus(businessResponse.status);
                 setproductResponse(productResponse.data);

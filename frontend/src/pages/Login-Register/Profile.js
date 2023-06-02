@@ -16,7 +16,7 @@ export default function Profile(){
         e.preventDefault();
         try {
             // isteği düzenleeeeeeeeeeeeee
-            const response = await axios.post('api/users/login/', {
+            const response = await axios.post('/api/users/login/', {
                 username:email,
                 password:password
             }).then(response => {

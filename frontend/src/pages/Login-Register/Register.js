@@ -27,7 +27,7 @@ export default function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('api/users/register-customer/', {
+            const response = await axios.post('/api/users/register-customer/', {
                 first_name: name,
                 last_name: surname,
                 phone_number: phone,

@@ -19,8 +19,8 @@ export default function EditMenu() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`api/users/business-profile/`, { headers }),
-                    axios.get(`api/products/businesses/${localStorage.getItem("business_id")}/`)
+                    axios.get(`/api/users/business-profile/`, { headers }),
+                    axios.get(`/api/products/businesses/${localStorage.getItem("business_id")}/`)
                 ]);
                 setStatus(businessResponse.status);
                 setproductResponse(productResponse.data);
@@ -36,15 +36,15 @@ export default function EditMenu() {
 
 
     const fetchProduct = async () => {
-        const productResponse = await axios.get(`api/products/businesses/${localStorage.getItem("business_id")}/`)
+        const productResponse = await axios.get(`/api/products/businesses/${localStorage.getItem("business_id")}/`)
         setproductResponse(productResponse.data);
     };
 
-    const backendURL = '';
+    const backendURL = 'http://127.0.0.1:8000';
 
     const deleteProduct = async (product_id) => {
         try {
-            const response = await axios.delete(`api/products/delete-product/${product_id}/`, { headers })
+            const response = await axios.delete(`/api/products/delete-product/${product_id}/`, { headers })
             await fetchProduct();
         }
         catch (error) {

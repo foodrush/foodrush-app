@@ -48,7 +48,7 @@ export default function Market() {
         try {
             setLoading(true);
             setError(false);
-            const response = await axios.get(`api/products/`);
+            const response = await axios.get(`/api/products/`);
             setCompleteData(response.data);
             setDesiredData(response.data);
             setHasMore(response.data.length > 0);
@@ -77,7 +77,7 @@ export default function Market() {
                 <Link to="/login">Login Page</Link></>)
         }
         if (userToken && product_id) {
-            await axios.post('api/users/customer-profile/favorites/add/',
+            await axios.post('/api/users/customer-profile/favorites/add/',
                 {
                     _id: product_id,
                 },
@@ -106,7 +106,7 @@ export default function Market() {
         const userToken = localStorage.getItem('token');
 
         if (userToken && product_id) {
-            await axios.post('api/orders/add-to-cart/',
+            await axios.post('/api/orders/add-to-cart/',
                 {
                     product_id: product_id,
                     qty: 1

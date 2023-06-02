@@ -31,7 +31,7 @@ export default function RegisterBusiness() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('api/users/register-business/', {
+            const response = await axios.post('/api/users/register-business/', {
                 name: name,
                 last_name: surname,
                 password: password,

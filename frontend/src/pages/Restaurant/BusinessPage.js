@@ -43,8 +43,8 @@ function BusinessPage() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`api/users/businesses/${businessId.id}/`),
-                    axios.get(`api/products/businesses/${businessId.id}/`)
+                    axios.get(`/api/users/businesses/${businessId.id}/`),
+                    axios.get(`/api/products/businesses/${businessId.id}/`)
                 ]);
                 setBusinessData(businessResponse.data);
                 setproductResponse(productResponse.data);

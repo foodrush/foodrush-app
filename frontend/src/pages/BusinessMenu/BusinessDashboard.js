@@ -32,8 +32,8 @@ export default function Home() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`api/users/business-profile/`, {headers}),
-                    axios.get(`api/users/business-profile/orders/`, {headers})
+                    axios.get(`/api/users/business-profile/`, {headers}),
+                    axios.get(`/api/users/business-profile/orders/`, {headers})
                 ]);
                 setStatus(businessResponse.status);
                 setproductResponse(productResponse.data);

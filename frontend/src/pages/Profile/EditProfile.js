@@ -76,7 +76,7 @@ export default function EditProfile() {
             }
             try {
                 await axios.put(
-                    'api/users/edit-customer',
+                    '/api/users/edit-customer',
                     updatedUser,
                     {
                         headers: {
@@ -114,7 +114,7 @@ export default function EditProfile() {
             }
             try {
                 await axios.put(
-                    'api/users/edit-business',
+                    '/api/users/edit-business',
                     updatedUser,
                     {
                         headers: {

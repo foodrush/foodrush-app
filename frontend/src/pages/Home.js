@@ -63,7 +63,7 @@ export default function Home() {
         try {
             setLoading(true);
             setError(false);
-            const response = await axios.get(`api/products/`);
+            const response = await axios.get(`/api/products/`);
             setData(response.data);
             setHasMore(response.data.length > 0);
             setLoading(false);
@@ -164,7 +164,7 @@ export default function Home() {
             );
         }
         if (userToken && product_id) {
-            await axios.post('api/orders/add-to-cart/',
+            await axios.post('/api/orders/add-to-cart/',
                 {
                     product_id: product_id,
                     qty: 1
@@ -201,7 +201,7 @@ export default function Home() {
                 <Link to="/login">Login Page</Link></>)
         }
         if (userToken && product_id) {
-            await axios.post('api/users/customer-profile/favorites/add/',
+            await axios.post('/api/users/customer-profile/favorites/add/',
                 {
                     _id: product_id,
                 },

@@ -24,7 +24,7 @@ export const UserContextProvider = ({ children }) => {
     useEffect(() => {
         async function fetchDataCustomer() {
             try {
-                const responseSecond = await axios.get('api/users/customer-profile/', {
+                const responseSecond = await axios.get('/api/users/customer-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -41,7 +41,7 @@ export const UserContextProvider = ({ children }) => {
 
         async function fetchDataBusiness() {
             try {
-                const responseSecond = await axios.get('api/users/business-profile/', {
+                const responseSecond = await axios.get('/api/users/business-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }

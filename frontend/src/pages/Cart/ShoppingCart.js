@@ -20,7 +20,7 @@ function ShoppingCart({ token }) {
     const decreaseQuantity = async (productID) => {
         if (token) {
             // an empty object is used to indicate that no data is being sent in the request
-            await axios.put(`api/orders/remove-from-cart/${productID}/`,
+            await axios.put(`/api/orders/remove-from-cart/${productID}/`,
                 {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -42,7 +42,7 @@ function ShoppingCart({ token }) {
         if (token) {
             const cartProduct = cartData.find((({ product }) => product._id === productID));
             if (product.count_in_stock > cartProduct.qty) {
-                await axios.post('api/orders/add-to-cart/', {
+                await axios.post('/api/orders/add-to-cart/', {
                     product_id: productID,
                     qty: 1
                 }, {
@@ -72,7 +72,7 @@ function ShoppingCart({ token }) {
             try {
                 let deletedFlag = 0;
                 for (let i = 0; i < qty; i++) {
-                    await axios.put(`api/orders/remove-from-cart/${productID}/`,
+                    await axios.put(`/api/orders/remove-from-cart/${productID}/`,
                         {}, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -95,7 +95,7 @@ function ShoppingCart({ token }) {
 
     const deleteAll = async () => {
         try {
-            await axios.delete(`api/orders/remove-from-cart/all/`,
+            await axios.delete(`/api/orders/remove-from-cart/all/`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

@@ -41,12 +41,12 @@ export default function Login({setToken}){
         e.preventDefault();
 
         try {
-            const response = await axios.post('api/users/login/', {
+            const response = await axios.post('/api/users/login/', {
                 username: email,
                 password: password
             });
             if (response.status === 200) {
-                const responseSecond = await axios.get('api/users/customer-profile/', {
+                const responseSecond = await axios.get('/api/users/customer-profile/', {
                     headers: {
                         Authorization: `Bearer ${response.data.access}`
                     }

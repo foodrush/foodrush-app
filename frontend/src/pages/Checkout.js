@@ -46,7 +46,7 @@ export default function Checkout() {
         });
 
         try {
-            await axios.post(`api/orders/add/`, {
+            await axios.post(`/api/orders/add/`, {
                 payment_method: "cash",
                 tax_price: 3,
                 shipping_price: 5,
@@ -73,7 +73,7 @@ export default function Checkout() {
             })
 
             await axios.get(
-                'http://127.0.0.1:8000/api/users/customer-profile/orders/',
+                '/api/users/customer-profile/orders/',
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,

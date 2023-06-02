@@ -40,7 +40,7 @@ export const ProductProvider = ({ children }) => {
 
     const getProduct = async (productId) => {
         try {
-            const response = await axios.get(`api/products/${productId}/`, {
+            const response = await axios.get(`/api/products/${productId}/`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
@@ -49,7 +49,7 @@ export const ProductProvider = ({ children }) => {
             if (response.status === 200) {
                 // get the image from backend and assign it to the initial values image
                 const imageFileName = response.data["image"]
-                const imageUrl = `http://127.0.0.1:8000${imageFileName}`
+                const imageUrl = `${imageFileName}`
                 const imageResponse = await axios.get(imageUrl, { responseType: 'blob' });
                 const imageFile = new File([imageResponse.data], imageFileName, {
                     type: imageResponse.data.type,
@@ -80,10 +80,10 @@ export const ProductProvider = ({ children }) => {
         try {
             let response;
             if (editMode && productId) {
-                response = await axios.put(`api/products/edit-product/${productId}/`, formData, { headers });
+                response = await axios.put(`/api/products/edit-product/${productId}/`, formData, { headers });
             }
             else {
-                response = await axios.post('api/products/add-product/', formData, { headers });
+                response = await axios.post('/api/products/add-product/', formData, { headers });
             }
             if ((response.status === 201 || response.status === 200) && ![...formData.values()].some(value => value === null || value === ""))
                 productAdded=true;

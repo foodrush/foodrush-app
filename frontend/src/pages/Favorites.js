@@ -22,7 +22,7 @@ function Favorites() {
 
     const fetchFavorites = async () => {
         try {
-            axios.get("api/users/customer-profile/favorites/", headers)
+            axios.get("/api/users/customer-profile/favorites/", headers)
                 .then(response => {
                     setFavoritesData(response.data)
                 })
@@ -35,7 +35,7 @@ function Favorites() {
     const deleteProduct = async (productID) => {
         if (token) {
             try {
-                await axios.delete(`api/users/customer-profile/favorites/delete/${productID}/`, headers)
+                await axios.delete(`/api/users/customer-profile/favorites/delete/${productID}/`, headers)
                 .then(async (response) => {
                     if(response.status === 200)
                         await fetchFavorites();

@@ -87,7 +87,7 @@ export const CartProvider = ({ children, token, setToken }) => {
 
     // get cart data & set cartData 
     const fetchCartData = async () => {
-        await axios.get("api/orders/cart/", {
+        await axios.get("/api/orders/cart/", {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

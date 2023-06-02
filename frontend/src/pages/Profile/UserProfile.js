@@ -19,7 +19,7 @@ function UserProfile() {
     useEffect(() => {
         async function fetchDataBusiness() {
             try {
-                const responseSecond = await axios.get('api/users/business-profile/', {
+                const responseSecond = await axios.get('/api/users/business-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -33,7 +33,7 @@ function UserProfile() {
 
         async function fetchDataCustomer() {
             try {
-                const responseSecond = await axios.get('api/users/customer-profile/', {
+                const responseSecond = await axios.get('/api/users/customer-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -47,7 +47,7 @@ function UserProfile() {
 
         async function fetchDataOrder() {
             await axios.get(
-                'api/users/customer-profile/orders/',
+                '/api/users/customer-profile/orders/',
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
