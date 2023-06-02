@@ -4,13 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContextProvider";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 export default function EditMenu() {
     const [status, setStatus] = useState(null);
     const [productResponse, setproductResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
-    const { userId } = useContext(UserContext)
 
     const headers = {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -20,8 +19,8 @@ export default function EditMenu() {
         async function fetchData() {
             try {
                 const [businessResponse, productResponse] = await Promise.all([
-                    axios.get(`http://127.0.0.1:8000/api/users/business-profile/`, { headers }),
-                    axios.get(`http://127.0.0.1:8000/api/products/businesses/${localStorage.getItem("business_id")}/`)
+                    axios.get(`api/users/business-profile/`, { headers }),
+                    axios.get(`api/products/businesses/${localStorage.getItem("business_id")}/`)
                 ]);
                 setStatus(businessResponse.status);
                 setproductResponse(productResponse.data);
@@ -37,17 +36,16 @@ export default function EditMenu() {
 
 
     const fetchProduct = async () => {
-        const productResponse = await axios.get(`http://127.0.0.1:8000/api/products/businesses/${localStorage.getItem("business_id")}/`)
+        const productResponse = await axios.get(`api/products/businesses/${localStorage.getItem("business_id")}/`)
         setproductResponse(productResponse.data);
     };
 
-    const backendURL = 'http://127.0.0.1:8000';
+    const backendURL = '';
 
     const deleteProduct = async (product_id) => {
         try {
-            const response = await axios.delete(`http://127.0.0.1:8000/api/products/delete-product/${product_id}/`, { headers })
+            const response = await axios.delete(`api/products/delete-product/${product_id}/`, { headers })
             await fetchProduct();
-            console.log(response.data);
         }
         catch (error) {
             console.error(error.response);
@@ -197,7 +195,12 @@ export default function EditMenu() {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>            <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop></div>;
     } else {
         if (status === 200) {
             return (

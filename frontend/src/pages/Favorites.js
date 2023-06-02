@@ -22,9 +22,8 @@ function Favorites() {
 
     const fetchFavorites = async () => {
         try {
-            axios.get("http://127.0.0.1:8000/api/users/customer-profile/favorites/", headers)
+            axios.get("api/users/customer-profile/favorites/", headers)
                 .then(response => {
-                    console.log(response)
                     setFavoritesData(response.data)
                 })
         }
@@ -36,9 +35,8 @@ function Favorites() {
     const deleteProduct = async (productID) => {
         if (token) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/users/customer-profile/favorites/delete/${productID}/`, headers)
+                await axios.delete(`api/users/customer-profile/favorites/delete/${productID}/`, headers)
                 .then(async (response) => {
-                    console.log(response);
                     if(response.status === 200)
                         await fetchFavorites();
                 })
@@ -135,7 +133,7 @@ function Favorites() {
                                                 <i className="fa fa-phone" />
                                             </div>
                                             <div className="hero__search__phone__text">
-                                                <h5>+65 11.188.888</h5>
+                                                <h5>+90 534 510 3978</h5>
                                                 <span>support 24/7 time</span>
                                             </div>
                                         </div>
@@ -213,7 +211,7 @@ function Favorites() {
                                         </div>
                                         <ul>
                                             <li>Address: 60-49 Road 11378 New York</li>
-                                            <li>Phone: +65 11.188.888</li>
+                                            <li>Phone: +90 534 510 3978</li>
                                             <li>Email: hello@colorlib.com</li>
                                         </ul>
                                     </div>

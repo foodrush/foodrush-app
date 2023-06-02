@@ -5,6 +5,9 @@ body {
 	-webkit-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 }
+.ac{
+	cursor: pointer;
+}
 
 .hidden {
 	display: none;
@@ -3606,8 +3609,8 @@ ol {
 }
 
 .favs-btn i {
-	font-size: 45px; /* Adjust this value to your preferred icon size */
-	color: #ffffff; /* Add your preferred icon color */
+	font-size: 45px; 
+	color: #ffffff; 
   }
 
   .popup-content, .card-text {
@@ -3624,6 +3627,23 @@ ol {
 	color: #000;
   }
 
+  /* old price text style ----------------------------------- */
+  .old-information{
+	position: relative;
+	opacity: 0.5; /* Lower the opacity as desired */
+  }
+
+  .old-information::before {
+	content: '';
+	position: absolute;
+	top: 50%; /* Adjust the line position as desired */
+	left: 0;
+	right: 0;
+	height: 1px;
+	background-color: black; /* Change the line color as desired */
+  }
+
+  /* old price text style ----------------------------------- */
 
 
   

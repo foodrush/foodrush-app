@@ -17,11 +17,14 @@ export const UserContextProvider = ({ children }) => {
     const [lastName, setLastName] = useState('');
     const [userInfos, setUserInfos] = useState('');
 
+    // to make it safe for refresh 
+    const [SDGPoints, setSDGPoints] = useState(0);
+
 
     useEffect(() => {
         async function fetchDataCustomer() {
             try {
-                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/customer-profile/', {
+                const responseSecond = await axios.get('api/users/customer-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -38,7 +41,7 @@ export const UserContextProvider = ({ children }) => {
 
         async function fetchDataBusiness() {
             try {
-                const responseSecond = await axios.get('http://127.0.0.1:8000/api/users/business-profile/', {
+                const responseSecond = await axios.get('api/users/business-profile/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -65,10 +68,9 @@ export const UserContextProvider = ({ children }) => {
         }else{
 
         }
-
-
     }, []);
 
+    
 
     const resetUserContext = () => {
         setUserId(null);
@@ -82,6 +84,7 @@ export const UserContextProvider = ({ children }) => {
         setLastName('');
         setUserType(0);
         setUserInfos('');
+        setSDGPoints(0);
     };
 
     const userObject = {
@@ -98,6 +101,8 @@ export const UserContextProvider = ({ children }) => {
         email,setEmailContext,address,setAddress,
         phoneNumber,setPhoneNumber,firstName,lastName,userInfos,setUserInfos,
         resetUserContext,
+        setSDGPoints,
+        SDGPoints,
 
     }
 

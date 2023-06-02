@@ -25,24 +25,21 @@ export default function RegisterBusiness() {
 
     let navigate = useNavigate();
     const routeToLogin = (path) => {
-        console.log(path);
         navigate(path);
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(email, password);
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/users/register-business/', {
+            const response = await axios.post('api/users/register-business/', {
                 name: name,
                 last_name: surname,
                 password: password,
                 email: email,
                 restaurant_name: businessName
             }).then(response => {
-                if (response.status === 200) {
-                    console.log(response.data);
-                    routeToLogin('/login');
+                if (response.status === 201) {
+                    routeToLogin('/login-business');
                 }else{
                     console.log("failed");
 
@@ -82,8 +79,6 @@ export default function RegisterBusiness() {
     
     return (
         <div>
-            {/* nav bar with name */}
-            <Navbar />
             <PopUp isOpen={isOpen} onClose={() => setIsOpen(false)} popUpType={popUpType}>
                 {popUpContent}
             </PopUp>
@@ -102,14 +97,19 @@ export default function RegisterBusiness() {
                                     handleRegister={handleRegister}
                                 />
                                 {/* register form */}
-                            </div>
-                            <div className="col-md-5">
-                                {/* login page link */}
-                                <div className="text-center mb-4">
-                                    <p>Already have an account? <Link to="/login">Login</Link></p>
+                                <div className="d-flex flex-row align-items-center justify-content-center  mt-4">
+                                    <div className="text-center">
+                                        <p className="lead fw-normal ml-0 mr-3 mb-0"> <Link to="/login-business">Already have an Business account? </Link></p>
+                                        <br/>
+                                        <p className="lead fw-normal ml-0 mr-3 mb-0">
+                                            <Link to="/" style={{ color: 'orangered' }}>
+                                                Go Back To Landing Page
+                                            </Link>
+                                        </p>
+                                    </div>
                                 </div>
-                                {/* login page link end */}
                             </div>
+
                         </div>
                     </div>
                 </div>

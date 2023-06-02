@@ -14,10 +14,9 @@ export default function Profile(){
 
     const handleProfileView = async (e) => {
         e.preventDefault();
-        console.log(email,password);
         try {
             // isteği düzenleeeeeeeeeeeeee
-            const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
+            const response = await axios.post('api/users/login/', {
                 username:email,
                 password:password
             }).then(response => {
@@ -25,9 +24,7 @@ export default function Profile(){
                     // Save the JWT token to the state
 
                     setToken(response.data.token);
-                    console.log(response.data);
                     localStorage.setItem('token', JSON.stringify(token));
-                    console.log(JSON.parse(localStorage.getItem('token')));
 
                     localStorage.setItem("name", JSON.stringify(response.data.name));
                     localStorage.setItem("user_id", JSON.stringify(response.data.id));

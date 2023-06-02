@@ -22,10 +22,11 @@ export const ProductProvider = ({ children }) => {
         image: null
     });
 
-    const [contextReady, setContextReady] = useState(false); 
+    const [contextReady, setContextReady] = useState(false);
 
     useEffect(() => {
-        setContextReady(true); 
+        setContextReady(true);
+        setFileLabel("Choose file...")
     }, [editMode]);
 
     const formTextFields = ["name", "price", "cuisine", "category", "count_in_stock", "description"];
@@ -39,7 +40,7 @@ export const ProductProvider = ({ children }) => {
 
     const getProduct = async (productId) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/products/${productId}/`, {
+            const response = await axios.get(`api/products/${productId}/`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
@@ -73,32 +74,45 @@ export const ProductProvider = ({ children }) => {
         e.preventDefault();
         // formData -- returns an array of arrays -- each input is an array
         const formData = new FormData(e.currentTarget);
-        formData.set("image", initialValues["image"]); 
+        formData.set("image", initialValues["image"]);
         setProductSubmitted(true);
+        let productAdded;
         try {
             let response;
             if (editMode && productId) {
-                response = await axios.put(`http://127.0.0.1:8000/api/products/edit-product/${productId}/`, formData, { headers });
+                response = await axios.put(`api/products/edit-product/${productId}/`, formData, { headers });
             }
             else {
-                response = await axios.post('http://127.0.0.1:8000/api/products/add-product/', formData, { headers });
+                response = await axios.post('api/products/add-product/', formData, { headers });
             }
-            if (response.status === 201 || response.status === 200)
-                setProductAdded(true);
+            if ((response.status === 201 || response.status === 200) && ![...formData.values()].some(value => value === null || value === ""))
+                productAdded=true;
+                // setProductAdded(true);
             else
-                setProductAdded(false)
+                productAdded=false;
+
+                // setProductAdded(false);
+
+            return({
+                productAdded: productAdded,
+                productSubmitted: true,
+                success: true
+            });
+
         } catch (error) {
             console.log(error)
+            return({
+                productAdded: productAdded,
+                productSubmitted: true,
+                success: false
+            });
         }
     }
 
     const handleEditChange = (e, field) => {
-        console.log(initialValues[field] );
         e.preventDefault();
-        console.log("2")
         setInitialValues({ ...initialValues, [field]: e.target.value })
         setFieldTouched(field, true);
-        console.log(initialValues[field] );
         setFieldValue(field, e.target.value);
     };
 
@@ -115,14 +129,14 @@ export const ProductProvider = ({ children }) => {
             return (
                 <div className="form-group" key={index}>
                     <label>{`Product ${fieldName}`}</label>
-                       <input
-                            type="text"
-                            className="form-control"
-                            name={field}
-                            value={initialValues[field]}
-                            onChange={(e) => handleEditChange(e, field)}
-                            onBlur={handleBlur}
-                        />
+                    <input
+                        type="text"
+                        className="form-control"
+                        name={field}
+                        value={initialValues[field]}
+                        onChange={(e) => handleEditChange(e, field)}
+                        onBlur={handleBlur}
+                    />
                     {errors[field] && touched[field] && initialValues[field] === "" && <div className="text-danger">{errors[field]}*</div>}
                 </div>);
         }));
@@ -134,15 +148,15 @@ export const ProductProvider = ({ children }) => {
             return (
                 <div className="form-group" key={index}>
                     <label>{`Product ${fieldName}`}</label>
-             
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder={`Enter Product ${fieldName}`}
-                            name={field}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
+
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder={`Enter Product ${fieldName}`}
+                        name={field}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                    />
                     {errors[field] && touched[field] && <div className="text-danger">{errors[field]}*</div>}
                 </div>);
         }));
@@ -160,7 +174,6 @@ export const ProductProvider = ({ children }) => {
                         // update the file label
                         const fileName = file ? file.name : 'Choose file...';
                         setFileLabel(fileName)
-                        console.log("3")
                         setInitialValues({ ...initialValues, 'image': file });
                         setFieldTouched('image', true);
                         setFieldValue('image', file);
@@ -171,7 +184,8 @@ export const ProductProvider = ({ children }) => {
                     className="custom-file-label overflow-hidden">
                     {editMode ?
                         (initialValues.image ? initialValues.image.name : "")
-                        : fileLabel}
+                        : fileLabel
+                    }
                 </label>
                 {errors.image && touched.image && <div className="text-danger">{errors.image}*</div>}
             </div>
@@ -187,7 +201,9 @@ export const ProductProvider = ({ children }) => {
         getProduct,
         setEditMode,
         setInitialValues,
-        displayTextFormFieldsAdd
+        displayTextFormFieldsAdd,
+        setProductSubmitted,
+        setProductAdded
     };
     return (
         <ProductFormContext.Provider value={productObject}>

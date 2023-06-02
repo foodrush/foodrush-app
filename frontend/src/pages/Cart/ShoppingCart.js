@@ -12,7 +12,7 @@ import PopUp from "../../modal/PopUp";
 import { useState } from "react";
 
 function ShoppingCart({ token }) {
-    const { cartData, fetchCartData, cartState } = useContext(CartContext);
+    const { cartData, fetchCartData, cartState, cartDataDiscount } = useContext(CartContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [popUpContent, setPopUpContent] = useState("");
@@ -20,7 +20,7 @@ function ShoppingCart({ token }) {
     const decreaseQuantity = async (productID) => {
         if (token) {
             // an empty object is used to indicate that no data is being sent in the request
-            await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
+            await axios.put(`api/orders/remove-from-cart/${productID}/`,
                 {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -42,7 +42,7 @@ function ShoppingCart({ token }) {
         if (token) {
             const cartProduct = cartData.find((({ product }) => product._id === productID));
             if (product.count_in_stock > cartProduct.qty) {
-                await axios.post('http://127.0.0.1:8000/api/orders/add-to-cart/', {
+                await axios.post('api/orders/add-to-cart/', {
                     product_id: productID,
                     qty: 1
                 }, {
@@ -72,7 +72,7 @@ function ShoppingCart({ token }) {
             try {
                 let deletedFlag = 0;
                 for (let i = 0; i < qty; i++) {
-                    await axios.put(`http://127.0.0.1:8000/api/orders/remove-from-cart/${productID}/`,
+                    await axios.put(`api/orders/remove-from-cart/${productID}/`,
                         {}, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -95,7 +95,7 @@ function ShoppingCart({ token }) {
 
     const deleteAll = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/orders/remove-from-cart/all/`,
+            await axios.delete(`api/orders/remove-from-cart/all/`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -116,16 +116,22 @@ function ShoppingCart({ token }) {
             return null;
         }
         return (
-            cartData.map(({ id, product, qty }) => {
-                let imageUrlWithPrefix= `${product.image}`;
+            cartDataDiscount.map(({ item, discPrice }) => {
+                let { id, product, qty } = item;
+                let imageUrlWithPrefix = `${product.image}`;
                 return (
                     <tr key={id}>
                         <td className="shoping__cart__item">
-                            <img src={imageUrlWithPrefix} alt="" className="square-image"/>
+                            <img src={imageUrlWithPrefix} alt="" className="square-image" />
                             <h5>{product.name}</h5>
                         </td>
                         <td className="shoping__cart__price">
-                            ${product.price}
+                            <span className="old-information">
+                                ${(product.price)}
+                            </span>
+                            <br />
+                            <br />
+                            <span>${(discPrice)}</span>
                         </td>
                         <td className="shoping__cart__quantity">
                             <div className="quantity d-flex justify-content-center">
@@ -137,7 +143,7 @@ function ShoppingCart({ token }) {
                             </div>
                         </td>
                         <td className="shoping__cart__total">
-                            ${qty * product.price}
+                            ${(qty * discPrice).toFixed(2)}
                         </td>
                         <td className="shoping__cart__item__close">
                             <span className="icon_close" onClick={(() => deleteProduct(product._id, qty))} />
@@ -208,7 +214,7 @@ function ShoppingCart({ token }) {
                                                 <i className="fa fa-phone" />
                                             </div>
                                             <div className="hero__search__phone__text">
-                                                <h5>+65 11.188.888</h5>
+                                                <h5>+90 534 510 3978</h5>
                                                 <span>support 24/7 time</span>
                                             </div>
                                         </div>
@@ -290,7 +296,10 @@ function ShoppingCart({ token }) {
                                         <h5>Cart Total</h5>
                                         <ul>
                                             <li>Subtotal <span>${cartState.totalPrice}</span></li>
-                                            <li>Total <span>${cartState.totalPrice}</span></li>
+                                            <li>Total Discount <span>
+                                            ${(cartState.totalPrice-cartState.totalPriceDiscounted).toFixed(2)}
+                                            </span></li>
+                                            <li>Total <span>${cartState.totalPriceDiscounted}</span></li>
                                         </ul>
                                         <Link to="/checkout" className="primary-btn">PROCEED TO CHECKOUT</Link>
                                     </div>
@@ -310,7 +319,7 @@ function ShoppingCart({ token }) {
                                         </div>
                                         <ul>
                                             <li>Address: 60-49 Road 11378 New York</li>
-                                            <li>Phone: +65 11.188.888</li>
+                                            <li>Phone: +90 534 510 3978</li>
                                             <li>Email: hello@colorlib.com</li>
                                         </ul>
                                     </div>
