@@ -77,7 +77,7 @@ export default function Home() {
 
     const product = () => {
         const discDataArr = calculateDiscount(data);
-        console.log(discDataArr);
+        // console.log(discDataArr);
         return (
             discDataArr.map(({item, discPrice}) => {
                 var imageUrlWithPrefix;

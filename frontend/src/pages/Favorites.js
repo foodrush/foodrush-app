@@ -50,7 +50,7 @@ function Favorites() {
     const displayFavorites = () => {
         return (favoritesData.map((product) => {
             // let imageUrlWithPrefix = `http://127.0.0.1:8000${product.image}`;
-            let imageUrlWithPrefix = `{product.image}`;
+            let imageUrlWithPrefix = product.image;
             return (
                 <tr key={product._id}>
                     <td className="shoping__cart__item">

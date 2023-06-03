@@ -83,7 +83,7 @@ function BusinessPage() {
             );
         }
         if (userToken && product_id) {
-            await axios.post('api/orders/add-to-cart/',
+            await axios.post('/api/orders/add-to-cart/',
                 {
                     product_id: product_id,
                     qty: 1
